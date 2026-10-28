@@ -107,7 +107,11 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          prop=$(find . -mindepth 2 -maxdepth 2 -name "*.prop" -type f -not -path "./payload_dumper/*" -print -quit 2>/dev/null)
+          # The freshly extracted .prop is the only one git sees as new/changed in this
+          # device's job (the committed <codename>/*.prop are unchanged); byte-identical
+          # rebuilds show nothing, so git doubles as the content-level dedup.
+          prop=$(git status --porcelain --untracked-files=all | grep -E '\.prop$' \
+                 | grep -v ' payload_dumper/' | cut -c4- | head -n1)
           if [ -z "$prop" ]; then
             echo "has_new=false" >> "$GITHUB_OUTPUT"
             exit 0
@@ -142,8 +146,6 @@ jobs:
           build_desc=$(grep -m1 '^ro.build.description=' "$prop" 2>/dev/null | cut -d= -f2- | head -1)
           [ -z "$device_name" ] && device_name="${codename^}"
 
-          prop_hash=$(sha256sum "$prop" | awk '{print $1}')
-
           # Upload layout: the <codename>/ dir (for the repo) + a flat copy for release assets
           mkdir -p "upload/${codename}"
           cp -f "$prop" "upload/${codename}/${name}"
@@ -152,10 +154,9 @@ jobs:
           jq -n \
             --arg codename "$codename" \
             --arg prop_name "$name" \
-            --arg sha256 "$prop_hash" \
             --arg device_name "$device_name" \
             --arg build_desc "$build_desc" \
-            '{codename: $codename, prop_name: $prop_name, sha256: $sha256, device_name: $device_name, build_desc: $build_desc}' \
+            '{codename: $codename, prop_name: $prop_name, device_name: $device_name, build_desc: $build_desc}' \
             > "upload/metadata-${codename}.json"
 
           echo "has_new=true" >> "$GITHUB_OUTPUT"
@@ -170,7 +171,7 @@ jobs:
           retention-days: 1
 
   # ------------------------------------------------------------------
-  # RELEASE: Commit new .prop into the repo, publish release, notify Telegram
+  # RELEASE: Commit new .prop into the repo and publish the release
   # ------------------------------------------------------------------
   release:
     needs: [prepare, build]
@@ -187,7 +188,7 @@ jobs:
           path: new_props/
         continue-on-error: true
 
-      # Commit the new .prop files into the repo, publish the release, notify
+      # Commit the new .prop files into the repo and publish the release
       - name: Aggregate and publish
         id: aggregate
         env:
@@ -203,7 +204,6 @@ jobs:
           fi
 
           TAG="build-$(date +%Y%m%d)"
-          REPO_URL="https://github.com/${{ github.repository }}"
 
           # Read ordered device list into a bash array (avoids subshell issues)
           mapfile -t devices < <(echo "$DEVICES_JSON" | jq -r '.[]')
@@ -230,28 +230,15 @@ jobs:
             [ -f "$json" ] || continue
             codename=$(jq -r '.codename' "$json")
             prop_name=$(jq -r '.prop_name' "$json")
-            sha256=$(jq -r '.sha256' "$json")
             device_name=$(jq -r '.device_name' "$json")
             build_desc=$(jq -r '.build_desc // empty' "$json")
             RELEASE_BODY+="## ${device_name} (${codename^})"$'\n'
             RELEASE_BODY+="- File name: \`${prop_name}\`"$'\n'
-            RELEASE_BODY+="- Build Description: \`${build_desc}\`"$'\n'
-            RELEASE_BODY+="- File hash (SHA256): \`${sha256}\`"$'\n\n'
+            RELEASE_BODY+="- Build Description: \`${build_desc}\`"$'\n\n'
           done
           printf '%s' "$RELEASE_BODY" > /tmp/release_notes.md
 
-          # 3) Telegram device list in the same order
-          DEVICE_LIST=""
-          for device in "${devices[@]}"; do
-            json="new_props/metadata-${device}.json"
-            [ -f "$json" ] || continue
-            prop_name=$(jq -r '.prop_name' "$json")
-            device_name=$(jq -r '.device_name' "$json")
-            download_url="${REPO_URL}/releases/download/${TAG}/${prop_name}"
-            DEVICE_LIST+="- **${device_name}**: [${prop_name}](${download_url})"$'\n'
-          done
-
-          # 4) Create release if it doesn't exist, otherwise upload to existing
+          # 3) Create release if it doesn't exist, otherwise upload to existing
           if gh release view "$TAG" &>/dev/null; then
             echo "Release $TAG already exists, uploading assets..."
             gh release upload "$TAG" new_props/*.prop --clobber
@@ -265,25 +252,3 @@ jobs:
           echo "has_new=true" >> "$GITHUB_OUTPUT"
           echo "tag=$TAG" >> "$GITHUB_OUTPUT"
           echo "count=$COUNT" >> "$GITHUB_OUTPUT"
-          {
-            echo "devices<<EOF"
-            printf '%s' "$DEVICE_LIST"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-
-      - name: Notify Telegram
-        if: steps.aggregate.outputs.has_new == 'true'
-        uses: appleboy/telegram-action@v1
-        with:
-          to: ${{ secrets.TELEGRAM_CHAT_ID }}
-          token: ${{ secrets.TELEGRAM_BOT_TOKEN }}
-          disable_web_page_preview: true
-          format: markdown
-          message: |
-            **Pixel Props - New OTA Available !**
-
-            **Tag**: [${{ steps.aggregate.outputs.tag }}](https://github.com/${{ github.repository }}/releases/tag/${{ steps.aggregate.outputs.tag }})
-            **Props**: ${{ steps.aggregate.outputs.count }}
-
-            **Devices**:
-            ${{ steps.aggregate.outputs.devices }}

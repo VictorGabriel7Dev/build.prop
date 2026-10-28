@@ -35,7 +35,10 @@ content=$(cat "$prop")
 
 codename=$(grep_prop "ro.product.vendor.name" "$content")
 [ -z "$codename" ] && codename=$(grep_prop "ro.product.system.name" "$content")
-build_id=$(grep_prop "ro.build.id" "$content")
+# Name by INCREMENTAL (e.g. 16269273) to match the <codename>_<incremental>.prop corpus;
+# fall back to ro.build.id only if the incremental is missing.
+build_id=$(grep_prop "ro.build.version.incremental" "$content")
+[ -z "$build_id" ] && build_id=$(grep_prop "ro.build.id" "$content")
 [ -z "$codename" ] || [ -z "$build_id" ] && { print_message "Missing codename/build_id in \"$dir\"" error && exit 1; }
 
 out="${codename}/${codename}_${build_id}.prop"
