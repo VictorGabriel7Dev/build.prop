@@ -35,13 +35,17 @@ content=$(cat "$prop")
 
 codename=$(grep_prop "ro.product.vendor.name" "$content")
 [ -z "$codename" ] && codename=$(grep_prop "ro.product.system.name" "$content")
-# Name by INCREMENTAL (e.g. 16269273) to match the <codename>_<incremental>.prop corpus;
+# Directory = plain codename; filename prefix = PRODUCT (carries the track: cheetah_beta /
+# cheetah_canary / cheetah for stable), so every prefix coexists and is self-describing.
+product=$(grep_prop "ro.product.product.name" "$content")
+[ -z "$product" ] && product="$codename"
+# Name by INCREMENTAL (e.g. 16269273) to match the <product>_<incremental>.prop corpus;
 # fall back to ro.build.id only if the incremental is missing.
 build_id=$(grep_prop "ro.build.version.incremental" "$content")
 [ -z "$build_id" ] && build_id=$(grep_prop "ro.build.id" "$content")
 [ -z "$codename" ] || [ -z "$build_id" ] && { print_message "Missing codename/build_id in \"$dir\"" error && exit 1; }
 
-out="${codename}/${codename}_${build_id}.prop"
+out="${codename}/${product}_${build_id}.prop"
 mkdir -p "${codename}"
 {
   cat <<'EOF'
