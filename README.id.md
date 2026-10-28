@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Ekstrak dan distribusikan `.prop` lengkap Pixel langsung dari image OTA Google*
+*Arsip file `.prop` Pixel asli yang dapat dijelajahi dan diperbarui otomatis, langsung dari image OTA Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Ekstrak dan kelola properti sistem dari pembaruan OTA Pixel dengan mudah menggunakan rangkaian otomatisasi yang tangguh ini. Ia mengekstrak `.prop` lengkap dan terorganisir untuk setiap perangkat langsung dari image OTA resmi Google, lalu **menyimpan dan mendistribusikan berkas `.prop` tersebut** - baik diversikan di repositori maupun diterbitkan sebagai aset rilis. Tanpa modul yang dapat dipasang: hanya propertinya.
+Arsip berversi dari `build.prop` lengkap setiap Pixel, diekstrak langsung dari image OTA resmi Google dan dijaga tetap mutakhir secara otomatis. File `.prop` setiap perangkat disimpan di repositori dan dipublikasikan sebagai aset rilis, siap dijelajahi atau diunduh tanpa perlu alat apa pun.
 
-## 🚀 Mulai Cepat
+## 📥 Dapatkan `.prop`
 
-### Prasyarat
+Dua cara, tanpa pengaturan:
 
-- **Lingkungan mirip Unix**: Linux atau macOS dengan Bash.
-- **Utilitas inti**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Jelajahi repositori**: buka [`props/<codename>/`](props/) dan pilih `<codename>_<build_id>.prop`.
+- **Unduh dari Releases**: ambil file dari [rilis](https://github.com/VictorGabriel7Dev/build.prop/releases) terbaru (dengan tag `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Setiap `.prop` adalah kumpulan properti build yang lengkap dan terorganisir untuk perangkat dan build persis tersebut (product, vendor, odm, system, system_ext, system_dlkm dan lainnya).
 
-## Instalasi
+## 🔧 Bangun sendiri
 
-1. **Klona repositori**:
+Untuk mengekstrak `.prop` secara lokal alih-alih mengunduhnya, Anda memerlukan lingkungan mirip Unix (Linux atau macOS dengan Bash) ditambah `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, dan Python ≥3.8 dengan `payload_dumper`. `requirements.sh` memasang dependensi di sebagian besar manajer paket (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Buat dan aktifkan lingkungan virtual** (opsional tetapi disarankan):
+Perangkat yang didukung adalah image factory dan OTA di [Google Android Images](https://developers.google.com/android/images) dan [halaman Beta OTA](https://developer.android.com/about/versions/17/download-ota). Ekstraksi membaca setiap partisi payload satu per satu (memori rendah) dan menangani image EROFS, ext4, sparse dan boot/init_boot.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Otomatisasi
 
-3. **Pasang dependensi**:
+Pipeline GitHub Actions (`.github/workflows/build.yml`) menjaga arsip tetap mutakhir:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Berjalan mingguan, dan sesuai permintaan melalui `workflow_dispatch` dengan daftar perangkat yang dipisahkan spasi atau `all`; setiap perangkat dibangun secara paralel.
+- Mengekstrak `.prop`, meng-commit yang baru di bawah `props/<codename>/`, dan mempublikasikannya sebagai aset di bawah satu tag harian (`build-YYYYMMDD`).
+- Melewati file `.prop` yang sudah dirilis dan memberi tahu Telegram dengan tautan unduhan yang dapat diklik.
 
-## Penggunaan
-
-### Lokal
-
-1. **Ambil image OTA terbaru**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Contoh:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### Perangkat yang didukung pada image factory atau OTA yang diinginkan dari [Google Android Images](https://developers.google.com/android/images) atau [halaman OTA Beta](https://developer.android.com/about/versions/17/download-ota).
-
-2. **Ekstrak image dan kumpulkan `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    Ini secara otomatis:
-    - Mengekstrak partisi payload.bin satu per satu (penggunaan memori rendah)
-    - Mendeteksi dan menangani image **EROFS**, **ext4**, **sparse**, dan **boot/init_boot**
-    - Membangun `.prop` lengkap dan terorganisir dari build.prop setiap partisi
-    - Menyimpannya ke `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-Repositori ini menyertakan pipeline CI yang sepenuhnya otomatis (`.github/workflows/build.yml`):
-
-- **Build terjadwal**: berjalan setiap Minggu tengah malam UTC.
-- **Pemicu manual**: picu melalui `workflow_dispatch` dengan daftar perangkat yang dipisahkan spasi atau `all`.
-- **Build matriks**: setiap perangkat diproses secara paralel.
-- **Pencegahan duplikat**: melewati `.prop` yang sudah ada di rilis yang ada.
-- **Diversikan di repositori**: `.prop` baru di-commit ke `props/<codename>/`.
-- **Rilis teragregasi**: semua `.prop` baru diterbitkan di bawah satu tag harian (`build-YYYYMMDD`).
-- **Notifikasi Telegram**: mengirim pesan terformat dengan tautan unduhan yang dapat diklik.
-
-#### Secret yang diperlukan
-
-| Secret | Deskripsi |
-|--------|-----------|
-| `TELEGRAM_BOT_TOKEN` | Token bot Telegram Anda dari [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | ID obrolan tujuan (pengguna, grup, atau kanal) |
-
-## ✨ Fitur Utama
-
-- **Akuisisi OTA otomatis**: mengunduh build terbaru langsung dari sumber resmi Google.
-- **Dukungan sistem berkas modern**: menangani image EROFS, ext4, sparse, dan ramdisk boot/init_boot.
-- **Pembuatan `.prop` lengkap**: membangun satu `.prop` terorganisir per perangkat dari build.prop setiap partisi (product, vendor, odm, system, system_ext, system_dlkm, dan lainnya).
-- **Ekstraksi hemat memori**: partisi payload didump satu per satu untuk menghindari OOM pada OTA besar.
-- **Manajemen paket lintas platform**: `requirements.sh` mendukung apt, pacman, dnf, yum, zypper, apk, xbps, brew, dan Termux.
-- **Penyimpanan dan distribusi**:
-  - **Di repositori**: setiap `.prop` di-commit ke `props/<codename>/`, diversikan dan dapat ditelusuri.
-  - **Sebagai aset rilis**: setiap `.prop` diterbitkan di bawah tag harian untuk unduhan langsung.
-- **Integrasi GitHub Actions**:
-  - **Alur kerja terjadwal**: mengotomatiskan pembaruan, ekstraksi, dan rilis sesuai jadwal.
-  - **Pencegahan rilis duplikat**: menghindari rilis berlebih dengan memeriksa aset rilis yang ada.
-  - **Rilis idempoten**: mengunggah ulang ke tag rilis harian yang ada jika dipicu ulang.
-  - **Notifikasi Telegram**: terima pembaruan tepat waktu dengan tautan unduhan yang dapat diklik.
-
-## 📝 Pedoman Penggunaan yang Bertanggung Jawab
-
-Proyek ini disediakan untuk tujuan edukasi dan eksperimen. Meskipun dirancang untuk efisiensi, sangat penting untuk menggunakan alat ini secara bertanggung jawab.
-
-- **Tinjauan kode**: tinjau dan pahami kode secara menyeluruh sebelum menerapkannya di lingkungan apa pun.
-- **Praktik keamanan terbaik**: patuhi standar industri untuk keamanan dan kepatuhan hukum.
-
-Pembuat proyek ini tidak bertanggung jawab atas penyalahgunaan atau kerugian apa pun yang timbul dari penggunaannya.
+Fork yang menjalankan pipeline memerlukan dua secret: `TELEGRAM_BOT_TOKEN` (dari [@BotFather](https://t.me/BotFather)) dan `TELEGRAM_CHAT_ID`.
 
 ## Ucapan Terima Kasih
 
-Proyek ini adalah fork dari **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** oleh **[@T3SL4](https://github.com/T3SL4)**, yang memelopori pipeline ekstraksi OTA ke prop. Di sini ia dibentuk ulang untuk menyimpan dan mendistribusikan berkas `.prop` alih-alih modul yang dapat dipasang. Seluruh penghargaan atas karya aslinya diberikan kepada penulisnya.
+Proyek ini adalah fork dari **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** oleh **[@T3SL4](https://github.com/T3SL4)**, yang memelopori pipeline ekstraksi OTA-ke-prop. Seluruh penghargaan atas karya aslinya diberikan kepada penulisnya.
 
 ## Kontak
 
@@ -138,8 +59,8 @@ Proyek ini adalah fork dari **[Pixel-Props/build.prop](https://github.com/Pixel-
 
 ## Lisensi
 
-**GNU GPL-3.0-or-later** - lihat [LICENSE](LICENSE). Copyleft: siapa pun yang mendistribusikan versi yang dimodifikasi harus menawarkan kode sumbernya dengan syarat yang sama.
+**GNU GPL-3.0-or-later** - lihat [LICENSE](LICENSE). Copyleft: siapa pun yang mendistribusikan versi yang dimodifikasi harus menawarkan sumbernya dengan ketentuan yang sama.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

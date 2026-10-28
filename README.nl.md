@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Haal de volledige Pixel-`.prop` op en verspreid die rechtstreeks uit Googles OTA-images*
+*Een doorzoekbaar, automatisch bijgewerkt archief van echte Pixel-`.prop`-bestanden, rechtstreeks uit Googles OTA-images*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Haal moeiteloos systeemeigenschappen uit Pixel-OTA-updates en beheer ze met deze robuuste automatiseringssuite. Ze haalt de volledige, georganiseerde `.prop` van elk apparaat rechtstreeks uit Googles officiële OTA-images en **slaat die `.prop`-bestanden vervolgens op en verspreidt ze** - zowel geversioneerd in de repository als gepubliceerd als release-assets. Geen installeerbare modules: alleen de eigenschappen.
+Een geversioneerd archief van de volledige `build.prop` van elke Pixel, rechtstreeks uit Googles officiële OTA-images geëxtraheerd en automatisch up-to-date gehouden. De `.prop` van elk apparaat wordt in de repository opgeslagen en als release-asset gepubliceerd, klaar om te doorbladeren of te downloaden zonder dat er gereedschap nodig is.
 
-## 🚀 Snelstart
+## 📥 Get a `.prop`
 
-### Vereisten
+Twee manieren, geen installatie nodig:
 
-- **Unix-achtige omgeving**: Linux of macOS met Bash.
-- **Essentiële hulpprogramma's**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Doorzoek de repository**: open [`props/<codename>/`](props/) en kies `<codename>_<build_id>.prop`.
+- **Download uit Releases**: pak het bestand uit de nieuwste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (getagd met `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Elke `.prop` is de volledige, geordende set build-eigenschappen voor precies dat apparaat en die build (product, vendor, odm, system, system_ext, system_dlkm en meer).
 
-## Installatie
+## 🔧 Build it yourself
 
-1. **Kloon de repository**:
+Om een `.prop` lokaal te extraheren in plaats van hem te downloaden, heb je een Unix-achtige omgeving nodig (Linux of macOS met Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` en Python ≥3.8 met `payload_dumper`. `requirements.sh` installeert de afhankelijkheden voor de meeste pakketbeheerders (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Maak en activeer een virtuele omgeving** (optioneel maar aanbevolen):
+Ondersteunde apparaten zijn de factory- en OTA-images op [Google Android Images](https://developers.google.com/android/images) en de [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). De extractie leest elke payload-partitie één voor één (laag geheugengebruik) en verwerkt EROFS-, ext4-, sparse- en boot/init_boot-images.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **Installeer de afhankelijkheden**:
+Een GitHub Actions-pijplijn (`.github/workflows/build.yml`) houdt het archief actueel:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Draait wekelijks en op aanvraag via `workflow_dispatch` met een door spaties gescheiden apparatenlijst of `all`; elk apparaat wordt parallel gebouwd.
+- Extraheert de `.prop`, commit nieuwe onder `props/<codename>/` en publiceert ze als assets onder één enkele dagelijkse tag (`build-YYYYMMDD`).
+- Slaat `.prop`-bestanden over die al zijn uitgebracht en stuurt een melding naar Telegram met aanklikbare downloadlinks.
 
-## Gebruik
+Forks die de pijplijn draaien, hebben twee secrets nodig: `TELEGRAM_BOT_TOKEN` (van [@BotFather](https://t.me/BotFather)) en `TELEGRAM_CHAT_ID`.
 
-### Lokaal
+## Acknowledgements
 
-1. **Haal de nieuwste OTA-images op**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Voorbeelden:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### Ondersteunde apparaten in de gewenste fabrieks- of OTA-images van [Google Android Images](https://developers.google.com/android/images) of de [Beta-OTA-pagina's](https://developer.android.com/about/versions/17/download-ota).
-
-2. **Pak de images uit en verzamel de `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    Dit doet automatisch:
-    - Pakt de partities van payload.bin één voor één uit (laag geheugengebruik)
-    - Detecteert en verwerkt **EROFS**-, **ext4**-, **sparse**- en **boot/init_boot**-images
-    - Bouwt de volledige, georganiseerde `.prop` uit de build.prop van elke partitie
-    - Slaat die op in `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-De repository bevat een volledig geautomatiseerde CI-pijplijn (`.github/workflows/build.yml`):
-
-- **Geplande builds**: draaien elke zondag om middernacht UTC.
-- **Handmatige start**: activeer via `workflow_dispatch` met een door spaties gescheiden apparaatlijst of `all`.
-- **Matrixbuilds**: elk apparaat wordt parallel verwerkt.
-- **Duplicaatpreventie**: slaat `.prop`-bestanden over die al in bestaande releases aanwezig zijn.
-- **Geversioneerd in de repository**: nieuwe `.prop`-bestanden worden vastgelegd onder `props/<codename>/`.
-- **Samengevoegde releases**: alle nieuwe `.prop`-bestanden worden onder één dagelijkse tag (`build-YYYYMMDD`) gepubliceerd.
-- **Telegram-meldingen**: stuurt een opgemaakt bericht met klikbare downloadlinks.
-
-#### Vereiste secrets
-
-| Secret | Beschrijving |
-|--------|--------------|
-| `TELEGRAM_BOT_TOKEN` | Je Telegram-bottoken van [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | ID van de doelchat (gebruiker, groep of kanaal) |
-
-## ✨ Belangrijkste functies
-
-- **Geautomatiseerde OTA-acquisitie**: downloadt de nieuwste builds rechtstreeks uit de officiële bronnen van Google.
-- **Ondersteuning voor moderne bestandssystemen**: verwerkt EROFS-, ext4-, sparse-images en boot/init_boot-ramdisks.
-- **Volledige `.prop`-generatie**: bouwt één georganiseerde `.prop` per apparaat uit de build.prop van elke partitie (product, vendor, odm, system, system_ext, system_dlkm en meer).
-- **Geheugenefficiënte extractie**: payloadpartities worden één voor één gedumpt om OOM bij grote OTA's te voorkomen.
-- **Platformonafhankelijk pakketbeheer**: `requirements.sh` ondersteunt apt, pacman, dnf, yum, zypper, apk, xbps, brew en Termux.
-- **Opslag en distributie**:
-  - **In de repository**: elke `.prop` wordt vastgelegd onder `props/<codename>/`, geversioneerd en doorzoekbaar.
-  - **Als release-assets**: elke `.prop` wordt onder de dagelijkse tag gepubliceerd voor directe download.
-- **GitHub Actions-integratie**:
-  - **Geplande workflows**: automatiseren updates, extractie en releases volgens een schema.
-  - **Preventie van dubbele releases**: voorkomt overbodige releases door bestaande release-assets te controleren.
-  - **Idempotente releases**: uploadt opnieuw naar een bestaande dagelijkse release-tag bij een nieuwe trigger.
-  - **Telegram-meldingen**: ontvang tijdige updates met klikbare downloadlinks.
-
-## 📝 Richtlijnen voor verantwoord gebruik
-
-Dit project wordt aangeboden voor educatieve en experimentele doeleinden. Hoewel het is ontworpen voor efficiëntie, is het cruciaal om dit hulpmiddel verantwoord te gebruiken.
-
-- **Codebeoordeling**: beoordeel en begrijp de code grondig voordat je deze in een omgeving inzet.
-- **Beste beveiligingspraktijken**: houd je aan de industriestandaarden voor beveiliging en wettelijke naleving.
-
-De makers van dit project zijn niet aansprakelijk voor enig misbruik of schade als gevolg van het gebruik ervan.
-
-## Dankbetuigingen
-
-Dit project is een fork van **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** van **[@T3SL4](https://github.com/T3SL4)**, die de OTA-naar-prop-extractiepijplijn heeft bedacht. Het is hier omgevormd om `.prop`-bestanden op te slaan en te verspreiden in plaats van installeerbare modules. Alle eer voor het oorspronkelijke werk gaat naar de auteur ervan.
+Dit project is een fork van **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** door **[@T3SL4](https://github.com/T3SL4)**, die de OTA-naar-prop-extractiepijplijn als eerste ontwikkelde. Alle erkenning voor het oorspronkelijke werk gaat naar de auteur ervan.
 
 ## Contact
 
@@ -136,10 +57,10 @@ Dit project is een fork van **[Pixel-Props/build.prop](https://github.com/Pixel-
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## Licentie
+## License
 
-**GNU GPL-3.0-or-later** - zie [LICENSE](LICENSE). Copyleft: iedereen die een gewijzigde versie verspreidt, moet de broncode onder dezelfde voorwaarden aanbieden.
+**GNU GPL-3.0-or-later** - zie [LICENSE](LICENSE). Copyleft: wie een gewijzigde versie verspreidt, moet de broncode ervan onder dezelfde voorwaarden aanbieden.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

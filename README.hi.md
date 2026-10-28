@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Pixel की पूरी `.prop` को सीधे Google की OTA इमेज से निकालें और वितरित करें*
+*असली Pixel `.prop` फ़ाइलों का एक ब्राउज़ करने योग्य, स्वतः-अपडेट होने वाला संग्रह, सीधे Google की OTA इमेज से*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-इस मज़बूत ऑटोमेशन सुइट से Pixel OTA अपडेट से सिस्टम प्रॉपर्टीज़ को आसानी से निकालें और प्रबंधित करें। यह प्रत्येक डिवाइस की पूरी, व्यवस्थित `.prop` को सीधे Google की आधिकारिक OTA इमेज से निकालता है और फिर **उन `.prop` फ़ाइलों को संग्रहीत और वितरित करता है** - रिपॉज़िटरी में संस्करणित और रिलीज़ एसेट के रूप में प्रकाशित दोनों। कोई इंस्टॉल करने योग्य मॉड्यूल नहीं: केवल प्रॉपर्टीज़।
+प्रत्येक Pixel के पूर्ण `build.prop` का एक संस्करणबद्ध संग्रह, जो सीधे Google की आधिकारिक OTA इमेज से निकाला जाता है और स्वचालित रूप से अद्यतन रखा जाता है। हर डिवाइस की `.prop` रिपॉज़िटरी में संग्रहीत होती है और एक release एसेट के रूप में प्रकाशित की जाती है, बिना किसी टूलिंग की आवश्यकता के ब्राउज़ या डाउनलोड करने के लिए तैयार।
 
-## 🚀 त्वरित शुरुआत
+## 📥 Get a `.prop`
 
-### पूर्वापेक्षाएँ
+दो तरीके, किसी सेटअप की आवश्यकता नहीं:
 
-- **Unix-जैसा वातावरण**: Bash वाला Linux या macOS।
-- **मुख्य उपयोगिताएँ**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **रिपॉज़िटरी ब्राउज़ करें**: [`props/<codename>/`](props/) खोलें और `<codename>_<build_id>.prop` चुनें।
+- **Releases से डाउनलोड करें**: नवीनतम [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (टैग `build-YYYYMMDD`) से फ़ाइल प्राप्त करें।
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+प्रत्येक `.prop` उस सटीक डिवाइस और build के लिए build प्रॉपर्टीज़ का पूर्ण, व्यवस्थित सेट है (product, vendor, odm, system, system_ext, system_dlkm और अधिक)।
 
-## स्थापना
+## 🔧 Build it yourself
 
-1. **रिपॉज़िटरी क्लोन करें**:
+किसी `.prop` को डाउनलोड करने के बजाय स्थानीय रूप से निकालने के लिए, आपको एक Unix-जैसे वातावरण (Bash के साथ Linux या macOS) के साथ-साथ `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, और `payload_dumper` के साथ Python ≥3.8 की आवश्यकता है। `requirements.sh` अधिकांश पैकेज मैनेजरों में निर्भरताएँ स्थापित करता है (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux)।
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **एक वर्चुअल एनवायरनमेंट बनाएँ और सक्रिय करें** (वैकल्पिक, पर अनुशंसित):
+समर्थित डिवाइस [Google Android Images](https://developers.google.com/android/images) और [Beta OTA पृष्ठों](https://developer.android.com/about/versions/17/download-ota) पर उपलब्ध factory और OTA इमेज हैं। निष्कर्षण प्रत्येक payload पार्टीशन को एक-एक करके पढ़ता है (कम मेमोरी) और EROFS, ext4, sparse तथा boot/init_boot इमेज को संभालता है।
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **निर्भरताएँ स्थापित करें**:
+एक GitHub Actions पाइपलाइन (`.github/workflows/build.yml`) संग्रह को वर्तमान रखती है:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- साप्ताहिक रूप से चलती है, और `workflow_dispatch` के माध्यम से मांग पर, स्पेस से अलग की गई डिवाइस सूची या `all` के साथ; प्रत्येक डिवाइस समानांतर में build होता है।
+- `.prop` निकालती है, नई फ़ाइलों को `props/<codename>/` के अंतर्गत कमिट करती है, और उन्हें एक ही दैनिक टैग (`build-YYYYMMDD`) के अंतर्गत एसेट के रूप में प्रकाशित करती है।
+- पहले से रिलीज़ की जा चुकी `.prop` फ़ाइलों को छोड़ देती है और क्लिक करने योग्य डाउनलोड लिंक के साथ Telegram को सूचित करती है।
 
-## उपयोग
+इस पाइपलाइन को चलाने वाले फ़ोर्क को दो secrets की आवश्यकता होती है: `TELEGRAM_BOT_TOKEN` ([@BotFather](https://t.me/BotFather) से) और `TELEGRAM_CHAT_ID`।
 
-### स्थानीय
+## Acknowledgements
 
-1. **नवीनतम OTA इमेज प्राप्त करें**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    उदाहरण:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### [Google Android Images](https://developers.google.com/android/images) या [Beta OTA पृष्ठों](https://developer.android.com/about/versions/17/download-ota) से वांछित फ़ैक्टरी या OTA इमेज में समर्थित डिवाइस।
-
-2. **इमेज निकालें और `.prop` एकत्र करें**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    यह स्वतः:
-    - payload.bin के विभाजनों को एक-एक करके निकालता है (कम मेमोरी उपयोग)
-    - **EROFS**, **ext4**, **sparse** और **boot/init_boot** इमेज का पता लगाता और संभालता है
-    - प्रत्येक विभाजन की build.prop से पूरी, व्यवस्थित `.prop` बनाता है
-    - इसे `props/<codename>/<codename>_<build_id>.prop` में सहेजता है
-
-### GitHub Actions
-
-रिपॉज़िटरी में एक पूर्णतः स्वचालित CI पाइपलाइन (`.github/workflows/build.yml`) शामिल है:
-
-- **अनुसूचित बिल्ड**: हर रविवार UTC मध्यरात्रि को चलते हैं।
-- **मैन्युअल ट्रिगर**: स्पेस से अलग किए गए डिवाइस सूची या `all` के साथ `workflow_dispatch` से ट्रिगर करें।
-- **मैट्रिक्स बिल्ड**: प्रत्येक डिवाइस समानांतर में संसाधित होता है।
-- **डुप्लिकेट रोकथाम**: मौजूदा रिलीज़ में पहले से मौजूद `.prop` फ़ाइलों को छोड़ देता है।
-- **रिपॉज़िटरी में संस्करणित**: नई `.prop` फ़ाइलें `props/<codename>/` के अंतर्गत कमिट की जाती हैं।
-- **समेकित रिलीज़**: सभी नई `.prop` फ़ाइलें एक ही दैनिक टैग (`build-YYYYMMDD`) के अंतर्गत प्रकाशित होती हैं।
-- **Telegram सूचनाएँ**: क्लिक करने योग्य डाउनलोड लिंक के साथ एक स्वरूपित संदेश भेजता है।
-
-#### आवश्यक Secrets
-
-| Secret | विवरण |
-|--------|-------|
-| `TELEGRAM_BOT_TOKEN` | [@BotFather](https://t.me/BotFather) से प्राप्त आपका Telegram बॉट टोकन |
-| `TELEGRAM_CHAT_ID` | लक्ष्य चैट ID (उपयोगकर्ता, समूह या चैनल) |
-
-## ✨ मुख्य विशेषताएँ
-
-- **स्वचालित OTA प्राप्ति**: नवीनतम बिल्ड सीधे Google के आधिकारिक स्रोतों से डाउनलोड करता है।
-- **आधुनिक फ़ाइल सिस्टम समर्थन**: EROFS, ext4, sparse इमेज और boot/init_boot ramdisks को संभालता है।
-- **पूरी `.prop` निर्माण**: प्रत्येक विभाजन की build.prop से प्रति डिवाइस एक व्यवस्थित `.prop` बनाता है (product, vendor, odm, system, system_ext, system_dlkm आदि)।
-- **मेमोरी-कुशल निष्कर्षण**: बड़े OTA पर OOM से बचने के लिए payload विभाजन एक-एक करके डंप किए जाते हैं।
-- **क्रॉस-प्लेटफ़ॉर्म पैकेज प्रबंधन**: `requirements.sh` apt, pacman, dnf, yum, zypper, apk, xbps, brew और Termux का समर्थन करता है।
-- **संग्रहण और वितरण**:
-  - **रिपॉज़िटरी में**: प्रत्येक `.prop` `props/<codename>/` के अंतर्गत कमिट होती है, संस्करणित और ब्राउज़ करने योग्य।
-  - **रिलीज़ एसेट के रूप में**: प्रत्येक `.prop` सीधे डाउनलोड के लिए दैनिक टैग के अंतर्गत प्रकाशित होती है।
-- **GitHub Actions एकीकरण**:
-  - **अनुसूचित वर्कफ़्लो**: अपडेट, निष्कर्षण और रिलीज़ को एक शेड्यूल पर स्वचालित करते हैं।
-  - **डुप्लिकेट रिलीज़ रोकथाम**: मौजूदा रिलीज़ की संपत्तियों की जाँच करके अनावश्यक रिलीज़ से बचता है।
-  - **इडेम्पोटेंट रिलीज़**: पुनः ट्रिगर होने पर मौजूदा दैनिक रिलीज़ टैग में फिर से अपलोड करता है।
-  - **Telegram सूचनाएँ**: क्लिक करने योग्य डाउनलोड लिंक के साथ समय पर अपडेट प्राप्त करें।
-
-## 📝 उत्तरदायी उपयोग दिशानिर्देश
-
-यह परियोजना शैक्षिक और प्रयोगात्मक उद्देश्यों के लिए प्रदान की गई है। यद्यपि यह दक्षता के लिए बनाई गई है, इस उपकरण का उत्तरदायी ढंग से उपयोग करना अत्यंत महत्वपूर्ण है।
-
-- **कोड समीक्षा**: किसी भी वातावरण में तैनात करने से पहले कोड की भली-भाँति समीक्षा करें और उसे समझें।
-- **सुरक्षा सर्वोत्तम प्रथाएँ**: सुरक्षा और कानूनी अनुपालन के उद्योग मानकों का पालन करें।
-
-इस परियोजना के निर्माता इसके उपयोग से होने वाले किसी भी दुरुपयोग या क्षति के लिए उत्तरदायी नहीं हैं।
-
-## आभार
-
-यह परियोजना **[@T3SL4](https://github.com/T3SL4)** की **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** का एक फ़ोर्क है, जिन्होंने OTA से prop तक की निष्कर्षण पाइपलाइन का बीड़ा उठाया। यहाँ इसे इंस्टॉल करने योग्य मॉड्यूल के बजाय `.prop` फ़ाइलों को संग्रहीत और वितरित करने के लिए पुनर्गठित किया गया है। मूल कार्य का पूरा श्रेय इसके लेखक को जाता है।
+यह परियोजना **[@T3SL4](https://github.com/T3SL4)** द्वारा बनाई गई **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** का एक फ़ोर्क है, जिसने OTA-से-prop निष्कर्षण पाइपलाइन की शुरुआत की। मूल कार्य का पूरा श्रेय उसके लेखक को जाता है।
 
 ## संपर्क
 
@@ -136,10 +57,10 @@
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## लाइसेंस
+## License
 
-**GNU GPL-3.0-or-later** - [LICENSE](LICENSE) देखें। कॉपीलेफ़्ट: जो कोई संशोधित संस्करण वितरित करता है, उसे उसी शर्तों पर उसका स्रोत कोड उपलब्ध कराना होगा।
+**GNU GPL-3.0-or-later** - [LICENSE](LICENSE) देखें। कॉपीलेफ्ट: जो कोई भी संशोधित संस्करण वितरित करता है, उसे उसका स्रोत समान शर्तों के तहत उपलब्ध कराना होगा।
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

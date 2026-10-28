@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Extract and distribute the full Pixel `.prop` straight from Google's OTA images*
+*A browsable, auto-updated archive of real Pixel `.prop` files, straight from Google's OTA images*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Effortlessly extract and manage system properties from Pixel OTA updates with this robust automation suite. It extracts the full, organized `.prop` for each device straight from Google's official OTA images, then **stores and distributes those `.prop` files** - both versioned in the repository and published as release assets. No installable modules: just the properties.
+A versioned archive of each Pixel's full `build.prop`, extracted directly from Google's official OTA images and kept up to date automatically. Every device's `.prop` is stored in the repository and published as a release asset, ready to browse or download with no tooling required.
 
-## 🚀 Quick Start
+## 📥 Get a `.prop`
 
-### Prerequisites
+Two ways, no setup needed:
 
-- **Unix-like environment**: Linux or macOS with Bash.
-- **Core utilities**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Browse the repository**: open [`props/<codename>/`](props/) and pick `<codename>_<build_id>.prop`.
+- **Download from Releases**: grab the file from the latest [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (tagged `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Each `.prop` is the full, organized set of build properties for that exact device and build (product, vendor, odm, system, system_ext, system_dlkm and more).
 
-## Installation
+## 🔧 Build it yourself
 
-1. **Clone the repository**:
+To extract a `.prop` locally instead of downloading it, you need a Unix-like environment (Linux or macOS with Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, and Python ≥3.8 with `payload_dumper`. `requirements.sh` installs the dependencies across most package managers (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Create and activate a virtual environment** (optional but recommended):
+Supported devices are the factory and OTA images on [Google Android Images](https://developers.google.com/android/images) and the [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). Extraction reads each payload partition one at a time (low memory) and handles EROFS, ext4, sparse and boot/init_boot images.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **Install dependencies**:
+A GitHub Actions pipeline (`.github/workflows/build.yml`) keeps the archive current:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Runs weekly, and on demand via `workflow_dispatch` with a space-separated device list or `all`; each device builds in parallel.
+- Extracts the `.prop`, commits new ones under `props/<codename>/`, and publishes them as assets under a single daily tag (`build-YYYYMMDD`).
+- Skips `.prop` files already released and notifies Telegram with clickable download links.
 
-## Usage
-
-### Local
-
-1. **Fetch the latest OTA images**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Examples:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### Supported devices at the desired factory or OTA images from [Google Android Images](https://developers.google.com/android/images) or the [Beta OTA Pages](https://developer.android.com/about/versions/17/download-ota).
-
-2. **Extract images and collect the `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    This automatically:
-    - Extracts payload.bin partitions one-at-a-time (low memory footprint)
-    - Detects and handles **EROFS**, **ext4**, **sparse**, and **boot/init_boot** images
-    - Builds the full, organized `.prop` from every partition's build.prop
-    - Saves it to `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-The repository includes a fully automated CI pipeline (`.github/workflows/build.yml`):
-
-- **Scheduled builds**: Runs every Sunday at midnight UTC.
-- **Manual dispatch**: Trigger via `workflow_dispatch` with a space-separated device list or `all`.
-- **Matrix builds**: Each device builds in parallel.
-- **Duplicate prevention**: Skips `.prop` files already present in existing releases.
-- **Versioned in the repo**: New `.prop` files are committed under `props/<codename>/`.
-- **Aggregated releases**: All new `.prop` files are published under a single daily tag (`build-YYYYMMDD`).
-- **Telegram notifications**: Sends a formatted message with clickable download links.
-
-#### Required Secrets
-
-| Secret | Description |
-|--------|-------------|
-| `TELEGRAM_BOT_TOKEN` | Your Telegram bot token from [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | Target chat ID (user, group, or channel) |
-
-## ✨ Key Features
-
-- **Automated OTA Acquisition**: Downloads the latest builds directly from Google's official sources.
-- **Modern Filesystem Support**: Handles EROFS, ext4, sparse images, and boot/init_boot ramdisks.
-- **Full `.prop` Generation**: Builds a single, organized `.prop` per device from every partition's build.prop (product, vendor, odm, system, system_ext, system_dlkm and more).
-- **Memory-Efficient Extraction**: Payload partitions are dumped one-at-a-time to avoid OOM on large OTAs.
-- **Cross-Platform Package Management**: `requirements.sh` supports apt, pacman, dnf, yum, zypper, apk, xbps, brew, and Termux.
-- **Storage and Distribution**:
-  - **In the repository**: each `.prop` is committed under `props/<codename>/`, versioned and browsable.
-  - **As release assets**: each `.prop` is published under the daily release tag for direct download.
-- **GitHub Actions Integration**:
-  - **Scheduled Workflows**: Automate updates, extraction, and releases on a schedule.
-  - **Duplicate Release Prevention**: Prevents redundant releases by checking existing release assets.
-  - **Idempotent Releases**: Re-uploads to an existing daily release tag if re-triggered.
-  - **Telegram Notifications**: Receive timely updates with clickable download links.
-
-## 📝 Responsible Usage Guidelines
-
-This project is provided for educational and experimental purposes. While designed for efficiency, it's crucial to use this tool responsibly.
-
-- **Code Review**: Thoroughly review and understand the code before deploying it in any environment.
-- **Security Best Practices**: Adhere to industry standards for security and legal compliance.
-
-The creators of this project are not liable for any misuse or damages resulting from its use.
+Forks that run the pipeline need two secrets: `TELEGRAM_BOT_TOKEN` (from [@BotFather](https://t.me/BotFather)) and `TELEGRAM_CHAT_ID`.
 
 ## Acknowledgements
 
-This project is a fork of **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** by **[@T3SL4](https://github.com/T3SL4)**, which pioneered the OTA-to-prop extraction pipeline. It is reshaped here to store and distribute `.prop` files instead of installable modules. Full credit for the original work goes to its author.
+This project is a fork of **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** by **[@T3SL4](https://github.com/T3SL4)**, which pioneered the OTA-to-prop extraction pipeline. Full credit for the original work goes to its author.
 
 ## Contact
 
@@ -142,4 +63,4 @@ This project is a fork of **[Pixel-Props/build.prop](https://github.com/Pixel-Pr
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

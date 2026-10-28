@@ -2,130 +2,51 @@
 
 # Pixel Prop Builder
 
-*Extrahera och distribuera hela Pixels `.prop` direkt från Googles OTA-avbilder*
+*Ett bläddringsbart, automatiskt uppdaterat arkiv med riktiga Pixel-`.prop`-filer, direkt från Googles OTA-avbilder*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Extrahera och hantera enkelt systemegenskaper från Pixels OTA-uppdateringar med denna robusta automatiseringssvit. Den extraherar den fullständiga, organiserade `.prop` för varje enhet direkt från Googles officiella OTA-avbilder och **lagrar och distribuerar sedan dessa `.prop`-filer** - både versionshanterade i arkivet och publicerade som release-tillgångar. Inga installerbara moduler: bara egenskaperna.
+Ett versionshanterat arkiv med varje Pixels fullständiga `build.prop`, extraherat direkt från Googles officiella OTA-avbilder och automatiskt hållet uppdaterat. Varje enhets `.prop` lagras i förvaret och publiceras som en release-tillgång, redo att bläddra i eller ladda ner utan att några verktyg krävs.
 
-## 🚀 Snabbstart
+## 📥 Get a `.prop`
 
-### Förutsättningar
+Två sätt, ingen konfiguration behövs:
 
-- **Unix-liknande miljö**: Linux eller macOS med Bash.
-- **Grundläggande verktyg**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Bläddra i förvaret**: öppna [`props/<codename>/`](props/) och välj `<codename>_<build_id>.prop`.
+- **Ladda ner från Releases**: hämta filen från den senaste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (taggad `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Varje `.prop` är den fullständiga, organiserade uppsättningen byggegenskaper för exakt den enheten och den bygget (product, vendor, odm, system, system_ext, system_dlkm med mera).
 
-## Installation
+## 🔧 Build it yourself
 
-1. **Klona arkivet**:
+För att extrahera en `.prop` lokalt i stället för att ladda ner den behöver du en Unix-liknande miljö (Linux eller macOS med Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` och Python ≥3.8 med `payload_dumper`. `requirements.sh` installerar beroendena för de flesta pakethanterare (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Skapa och aktivera en virtuell miljö** (valfritt men rekommenderas):
+Stödda enheter är factory- och OTA-avbilderna på [Google Android Images](https://developers.google.com/android/images) och [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). Extraktionen läser varje payload-partition en i taget (lågt minnesbehov) och hanterar EROFS-, ext4-, sparse- och boot/init_boot-avbilder.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **Installera beroendena**:
+En GitHub Actions-pipeline (`.github/workflows/build.yml`) håller arkivet aktuellt:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Körs varje vecka och på begäran via `workflow_dispatch` med en mellanslagsseparerad enhetslista eller `all`; varje enhet byggs parallellt.
+- Extraherar `.prop`, committar nya under `props/<codename>/` och publicerar dem som tillgångar under en enda daglig tagg (`build-YYYYMMDD`).
+- Hoppar över `.prop`-filer som redan släppts och aviserar Telegram med klickbara nedladdningslänkar.
 
-## Användning
+Forkar som kör pipelinen behöver två hemligheter: `TELEGRAM_BOT_TOKEN` (från [@BotFather](https://t.me/BotFather)) och `TELEGRAM_CHAT_ID`.
 
-### Lokalt
+## Acknowledgements
 
-1. **Hämta de senaste OTA-avbilderna**:
+Det här projektet är en fork av **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** av **[@T3SL4](https://github.com/T3SL4)**, som var först med OTA-till-prop-extraktionspipelinen. All heder för det ursprungliga arbetet går till dess upphovsman.
 
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Exempel:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### Enheter som stöds i önskade fabriks- eller OTA-avbilder från [Google Android Images](https://developers.google.com/android/images) eller [Beta-OTA-sidorna](https://developer.android.com/about/versions/17/download-ota).
-
-2. **Extrahera avbilderna och samla in `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    Detta gör automatiskt:
-    - Extraherar partitionerna i payload.bin en i taget (låg minnesanvändning)
-    - Upptäcker och hanterar **EROFS**-, **ext4**-, **sparse**- och **boot/init_boot**-avbilder
-    - Bygger den fullständiga, organiserade `.prop` från varje partitions build.prop
-    - Sparar den i `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-Arkivet innehåller en helt automatiserad CI-pipeline (`.github/workflows/build.yml`):
-
-- **Schemalagda byggen**: körs varje söndag vid midnatt UTC.
-- **Manuell körning**: utlös via `workflow_dispatch` med en mellanslagsseparerad enhetslista eller `all`.
-- **Matrisbyggen**: varje enhet bearbetas parallellt.
-- **Dubblettförebyggande**: hoppar över `.prop`-filer som redan finns i befintliga utgåvor.
-- **Versionshanterade i arkivet**: nya `.prop`-filer committas under `props/<codename>/`.
-- **Samlade utgåvor**: alla nya `.prop`-filer publiceras under en enda daglig tagg (`build-YYYYMMDD`).
-- **Telegram-aviseringar**: skickar ett formaterat meddelande med klickbara nedladdningslänkar.
-
-#### Nödvändiga secrets
-
-| Secret | Beskrivning |
-|--------|-------------|
-| `TELEGRAM_BOT_TOKEN` | Din Telegram-bottoken från [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | ID för målchatten (användare, grupp eller kanal) |
-
-## ✨ Viktiga funktioner
-
-- **Automatiserad OTA-hämtning**: laddar ner de senaste byggena direkt från Googles officiella källor.
-- **Stöd för moderna filsystem**: hanterar EROFS-, ext4-, sparse-avbilder och boot/init_boot-ramdiskar.
-- **Fullständig `.prop`-generering**: bygger en enda organiserad `.prop` per enhet från varje partitions build.prop (product, vendor, odm, system, system_ext, system_dlkm med flera).
-- **Minnessnål extrahering**: payload-partitioner dumpas en i taget för att undvika OOM på stora OTA:er.
-- **Plattformsoberoende pakethantering**: `requirements.sh` stöder apt, pacman, dnf, yum, zypper, apk, xbps, brew och Termux.
-- **Lagring och distribution**:
-  - **I arkivet**: varje `.prop` committas under `props/<codename>/`, versionshanterad och utforskbar.
-  - **Som release-tillgångar**: varje `.prop` publiceras under den dagliga taggen för direkt nedladdning.
-- **GitHub Actions-integrering**:
-  - **Schemalagda arbetsflöden**: automatiserar uppdateringar, extrahering och utgåvor enligt ett schema.
-  - **Förebyggande av dubbletter av utgåvor**: undviker överflödiga utgåvor genom att kontrollera befintliga utgåvors tillgångar.
-  - **Idempotenta utgåvor**: laddar upp på nytt till en befintlig daglig utgåvetagg om körningen upprepas.
-  - **Telegram-aviseringar**: få aktuella uppdateringar med klickbara nedladdningslänkar.
-
-## 📝 Riktlinjer för ansvarsfull användning
-
-Detta projekt tillhandahålls för utbildnings- och experimentsyften. Även om det är utformat för effektivitet är det avgörande att använda detta verktyg ansvarsfullt.
-
-- **Kodgranskning**: granska och förstå koden noggrant innan du distribuerar den i någon miljö.
-- **Bästa säkerhetspraxis**: följ branschstandarder för säkerhet och rättslig efterlevnad.
-
-Skaparna av detta projekt ansvarar inte för eventuellt missbruk eller skador som uppstår till följd av dess användning.
-
-## Tack
-
-Detta projekt är en fork av **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** av **[@T3SL4](https://github.com/T3SL4)**, som var först med extraktionspipelinen från OTA till prop. Här är den omformad för att lagra och distribuera `.prop`-filer i stället för installerbara moduler. All heder för det ursprungliga arbetet går till dess upphovsman.
-
-## Kontakt
+## Contact
 
 - https://victorgabriel.dev
 - **GitHub:** @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
@@ -136,10 +57,10 @@ Detta projekt är en fork av **[Pixel-Props/build.prop](https://github.com/Pixel
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## Licens
+## License
 
-**GNU GPL-3.0-or-later** - se [LICENSE](LICENSE). Copyleft: den som distribuerar en modifierad version måste erbjuda dess källkod på samma villkor.
+**GNU GPL-3.0-or-later** - se [LICENSE](LICENSE). Copyleft: den som distribuerar en modifierad version måste erbjuda dess källkod under samma villkor.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

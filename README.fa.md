@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*`.prop` کامل پیکسل را مستقیماً از ایمیج‌های OTA گوگل استخراج و توزیع کنید*
+*یک آرشیو قابل مرور و به‌روزرسانی‌شونده‌ی خودکار از فایل‌های واقعی `.prop` دستگاه‌های Pixel، مستقیماً از ایمیج‌های OTA گوگل*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-با این مجموعه‌ابزار خودکارسازی قدرتمند، ویژگی‌های سیستم را به‌سادگی از به‌روزرسانی‌های OTA پیکسل استخراج و مدیریت کنید. این ابزار `.prop` کامل و منظم هر دستگاه را مستقیماً از ایمیج‌های OTA رسمی گوگل استخراج می‌کند و سپس **آن فایل‌های `.prop` را ذخیره و توزیع می‌کند** - هم در مخزن نسخه‌بندی‌شده و هم به‌صورت دارایی‌های ریلیز منتشرشده. بدون ماژول قابل‌نصب: فقط ویژگی‌ها.
+یک آرشیو نسخه‌بندی‌شده از `build.prop` کامل هر دستگاه Pixel، که مستقیماً از ایمیج‌های رسمی OTA گوگل استخراج شده و به‌صورت خودکار به‌روز نگه داشته می‌شود. فایل `.prop` هر دستگاه در مخزن ذخیره می‌شود و به‌عنوان دارایی یک release منتشر می‌گردد، آماده‌ی مرور یا دانلود بدون نیاز به هیچ ابزاری.
 
-## 🚀 شروع سریع
+## 📥 Get a `.prop`
 
-### پیش‌نیازها
+دو راه، بدون نیاز به هیچ راه‌اندازی:
 
-- **محیط شبه‌یونیکس**: لینوکس یا macOS همراه با Bash.
-- **ابزارهای اصلی**:
-  - `zip`، `unzip`، `p7zip-full`
-  - `dos2unix`، `aria2`، `curl`
-  - `e2fsprogs`، `erofs-utils`، `lz4`، `cpio`
-  - `xxd`، `jq`
-- **Python ≥3.8**:
+- **مرور مخزن**: [`props/<codename>/`](props/) را باز کنید و `<codename>_<build_id>.prop` را انتخاب کنید.
+- **دانلود از Releases**: فایل را از آخرین [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (با برچسب `build-YYYYMMDD`) بگیرید.
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+هر `.prop` مجموعه‌ی کامل و سازمان‌یافته‌ی ویژگی‌های build برای همان دستگاه و build دقیق است (product، vendor، odm، system، system_ext، system_dlkm و بیشتر).
 
-## نصب
+## 🔧 Build it yourself
 
-1. **مخزن را کلون کنید**:
+برای استخراج یک `.prop` به‌صورت محلی به‌جای دانلود آن، به یک محیط شبه‌Unix (لینوکس یا macOS با Bash) به‌همراه `p7zip-full`، `e2fsprogs`، `erofs-utils`، `lz4`، `cpio`، `dos2unix`، `aria2`، `curl`، `xxd`، `jq` و Python ≥3.8 با `payload_dumper` نیاز دارید. `requirements.sh` وابستگی‌ها را در بیشتر مدیران بسته نصب می‌کند (apt، pacman، dnf، yum، zypper، apk، xbps، brew، Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **یک محیط مجازی ایجاد و فعال کنید** (اختیاری اما توصیه‌شده):
+دستگاه‌های پشتیبانی‌شده همان ایمیج‌های factory و OTA در [Google Android Images](https://developers.google.com/android/images) و [صفحات Beta OTA](https://developer.android.com/about/versions/17/download-ota) هستند. استخراج هر پارتیشن payload را یکی‌یکی می‌خواند (مصرف حافظه‌ی کم) و ایمیج‌های EROFS، ext4، sparse و boot/init_boot را مدیریت می‌کند.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **وابستگی‌ها را نصب کنید**:
+یک خط‌لوله‌ی GitHub Actions (`.github/workflows/build.yml`) آرشیو را به‌روز نگه می‌دارد:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- به‌صورت هفتگی اجرا می‌شود و به‌صورت درخواستی از طریق `workflow_dispatch` با فهرستی از دستگاه‌ها که با فاصله جدا شده‌اند یا `all`؛ هر دستگاه به‌صورت موازی build می‌شود.
+- `.prop` را استخراج می‌کند، موارد جدید را زیر `props/<codename>/` کامیت می‌کند و آن‌ها را به‌عنوان دارایی‌ها زیر یک برچسب روزانه‌ی واحد (`build-YYYYMMDD`) منتشر می‌کند.
+- از فایل‌های `.prop` که قبلاً منتشر شده‌اند صرف‌نظر می‌کند و تلگرام را با لینک‌های دانلود قابل‌کلیک مطلع می‌سازد.
 
-## استفاده
+فورک‌هایی که این خط‌لوله را اجرا می‌کنند به دو secret نیاز دارند: `TELEGRAM_BOT_TOKEN` (از [@BotFather](https://t.me/BotFather)) و `TELEGRAM_CHAT_ID`.
 
-### محلی
+## Acknowledgements
 
-1. **جدیدترین ایمیج‌های OTA را دریافت کنید**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    نمونه‌ها:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### دستگاه‌های پشتیبانی‌شده در ایمیج‌های کارخانه یا OTA دلخواه از [Google Android Images](https://developers.google.com/android/images) یا [صفحات OTA بتا](https://developer.android.com/about/versions/17/download-ota).
-
-2. **ایمیج‌ها را استخراج و `.prop` را جمع‌آوری کنید**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    این کار به‌طور خودکار:
-    - پارتیشن‌های payload.bin را یکی‌یکی استخراج می‌کند (مصرف حافظه کم)
-    - ایمیج‌های **EROFS**، **ext4**، **sparse** و **boot/init_boot** را تشخیص داده و پردازش می‌کند
-    - `.prop` کامل و منظم را از build.prop هر پارتیشن می‌سازد
-    - آن را در `props/<codename>/<codename>_<build_id>.prop` ذخیره می‌کند
-
-### GitHub Actions
-
-این مخزن شامل یک خط‌لولهٔ CI کاملاً خودکار است (`.github/workflows/build.yml`):
-
-- **ساخت‌های زمان‌بندی‌شده**: هر یکشنبه نیمه‌شب به وقت UTC اجرا می‌شوند.
-- **اجرای دستی**: از طریق `workflow_dispatch` با فهرست دستگاه‌های جداشده با فاصله یا `all` اجرا کنید.
-- **ساخت‌های ماتریسی**: هر دستگاه به‌صورت موازی پردازش می‌شود.
-- **جلوگیری از تکرار**: فایل‌های `.prop` که از قبل در ریلیزهای موجود هستند را رد می‌کند.
-- **نسخه‌بندی در مخزن**: فایل‌های `.prop` جدید در `props/<codename>/` کامیت می‌شوند.
-- **ریلیزهای تجمیعی**: همهٔ فایل‌های `.prop` جدید زیر یک برچسب روزانهٔ واحد (`build-YYYYMMDD`) منتشر می‌شوند.
-- **اعلان‌های تلگرام**: پیامی قالب‌بندی‌شده همراه با پیوندهای دانلود قابل‌کلیک ارسال می‌کند.
-
-#### سیکرت‌های موردنیاز
-
-| سیکرت | توضیح |
-|-------|-------|
-| `TELEGRAM_BOT_TOKEN` | توکن ربات تلگرام شما از [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | شناسهٔ چت مقصد (کاربر، گروه یا کانال) |
-
-## ✨ ویژگی‌های کلیدی
-
-- **دریافت خودکار OTA**: جدیدترین build‌ها را مستقیماً از منابع رسمی گوگل دانلود می‌کند.
-- **پشتیبانی از سیستم‌فایل‌های امروزی**: ایمیج‌های EROFS، ext4، sparse و ramdisk‌های boot/init_boot را پردازش می‌کند.
-- **تولید `.prop` کامل**: برای هر دستگاه یک `.prop` منظم واحد از build.prop هر پارتیشن می‌سازد (product، vendor، odm، system، system_ext، system_dlkm و موارد دیگر).
-- **استخراج کم‌مصرف از نظر حافظه**: پارتیشن‌های payload یکی‌یکی تخلیه می‌شوند تا از OOM در OTAهای بزرگ جلوگیری شود.
-- **مدیریت بسته‌های چندسکویی**: `requirements.sh` از apt، pacman، dnf، yum، zypper، apk، xbps، brew و Termux پشتیبانی می‌کند.
-- **ذخیره‌سازی و توزیع**:
-  - **در مخزن**: هر `.prop` در `props/<codename>/` کامیت می‌شود، نسخه‌بندی‌شده و قابل مرور.
-  - **به‌عنوان دارایی ریلیز**: هر `.prop` برای دانلود مستقیم زیر برچسب روزانه منتشر می‌شود.
-- **یکپارچگی با GitHub Actions**:
-  - **گردش‌کارهای زمان‌بندی‌شده**: به‌روزرسانی‌ها، استخراج و ریلیزها را بر پایهٔ یک زمان‌بندی خودکار می‌کند.
-  - **جلوگیری از ریلیز تکراری**: با بررسی دارایی‌های ریلیزهای موجود، از ریلیزهای زائد جلوگیری می‌کند.
-  - **ریلیزهای خودتوان (idempotent)**: در صورت اجرای مجدد، دوباره در برچسب ریلیز روزانهٔ موجود بارگذاری می‌کند.
-  - **اعلان‌های تلگرام**: به‌روزرسانی‌های به‌هنگام همراه با پیوندهای دانلود قابل‌کلیک دریافت کنید.
-
-## 📝 رهنمودهای استفادهٔ مسئولانه
-
-این پروژه برای مقاصد آموزشی و آزمایشی ارائه شده است. با وجود اینکه برای کارایی طراحی شده، استفادهٔ مسئولانه از این ابزار بسیار مهم است.
-
-- **بازبینی کد**: پیش از به‌کارگیری در هر محیطی، کد را به‌دقت بازبینی و درک کنید.
-- **بهترین شیوه‌های امنیتی**: به استانداردهای صنعتی امنیت و رعایت قانونی پایبند باشید.
-
-سازندگان این پروژه مسئول هیچ‌گونه سوءاستفاده یا خساراتی که از کاربرد آن ناشی شود نیستند.
-
-## قدردانی
-
-این پروژه یک فورک از **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** ساختهٔ **[@T3SL4](https://github.com/T3SL4)** است که پیشگام خط‌لولهٔ استخراج از OTA به prop بود. در اینجا بازطراحی شده تا به‌جای ماژول‌های قابل‌نصب، فایل‌های `.prop` را ذخیره و توزیع کند. تمام اعتبار کار اصلی از آنِ نویسندهٔ آن است.
+این پروژه یک فورک از **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** ساخته‌ی **[@T3SL4](https://github.com/T3SL4)** است، که خط‌لوله‌ی استخراج OTA-به-prop را پایه‌گذاری کرد. تمام اعتبار کار اصلی به نویسنده‌ی آن تعلق دارد.
 
 ## تماس
 
@@ -136,10 +57,10 @@
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## مجوز
+## License
 
-**GNU GPL-3.0-or-later** - به [LICENSE](LICENSE) مراجعه کنید. کپی‌لفت: هرکس نسخهٔ تغییریافته‌ای را توزیع کند باید کد منبع آن را با همان شرایط ارائه دهد.
+**GNU GPL-3.0-or-later** - به [LICENSE](LICENSE) مراجعه کنید. کپی‌لفت: هر کسی که نسخه‌ای تغییریافته را توزیع می‌کند باید سورس آن را تحت همان شرایط ارائه دهد.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

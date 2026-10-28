@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Pixel'in tam `.prop` dosyasını doğrudan Google'ın OTA imajlarından çıkar ve dağıt*
+*Gerçek Pixel `.prop` dosyalarının, doğrudan Google'ın OTA imajlarından alınan, göz atılabilir ve otomatik güncellenen bir arşivi*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Bu sağlam otomasyon paketiyle Pixel OTA güncellemelerinden sistem özelliklerini zahmetsizce çıkarın ve yönetin. Her cihazın tam ve düzenli `.prop` dosyasını doğrudan Google'ın resmi OTA imajlarından çıkarır, ardından **bu `.prop` dosyalarını saklar ve dağıtır** - hem depoda sürümlenmiş hem de release asset'i olarak yayımlanmış. Kurulabilir modül yok: yalnızca özellikler.
+Her Pixel'in tam `build.prop` dosyasının, doğrudan Google'ın resmi OTA imajlarından çıkarılan ve otomatik olarak güncel tutulan sürümlenmiş bir arşivi. Her cihazın `.prop` dosyası depoda saklanır ve bir sürüm varlığı olarak yayımlanır; hiçbir araç gerektirmeden göz atmaya veya indirmeye hazırdır.
 
-## 🚀 Hızlı Başlangıç
+## 📥 Bir `.prop` edinin
 
-### Önkoşullar
+İki yol, kuruluma gerek yok:
 
-- **Unix benzeri ortam**: Bash ile Linux veya macOS.
-- **Temel araçlar**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Depoya göz atın**: [`props/<codename>/`](props/) dizinini açın ve `<codename>_<build_id>.prop` dosyasını seçin.
+- **Sürümlerden indirin**: dosyayı en son [sürümden](https://github.com/VictorGabriel7Dev/build.prop/releases) alın (`build-YYYYMMDD` etiketli).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Her `.prop`, tam olarak o cihaz ve derleme için eksiksiz, düzenlenmiş derleme özellikleri kümesidir (product, vendor, odm, system, system_ext, system_dlkm ve daha fazlası).
 
-## Kurulum
+## 🔧 Kendiniz derleyin
 
-1. **Depoyu klonlayın**:
+Bir `.prop` dosyasını indirmek yerine yerel olarak çıkarmak için, Unix benzeri bir ortama (Bash ile Linux veya macOS) ve ayrıca `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` ve `payload_dumper` ile Python ≥3.8 sürümüne ihtiyacınız vardır. `requirements.sh` bağımlılıkları çoğu paket yöneticisinde kurar (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Bir sanal ortam oluşturun ve etkinleştirin** (isteğe bağlı ama önerilir):
+Desteklenen cihazlar, [Google Android Images](https://developers.google.com/android/images) ve [Beta OTA sayfalarındaki](https://developer.android.com/about/versions/17/download-ota) fabrika ve OTA imajlarıdır. Çıkarma işlemi her payload bölümünü teker teker okur (düşük bellek) ve EROFS, ext4, sparse ve boot/init_boot imajlarını işler.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Otomasyon
 
-3. **Bağımlılıkları yükleyin**:
+Bir GitHub Actions ardışık düzeni (`.github/workflows/build.yml`) arşivi güncel tutar:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Haftalık olarak ve istek üzerine `workflow_dispatch` aracılığıyla boşlukla ayrılmış bir cihaz listesi veya `all` ile çalışır; her cihaz paralel olarak derlenir.
+- `.prop` dosyasını çıkarır, yenilerini `props/<codename>/` altına commitler ve bunları tek bir günlük etiket (`build-YYYYMMDD`) altında varlık olarak yayımlar.
+- Zaten yayımlanmış `.prop` dosyalarını atlar ve tıklanabilir indirme bağlantılarıyla Telegram'ı bilgilendirir.
 
-## Kullanım
-
-### Yerel
-
-1. **En son OTA görüntülerini indirin**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Örnekler:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### [Google Android Images](https://developers.google.com/android/images) veya [Beta OTA sayfalarındaki](https://developer.android.com/about/versions/17/download-ota) istenen fabrika ya da OTA görüntülerinde desteklenen cihazlar.
-
-2. **Görüntüleri çıkarın ve `.prop` dosyasını toplayın**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    Bu otomatik olarak:
-    - payload.bin bölümlerini birer birer çıkarır (düşük bellek kullanımı)
-    - **EROFS**, **ext4**, **sparse** ve **boot/init_boot** görüntülerini algılar ve işler
-    - Her bölümün build.prop dosyasından tam ve düzenli `.prop` oluşturur
-    - Onu `props/<codename>/<codename>_<build_id>.prop` konumuna kaydeder
-
-### GitHub Actions
-
-Depo, tamamen otomatik bir CI işlem hattı içerir (`.github/workflows/build.yml`):
-
-- **Zamanlanmış derlemeler**: her Pazar gece yarısı UTC'de çalışır.
-- **Manuel tetikleme**: boşlukla ayrılmış bir cihaz listesi veya `all` ile `workflow_dispatch` üzerinden tetikleyin.
-- **Matris derlemeleri**: her cihaz paralel olarak işlenir.
-- **Yinelenme önleme**: mevcut sürümlerde zaten bulunan `.prop` dosyalarını atlar.
-- **Depoda sürümlenir**: yeni `.prop` dosyaları `props/<codename>/` altına commit'lenir.
-- **Toplu sürümler**: tüm yeni `.prop` dosyaları tek bir günlük etiket (`build-YYYYMMDD`) altında yayımlanır.
-- **Telegram bildirimleri**: tıklanabilir indirme bağlantıları içeren biçimlendirilmiş bir mesaj gönderir.
-
-#### Gerekli secret'lar
-
-| Secret | Açıklama |
-|--------|----------|
-| `TELEGRAM_BOT_TOKEN` | [@BotFather](https://t.me/BotFather) üzerinden alınan Telegram bot token'ınız |
-| `TELEGRAM_CHAT_ID` | Hedef sohbet kimliği (kullanıcı, grup veya kanal) |
-
-## ✨ Temel Özellikler
-
-- **Otomatik OTA edinimi**: en son derlemeleri doğrudan Google'ın resmi kaynaklarından indirir.
-- **Modern dosya sistemi desteği**: EROFS, ext4, sparse görüntülerini ve boot/init_boot ramdisk'lerini işler.
-- **Tam `.prop` oluşturma**: her bölümün build.prop dosyasından cihaz başına tek, düzenli bir `.prop` oluşturur (product, vendor, odm, system, system_ext, system_dlkm ve daha fazlası).
-- **Bellek açısından verimli çıkarma**: büyük OTA'larda OOM'u önlemek için payload bölümleri birer birer dökülür.
-- **Çapraz platform paket yönetimi**: `requirements.sh`; apt, pacman, dnf, yum, zypper, apk, xbps, brew ve Termux'u destekler.
-- **Depolama ve dağıtım**:
-  - **Depoda**: her `.prop`, `props/<codename>/` altına commit'lenir, sürümlenir ve göz atılabilir.
-  - **Release asset'i olarak**: her `.prop`, doğrudan indirme için günlük etiket altında yayımlanır.
-- **GitHub Actions entegrasyonu**:
-  - **Zamanlanmış iş akışları**: güncellemeleri, çıkarmayı ve sürümleri bir programa göre otomatikleştirir.
-  - **Yinelenen sürüm önleme**: mevcut sürüm asset'lerini kontrol ederek gereksiz sürümleri önler.
-  - **İdempotent sürümler**: yeniden tetiklenirse mevcut bir günlük sürüm etiketine yeniden yükler.
-  - **Telegram bildirimleri**: tıklanabilir indirme bağlantılarıyla zamanında güncellemeler alın.
-
-## 📝 Sorumlu Kullanım Yönergeleri
-
-Bu proje eğitim ve deneysel amaçlarla sağlanmaktadır. Verimlilik için tasarlanmış olsa da bu aracı sorumlu bir şekilde kullanmak çok önemlidir.
-
-- **Kod incelemesi**: kodu herhangi bir ortamda dağıtmadan önce iyice inceleyin ve anlayın.
-- **En iyi güvenlik uygulamaları**: güvenlik ve yasal uyumluluk için sektör standartlarına uyun.
-
-Bu projenin yaratıcıları, kötüye kullanımdan veya kullanımından doğan zararlardan sorumlu değildir.
+Ardışık düzeni çalıştıran çatalların iki gizli değere ihtiyacı vardır: `TELEGRAM_BOT_TOKEN` ([@BotFather](https://t.me/BotFather) üzerinden) ve `TELEGRAM_CHAT_ID`.
 
 ## Teşekkürler
 
-Bu proje, OTA'dan prop'a çıkarma işlem hattına öncülük eden **[@T3SL4](https://github.com/T3SL4)** tarafından geliştirilen **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** projesinin bir fork'udur. Burada, kurulabilir modüller yerine `.prop` dosyalarını saklamak ve dağıtmak için yeniden şekillendirilmiştir. Orijinal çalışmanın tüm kredisi yazarına aittir.
+Bu proje, OTA'dan prop'a çıkarma ardışık düzenine öncülük eden **[@T3SL4](https://github.com/T3SL4)** tarafından geliştirilen **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** projesinin bir çatalıdır. Orijinal çalışmanın tüm övgüsü yazarına aittir.
 
 ## İletişim
 
@@ -138,8 +59,8 @@ Bu proje, OTA'dan prop'a çıkarma işlem hattına öncülük eden **[@T3SL4](ht
 
 ## Lisans
 
-**GNU GPL-3.0-or-later** - bkz. [LICENSE](LICENSE). Copyleft: değiştirilmiş bir sürümü dağıtan herkes, kaynak kodunu aynı koşullarda sunmalıdır.
+**GNU GPL-3.0-or-later** - bkz. [LICENSE](LICENSE). Copyleft: değiştirilmiş bir sürümü dağıtan herkes, kaynağını aynı koşullar altında sunmak zorundadır.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

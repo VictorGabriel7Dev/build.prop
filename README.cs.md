@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Extrahujte a distribuujte kompletní `.prop` Pixelu přímo z OTA obrazů Googlu*
+*Procházitelný, automaticky aktualizovaný archiv skutečných souborů `.prop` pro Pixel, přímo z OTA obrazů Googlu*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Bez námahy extrahujte a spravujte systémové vlastnosti z OTA aktualizací Pixelu pomocí této robustní automatizační sady. Extrahuje kompletní, uspořádaný `.prop` každého zařízení přímo z oficiálních OTA obrazů Googlu a poté **tyto soubory `.prop` ukládá a distribuuje** - jak verzované v repozitáři, tak publikované jako aktiva vydání. Žádné instalovatelné moduly: jen vlastnosti.
+Verzovaný archiv kompletního `build.prop` každého Pixelu, extrahovaný přímo z oficiálních OTA obrazů Googlu a automaticky udržovaný aktuální. Soubor `.prop` každého zařízení je uložen v repozitáři a publikován jako příloha vydání, připravený k procházení nebo stažení bez jakýchkoli nástrojů.
 
-## 🚀 Rychlý start
+## 📥 Získat `.prop`
 
-### Předpoklady
+Dva způsoby, bez nutnosti nastavení:
 
-- **Prostředí typu Unix**: Linux nebo macOS s Bash.
-- **Základní nástroje**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Procházet repozitář**: otevřete [`props/<codename>/`](props/) a vyberte `<codename>_<build_id>.prop`.
+- **Stáhnout z vydání**: získejte soubor z nejnovějšího [vydání](https://github.com/VictorGabriel7Dev/build.prop/releases) (se značkou `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Každý `.prop` je kompletní, uspořádaná sada vlastností sestavení pro přesně dané zařízení a sestavení (product, vendor, odm, system, system_ext, system_dlkm a další).
 
-## Instalace
+## 🔧 Sestavit svépomocí
 
-1. **Naklonujte repozitář**:
+Chcete-li extrahovat `.prop` lokálně místo jeho stažení, potřebujete prostředí podobné Unixu (Linux nebo macOS s Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` a Python ≥3.8 s `payload_dumper`. `requirements.sh` nainstaluje závislosti ve většině správců balíčků (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Vytvořte a aktivujte virtuální prostředí** (volitelné, ale doporučené):
+Podporovaná zařízení jsou tovární a OTA obrazy na [Google Android Images](https://developers.google.com/android/images) a [stránkách Beta OTA](https://developer.android.com/about/versions/17/download-ota). Extrakce čte každý oddíl payloadu po jednom (nízká spotřeba paměti) a zpracovává obrazy EROFS, ext4, sparse a boot/init_boot.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automatizace
 
-3. **Nainstalujte závislosti**:
+Pipeline GitHub Actions (`.github/workflows/build.yml`) udržuje archiv aktuální:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Běží týdně a na vyžádání přes `workflow_dispatch` se seznamem zařízení odděleným mezerami nebo `all`; každé zařízení se sestavuje paralelně.
+- Extrahuje `.prop`, commituje nové soubory do `props/<codename>/` a publikuje je jako přílohy pod jednou denní značkou (`build-YYYYMMDD`).
+- Přeskakuje soubory `.prop`, které již byly vydány, a upozorňuje Telegram s klikatelnými odkazy ke stažení.
 
-## Použití
-
-### Lokálně
-
-1. **Stáhněte nejnovější OTA obrazy**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Příklady:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### Podporovaná zařízení v požadovaných továrních nebo OTA obrazech z [Google Android Images](https://developers.google.com/android/images) nebo [stránek Beta OTA](https://developer.android.com/about/versions/17/download-ota).
-
-2. **Extrahujte obrazy a shromážděte `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    Toto automaticky:
-    - Extrahuje oddíly payload.bin po jednom (nízká paměťová náročnost)
-    - Rozpozná a zpracuje obrazy **EROFS**, **ext4**, **sparse** a **boot/init_boot**
-    - Sestaví kompletní, uspořádaný `.prop` z build.prop každého oddílu
-    - Uloží jej do `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-Repozitář obsahuje plně automatizovanou CI pipeline (`.github/workflows/build.yml`):
-
-- **Naplánované buildy**: běží každou neděli o půlnoci UTC.
-- **Ruční spuštění**: spusťte přes `workflow_dispatch` se seznamem zařízení odděleným mezerami nebo `all`.
-- **Maticové buildy**: každé zařízení se zpracovává paralelně.
-- **Prevence duplicit**: přeskakuje soubory `.prop`, které už jsou v existujících vydáních.
-- **Verzováno v repozitáři**: nové soubory `.prop` se commitují do `props/<codename>/`.
-- **Agregovaná vydání**: všechny nové soubory `.prop` se publikují pod jedním denním tagem (`build-YYYYMMDD`).
-- **Oznámení Telegramu**: odešle formátovanou zprávu s klikacími odkazy ke stažení.
-
-#### Potřebné secrets
-
-| Secret | Popis |
-|--------|-------|
-| `TELEGRAM_BOT_TOKEN` | Token vašeho Telegram bota od [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | ID cílového chatu (uživatel, skupina nebo kanál) |
-
-## ✨ Klíčové funkce
-
-- **Automatizované získávání OTA**: stahuje nejnovější buildy přímo z oficiálních zdrojů Googlu.
-- **Podpora moderních souborových systémů**: zpracovává obrazy EROFS, ext4, sparse a ramdisky boot/init_boot.
-- **Generování kompletního `.prop`**: sestaví jeden uspořádaný `.prop` na zařízení z build.prop každého oddílu (product, vendor, odm, system, system_ext, system_dlkm a dalších).
-- **Paměťově úsporná extrakce**: oddíly payloadu se vypisují po jednom, aby se předešlo OOM u velkých OTA.
-- **Multiplatformní správa balíčků**: `requirements.sh` podporuje apt, pacman, dnf, yum, zypper, apk, xbps, brew a Termux.
-- **Ukládání a distribuce**:
-  - **V repozitáři**: každý `.prop` se commituje do `props/<codename>/`, verzovaný a procházitelný.
-  - **Jako aktiva vydání**: každý `.prop` se publikuje pod denním tagem pro přímé stažení.
-- **Integrace s GitHub Actions**:
-  - **Naplánované workflow**: automatizují aktualizace, extrakci a vydání podle plánu.
-  - **Prevence duplicitních vydání**: zabraňuje nadbytečným vydáním kontrolou aktiv existujících vydání.
-  - **Idempotentní vydání**: při opětovném spuštění znovu nahraje do existujícího denního tagu vydání.
-  - **Oznámení Telegramu**: dostávejte včasné aktualizace s klikacími odkazy ke stažení.
-
-## 📝 Zásady odpovědného používání
-
-Tento projekt je poskytován pro vzdělávací a experimentální účely. I když je navržen pro efektivitu, je zásadní používat tento nástroj odpovědně.
-
-- **Revize kódu**: před nasazením v jakémkoli prostředí si kód důkladně prostudujte a pochopte jej.
-- **Osvědčené bezpečnostní postupy**: dodržujte oborové standardy bezpečnosti a právní shody.
-
-Tvůrci tohoto projektu nenesou odpovědnost za jakékoli zneužití nebo škody vzniklé jeho použitím.
+Forky, které spouštějí pipeline, potřebují dvě tajemství: `TELEGRAM_BOT_TOKEN` (od [@BotFather](https://t.me/BotFather)) a `TELEGRAM_CHAT_ID`.
 
 ## Poděkování
 
-Tento projekt je fork **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** od **[@T3SL4](https://github.com/T3SL4)**, který stál u zrodu pipeline pro extrakci z OTA do prop. Zde je přepracován tak, aby ukládal a distribuoval soubory `.prop` místo instalovatelných modulů. Veškerá zásluha za původní práci patří jejímu autorovi.
+Tento projekt je fork **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** od **[@T3SL4](https://github.com/T3SL4)**, který jako první vytvořil pipeline pro extrakci prop z OTA. Veškeré uznání za původní práci patří jejímu autorovi.
 
 ## Kontakt
 
@@ -138,8 +59,8 @@ Tento projekt je fork **[Pixel-Props/build.prop](https://github.com/Pixel-Props/
 
 ## Licence
 
-**GNU GPL-3.0-or-later** - viz [LICENSE](LICENSE). Copyleft: kdo distribuuje upravenou verzi, musí nabídnout její zdrojový kód za stejných podmínek.
+**GNU GPL-3.0-or-later** - viz [LICENSE](LICENSE). Copyleft: každý, kdo distribuuje upravenou verzi, musí nabídnout její zdrojový kód za stejných podmínek.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

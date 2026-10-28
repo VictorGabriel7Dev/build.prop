@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*استخرج ووزّع ملف `.prop` الكامل لأجهزة Pixel مباشرةً من صور OTA من Google*
+*أرشيف قابل للتصفح ويُحدَّث تلقائياً لملفات `.prop` الحقيقية لأجهزة Pixel، مأخوذة مباشرة من صور OTA من Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-استخرج خصائص النظام من تحديثات OTA لأجهزة Pixel وأدِرها بسهولة باستخدام مجموعة الأتمتة القوية هذه. تستخرج ملف `.prop` الكامل والمنظّم لكل جهاز مباشرةً من صور OTA الرسمية من Google، ثم **تخزّن وتوزّع ملفات `.prop` تلك** - سواء بإصدارات مُدارة في المستودع أو منشورة كأصول للإصدارات. لا وحدات قابلة للتثبيت: الخصائص فقط.
+أرشيف مُصدَّر لملف `build.prop` الكامل لكل جهاز Pixel، مُستخرَج مباشرة من صور OTA الرسمية من Google ويُبقى مُحدَّثاً تلقائياً. يُخزَّن ملف `.prop` لكل جهاز في المستودع ويُنشَر كأصل ضمن release، جاهز للتصفح أو التنزيل دون الحاجة إلى أي أدوات.
 
-## 🚀 بداية سريعة
+## 📥 Get a `.prop`
 
-### المتطلبات المسبقة
+طريقتان، دون الحاجة إلى أي إعداد:
 
-- **بيئة شبيهة بيونكس**: لينكس أو macOS مع Bash.
-- **الأدوات الأساسية**:
-  - `zip`، `unzip`، `p7zip-full`
-  - `dos2unix`، `aria2`، `curl`
-  - `e2fsprogs`، `erofs-utils`، `lz4`، `cpio`
-  - `xxd`، `jq`
-- **Python ≥3.8**:
+- **تصفَّح المستودع**: افتح [`props/<codename>/`](props/) واختر `<codename>_<build_id>.prop`.
+- **نزِّل من Releases**: احصل على الملف من أحدث [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (الموسوم بـ `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+كل ملف `.prop` هو المجموعة الكاملة والمنظَّمة من خصائص build لذلك الجهاز وذلك الإصدار بالتحديد (product وvendor وodm وsystem وsystem_ext وsystem_dlkm وأكثر).
 
-## التثبيت
+## 🔧 Build it yourself
 
-1. **استنسخ المستودع**:
+لاستخراج ملف `.prop` محلياً بدلاً من تنزيله، تحتاج إلى بيئة شبيهة بـ Unix (Linux أو macOS مع Bash) بالإضافة إلى `p7zip-full` و`e2fsprogs` و`erofs-utils` و`lz4` و`cpio` و`dos2unix` و`aria2` و`curl` و`xxd` و`jq`، وPython ≥3.8 مع `payload_dumper`. يقوم `requirements.sh` بتثبيت التبعيات عبر معظم مديري الحزم (apt وpacman وdnf وyum وzypper وapk وxbps وbrew وTermux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **أنشئ بيئة افتراضية وفعّلها** (اختياري لكن يُنصح به):
+الأجهزة المدعومة هي صور factory وOTA الموجودة على [Google Android Images](https://developers.google.com/android/images) و[صفحات Beta OTA](https://developer.android.com/about/versions/17/download-ota). يقرأ الاستخراج كل قسم payload واحداً تلو الآخر (ذاكرة منخفضة) ويتعامل مع صور EROFS وext4 وsparse وboot/init_boot.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **ثبّت الاعتماديات**:
+يُبقي خط أنابيب GitHub Actions (`.github/workflows/build.yml`) الأرشيف محدَّثاً:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- يعمل أسبوعياً، وعند الطلب عبر `workflow_dispatch` بقائمة أجهزة مفصولة بمسافات أو `all`؛ يُبنى كل جهاز بالتوازي.
+- يستخرج ملف `.prop`، ويُودِع الملفات الجديدة ضمن `props/<codename>/`، وينشرها كأصول ضمن وسم يومي واحد (`build-YYYYMMDD`).
+- يتخطى ملفات `.prop` التي سبق إصدارها ويُخطر Telegram بروابط تنزيل قابلة للنقر.
 
-## الاستخدام
+تحتاج النسخ المتفرعة التي تشغّل خط الأنابيب إلى سرّين اثنين: `TELEGRAM_BOT_TOKEN` (من [@BotFather](https://t.me/BotFather)) و`TELEGRAM_CHAT_ID`.
 
-### محليًا
+## Acknowledgements
 
-1. **احصل على أحدث صور OTA**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    أمثلة:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### الأجهزة المدعومة في صور المصنع أو OTA المطلوبة من [Google Android Images](https://developers.google.com/android/images) أو [صفحات OTA التجريبية](https://developer.android.com/about/versions/17/download-ota).
-
-2. **استخرج الصور واجمع ملف `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    يقوم هذا تلقائيًا بما يلي:
-    - استخراج أقسام payload.bin واحدًا تلو الآخر (استهلاك منخفض للذاكرة)
-    - اكتشاف صور **EROFS** و**ext4** و**sparse** و**boot/init_boot** والتعامل معها
-    - بناء ملف `.prop` الكامل والمنظّم من build.prop لكل قسم
-    - حفظه في `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-يتضمّن المستودع خط أنابيب CI مؤتمتًا بالكامل (`.github/workflows/build.yml`):
-
-- **عمليات بناء مجدولة**: تعمل كل يوم أحد عند منتصف الليل بتوقيت UTC.
-- **تشغيل يدوي**: شغّله عبر `workflow_dispatch` بقائمة أجهزة مفصولة بمسافات أو `all`.
-- **بناء مصفوفي**: تتم معالجة كل جهاز بالتوازي.
-- **منع التكرار**: يتخطّى ملفات `.prop` الموجودة بالفعل في الإصدارات الحالية.
-- **مُدار بالإصدارات في المستودع**: تُسجَّل ملفات `.prop` الجديدة ضمن `props/<codename>/`.
-- **إصدارات مجمّعة**: تُنشر جميع ملفات `.prop` الجديدة تحت وسم يومي واحد (`build-YYYYMMDD`).
-- **إشعارات Telegram**: يرسل رسالة منسّقة تتضمّن روابط تنزيل قابلة للنقر.
-
-#### الأسرار المطلوبة
-
-| السر | الوصف |
-|------|-------|
-| `TELEGRAM_BOT_TOKEN` | رمز بوت Telegram الخاص بك من [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | معرّف الدردشة المستهدفة (مستخدم أو مجموعة أو قناة) |
-
-## ✨ الميزات الرئيسية
-
-- **الحصول التلقائي على OTA**: يُنزّل أحدث عمليات البناء مباشرةً من مصادر Google الرسمية.
-- **دعم أنظمة الملفات الحديثة**: يتعامل مع صور EROFS وext4 وsparse وramdisks الخاصة بـ boot/init_boot.
-- **توليد ملف `.prop` الكامل**: يبني ملف `.prop` منظّمًا واحدًا لكل جهاز من build.prop لكل قسم (product وvendor وodm وsystem وsystem_ext وsystem_dlkm وغيرها).
-- **استخراج موفّر للذاكرة**: تُفرَّغ أقسام payload واحدًا تلو الآخر لتجنّب نفاد الذاكرة (OOM) في ملفات OTA الكبيرة.
-- **إدارة حزم متعددة المنصات**: يدعم `requirements.sh` كلًّا من apt وpacman وdnf وyum وzypper وapk وxbps وbrew وTermux.
-- **التخزين والتوزيع**:
-  - **في المستودع**: يُسجَّل كل `.prop` ضمن `props/<codename>/`، مُدارًا بالإصدارات وقابلًا للتصفّح.
-  - **كأصول للإصدارات**: يُنشر كل `.prop` تحت الوسم اليومي للتنزيل المباشر.
-- **التكامل مع GitHub Actions**:
-  - **سير عمل مجدول**: يؤتمت التحديثات والاستخراج والإصدارات وفق جدول زمني.
-  - **منع الإصدارات المكررة**: يتجنّب الإصدارات الزائدة عبر فحص أصول الإصدارات الحالية.
-  - **إصدارات متكافئة (idempotent)**: يعيد الرفع إلى وسم إصدار يومي موجود عند إعادة التشغيل.
-  - **إشعارات Telegram**: تلقَّ تحديثات في الوقت المناسب مع روابط تنزيل قابلة للنقر.
-
-## 📝 إرشادات الاستخدام المسؤول
-
-يُقدَّم هذا المشروع لأغراض تعليمية وتجريبية. ومع أنه مُصمَّم للكفاءة، فمن الضروري استخدام هذه الأداة بمسؤولية.
-
-- **مراجعة الكود**: راجع الكود وافهمه جيدًا قبل نشره في أي بيئة.
-- **أفضل ممارسات الأمان**: التزم بمعايير الصناعة للأمان والامتثال القانوني.
-
-لا يتحمّل صانعو هذا المشروع أي مسؤولية عن أي سوء استخدام أو أضرار ناتجة عن استخدامه.
-
-## شكر وتقدير
-
-هذا المشروع هو فورك من **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** بقلم **[@T3SL4](https://github.com/T3SL4)**، الذي كان رائدًا في خط أنابيب الاستخراج من OTA إلى prop. وقد أُعيد تشكيله هنا لتخزين وتوزيع ملفات `.prop` بدلًا من الوحدات القابلة للتثبيت. كل الفضل في العمل الأصلي يعود إلى مؤلفه.
+هذا المشروع هو نسخة متفرعة من **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** من إعداد **[@T3SL4](https://github.com/T3SL4)**، الذي كان رائداً في خط أنابيب الاستخراج من OTA إلى prop. كل الفضل في العمل الأصلي يعود إلى مؤلفه.
 
 ## التواصل
 
@@ -136,10 +57,10 @@
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## الترخيص
+## License
 
-**GNU GPL-3.0-or-later** - راجع [LICENSE](LICENSE). حقوق متروكة (Copyleft): يجب على كل من يوزّع نسخة معدّلة أن يوفّر شفرتها المصدرية بالشروط نفسها.
+**GNU GPL-3.0-or-later** - راجع [LICENSE](LICENSE). كوبي‌لفت: على كل من يوزّع نسخة معدَّلة أن يُتيح شفرتها المصدرية وفق الشروط ذاتها.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

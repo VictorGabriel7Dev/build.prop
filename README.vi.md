@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Trích xuất và phân phối `.prop` đầy đủ của Pixel trực tiếp từ các ảnh OTA của Google*
+*Một kho lưu trữ có thể duyệt, tự động cập nhật các tệp `.prop` Pixel thật, lấy thẳng từ các ảnh OTA của Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Trích xuất và quản lý các thuộc tính hệ thống từ các bản cập nhật OTA của Pixel một cách dễ dàng với bộ công cụ tự động hóa mạnh mẽ này. Nó trích xuất `.prop` đầy đủ và có tổ chức của từng thiết bị trực tiếp từ các ảnh OTA chính thức của Google, rồi **lưu trữ và phân phối các tệp `.prop` đó** - vừa được quản lý phiên bản trong kho vừa được phát hành dưới dạng asset của release. Không có mô-đun cài đặt: chỉ các thuộc tính.
+Một kho lưu trữ theo phiên bản chứa toàn bộ `build.prop` của từng máy Pixel, được trích xuất trực tiếp từ các ảnh OTA chính thức của Google và tự động giữ cho luôn cập nhật. Tệp `.prop` của mỗi thiết bị được lưu trong kho và được phát hành dưới dạng tài nguyên release, sẵn sàng để duyệt hoặc tải xuống mà không cần bất kỳ công cụ nào.
 
-## 🚀 Bắt đầu nhanh
+## 📥 Get a `.prop`
 
-### Điều kiện tiên quyết
+Hai cách, không cần thiết lập gì:
 
-- **Môi trường kiểu Unix**: Linux hoặc macOS có Bash.
-- **Tiện ích cốt lõi**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Duyệt kho**: mở [`props/<codename>/`](props/) và chọn `<codename>_<build_id>.prop`.
+- **Tải từ Releases**: lấy tệp từ [release](https://github.com/VictorGabriel7Dev/build.prop/releases) mới nhất (được gắn thẻ `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Mỗi `.prop` là tập hợp đầy đủ và được sắp xếp các thuộc tính build cho đúng thiết bị và bản build đó (product, vendor, odm, system, system_ext, system_dlkm và nhiều hơn nữa).
 
-## Cài đặt
+## 🔧 Build it yourself
 
-1. **Nhân bản kho lưu trữ**:
+Để trích xuất một `.prop` cục bộ thay vì tải xuống, bạn cần một môi trường kiểu Unix (Linux hoặc macOS có Bash) cùng với `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, và Python ≥3.8 có `payload_dumper`. `requirements.sh` cài đặt các phụ thuộc trên hầu hết các trình quản lý gói (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Tạo và kích hoạt môi trường ảo** (tùy chọn nhưng được khuyến nghị):
+Các thiết bị được hỗ trợ là những ảnh factory và OTA trên [Google Android Images](https://developers.google.com/android/images) và các [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). Quá trình trích xuất đọc từng phân vùng payload một lần một (ít bộ nhớ) và xử lý các ảnh EROFS, ext4, sparse và boot/init_boot.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **Cài đặt các phụ thuộc**:
+Một pipeline GitHub Actions (`.github/workflows/build.yml`) giữ cho kho lưu trữ luôn cập nhật:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Chạy hàng tuần, và theo yêu cầu qua `workflow_dispatch` với danh sách thiết bị phân tách bằng khoảng trắng hoặc `all`; mỗi thiết bị được build song song.
+- Trích xuất `.prop`, commit những tệp mới vào `props/<codename>/`, và phát hành chúng dưới dạng tài nguyên dưới một thẻ hằng ngày duy nhất (`build-YYYYMMDD`).
+- Bỏ qua các tệp `.prop` đã được phát hành và thông báo qua Telegram kèm các liên kết tải xuống có thể nhấp được.
 
-## Cách dùng
+Các fork chạy pipeline cần hai secret: `TELEGRAM_BOT_TOKEN` (từ [@BotFather](https://t.me/BotFather)) và `TELEGRAM_CHAT_ID`.
 
-### Cục bộ
+## Acknowledgements
 
-1. **Tải các ảnh OTA mới nhất**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Ví dụ:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### Các thiết bị được hỗ trợ trong ảnh factory hoặc OTA mong muốn từ [Google Android Images](https://developers.google.com/android/images) hoặc [các trang Beta OTA](https://developer.android.com/about/versions/17/download-ota).
-
-2. **Giải nén ảnh và thu thập `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    Việc này tự động:
-    - Giải nén các phân vùng payload.bin lần lượt từng cái một (ít tốn bộ nhớ)
-    - Phát hiện và xử lý ảnh **EROFS**, **ext4**, **sparse** và **boot/init_boot**
-    - Dựng `.prop` đầy đủ và có tổ chức từ build.prop của mỗi phân vùng
-    - Lưu vào `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-Kho lưu trữ bao gồm một pipeline CI hoàn toàn tự động (`.github/workflows/build.yml`):
-
-- **Bản dựng theo lịch**: chạy vào nửa đêm UTC mỗi Chủ nhật.
-- **Kích hoạt thủ công**: kích hoạt qua `workflow_dispatch` với danh sách thiết bị phân tách bằng dấu cách hoặc `all`.
-- **Bản dựng ma trận**: mỗi thiết bị được xử lý song song.
-- **Ngăn trùng lặp**: bỏ qua các `.prop` đã có trong các bản phát hành hiện có.
-- **Quản lý phiên bản trong kho**: các `.prop` mới được commit vào `props/<codename>/`.
-- **Bản phát hành gộp**: tất cả các `.prop` mới được phát hành dưới một thẻ hằng ngày duy nhất (`build-YYYYMMDD`).
-- **Thông báo Telegram**: gửi một tin nhắn có định dạng kèm liên kết tải xuống có thể nhấp.
-
-#### Secret cần thiết
-
-| Secret | Mô tả |
-|--------|-------|
-| `TELEGRAM_BOT_TOKEN` | Token bot Telegram của bạn lấy từ [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | ID cuộc trò chuyện đích (người dùng, nhóm hoặc kênh) |
-
-## ✨ Tính năng chính
-
-- **Tự động thu thập OTA**: tải các bản dựng mới nhất trực tiếp từ các nguồn chính thức của Google.
-- **Hỗ trợ hệ thống tệp hiện đại**: xử lý ảnh EROFS, ext4, sparse và ramdisk boot/init_boot.
-- **Tạo `.prop` đầy đủ**: dựng một `.prop` có tổ chức duy nhất cho mỗi thiết bị từ build.prop của mỗi phân vùng (product, vendor, odm, system, system_ext, system_dlkm và hơn nữa).
-- **Giải nén tiết kiệm bộ nhớ**: các phân vùng payload được trích xuất lần lượt để tránh OOM trên các OTA lớn.
-- **Quản lý gói đa nền tảng**: `requirements.sh` hỗ trợ apt, pacman, dnf, yum, zypper, apk, xbps, brew và Termux.
-- **Lưu trữ và phân phối**:
-  - **Trong kho**: mỗi `.prop` được commit vào `props/<codename>/`, có phiên bản và có thể duyệt.
-  - **Dưới dạng asset của release**: mỗi `.prop` được phát hành dưới thẻ hằng ngày để tải xuống trực tiếp.
-- **Tích hợp GitHub Actions**:
-  - **Quy trình theo lịch**: tự động hóa cập nhật, trích xuất và phát hành theo lịch trình.
-  - **Ngăn phát hành trùng lặp**: tránh các bản phát hành dư thừa bằng cách kiểm tra asset của các bản phát hành hiện có.
-  - **Phát hành idempotent**: tải lên lại vào một thẻ phát hành hằng ngày hiện có nếu được kích hoạt lại.
-  - **Thông báo Telegram**: nhận các cập nhật kịp thời kèm liên kết tải xuống có thể nhấp.
-
-## 📝 Nguyên tắc sử dụng có trách nhiệm
-
-Dự án này được cung cấp cho mục đích giáo dục và thử nghiệm. Mặc dù được thiết kế để hiệu quả, điều quan trọng là phải sử dụng công cụ này một cách có trách nhiệm.
-
-- **Xem xét mã**: xem xét và hiểu kỹ mã trước khi triển khai trong bất kỳ môi trường nào.
-- **Thực hành bảo mật tốt nhất**: tuân thủ các tiêu chuẩn ngành về bảo mật và tuân thủ pháp lý.
-
-Những người tạo ra dự án này không chịu trách nhiệm cho bất kỳ việc lạm dụng hay thiệt hại nào phát sinh từ việc sử dụng nó.
-
-## Lời cảm ơn
-
-Dự án này là một fork của **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** bởi **[@T3SL4](https://github.com/T3SL4)**, người đã tiên phong pipeline trích xuất từ OTA sang prop. Ở đây nó được tái cấu trúc để lưu trữ và phân phối các tệp `.prop` thay vì các mô-đun cài đặt. Mọi công lao cho công trình gốc thuộc về tác giả của nó.
+Dự án này là một fork của **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** của **[@T3SL4](https://github.com/T3SL4)**, người đã tiên phong tạo ra pipeline trích xuất từ OTA sang prop. Toàn bộ công lao cho công trình gốc thuộc về tác giả của nó.
 
 ## Liên hệ
 
@@ -136,10 +57,10 @@ Dự án này là một fork của **[Pixel-Props/build.prop](https://github.com
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## Giấy phép
+## License
 
-**GNU GPL-3.0-or-later** - xem [LICENSE](LICENSE). Copyleft: bất kỳ ai phân phối phiên bản đã sửa đổi phải cung cấp mã nguồn của nó theo cùng các điều khoản.
+**GNU GPL-3.0-or-later** - xem [LICENSE](LICENSE). Copyleft: bất kỳ ai phân phối một phiên bản đã sửa đổi đều phải cung cấp mã nguồn của nó theo cùng các điều khoản.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

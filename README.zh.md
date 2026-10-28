@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*直接从 Google 的 OTA 镜像提取并分发完整的 Pixel `.prop`*
+*一个可浏览、自动更新的真实 Pixel `.prop` 文件归档，直接来自 Google 的 OTA 镜像*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-使用这套强大的自动化工具，轻松从 Pixel OTA 更新中提取并管理系统属性。它直接从 Google 官方 OTA 镜像为每台设备提取完整、组织良好的 `.prop`，然后**存储并分发这些 `.prop` 文件** - 既在仓库中进行版本管理，也作为发行版资产发布。没有可安装的模块：只有属性。
+一个按版本归档的仓库，收录每台 Pixel 完整的 `build.prop`，直接从 Google 官方 OTA 镜像中提取并自动保持最新。每台设备的 `.prop` 都存储在本仓库中，并作为发布资源发布，无需任何工具即可浏览或下载。
 
-## 🚀 快速开始
+## 📥 Get a `.prop`
 
-### 先决条件
+两种方式，无需任何设置：
 
-- **类 Unix 环境**：带 Bash 的 Linux 或 macOS。
-- **核心工具**：
-  - `zip`、`unzip`、`p7zip-full`
-  - `dos2unix`、`aria2`、`curl`
-  - `e2fsprogs`、`erofs-utils`、`lz4`、`cpio`
-  - `xxd`、`jq`
-- **Python ≥3.8**：
+- **浏览仓库**：打开 [`props/<codename>/`](props/) 并选择 `<codename>_<build_id>.prop`。
+- **从 Releases 下载**：从最新的[发布](https://github.com/VictorGabriel7Dev/build.prop/releases)（标记为 `build-YYYYMMDD`）中获取文件。
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+每个 `.prop` 都是该确切设备和构建的完整、有序的构建属性集合（product、vendor、odm、system、system_ext、system_dlkm 等）。
 
-## 安装
+## 🔧 Build it yourself
 
-1. **克隆仓库**：
+要在本地提取 `.prop` 而不是下载它，你需要一个类 Unix 环境（带 Bash 的 Linux 或 macOS），外加 `p7zip-full`、`e2fsprogs`、`erofs-utils`、`lz4`、`cpio`、`dos2unix`、`aria2`、`curl`、`xxd`、`jq`，以及 Python ≥3.8 和 `payload_dumper`。`requirements.sh` 可在大多数包管理器上安装这些依赖（apt、pacman、dnf、yum、zypper、apk、xbps、brew、Termux）。
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **创建并激活虚拟环境**（可选但推荐）：
+支持的设备是 [Google Android Images](https://developers.google.com/android/images) 以及 [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota) 上的工厂镜像和 OTA 镜像。提取过程逐个读取每个 payload 分区（低内存占用），并处理 EROFS、ext4、sparse 以及 boot/init_boot 镜像。
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automation
 
-3. **安装依赖**：
+一条 GitHub Actions 流水线（`.github/workflows/build.yml`）使归档保持最新：
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- 每周运行，也可通过 `workflow_dispatch` 按需运行，传入以空格分隔的设备列表或 `all`；每台设备并行构建。
+- 提取 `.prop`，将新文件提交到 `props/<codename>/` 下，并在单个每日标签（`build-YYYYMMDD`）下将它们作为资源发布。
+- 跳过已发布的 `.prop` 文件，并通过 Telegram 发送带可点击下载链接的通知。
 
-## 用法
+运行该流水线的 fork 需要两个密钥：`TELEGRAM_BOT_TOKEN`（来自 [@BotFather](https://t.me/BotFather)）和 `TELEGRAM_CHAT_ID`。
 
-### 本地
+## Acknowledgements
 
-1. **获取最新的 OTA 镜像**：
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    示例：
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### 在 [Google Android Images](https://developers.google.com/android/images) 或 [Beta OTA 页面](https://developer.android.com/about/versions/17/download-ota) 上所需出厂镜像或 OTA 镜像中受支持的设备。
-
-2. **提取镜像并收集 `.prop`**：
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    这会自动：
-    - 逐个提取 payload.bin 的分区（低内存占用）
-    - 检测并处理 **EROFS**、**ext4**、**sparse** 和 **boot/init_boot** 镜像
-    - 从每个分区的 build.prop 构建完整、组织良好的 `.prop`
-    - 将其保存到 `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-该仓库包含一个完全自动化的 CI 流水线（`.github/workflows/build.yml`）：
-
-- **定时构建**：每周日 UTC 午夜运行。
-- **手动触发**：通过 `workflow_dispatch` 使用以空格分隔的设备列表或 `all` 触发。
-- **矩阵构建**：每台设备并行处理。
-- **防重复**：跳过已存在于现有发行版中的 `.prop` 文件。
-- **仓库中版本管理**：新的 `.prop` 文件提交到 `props/<codename>/`。
-- **聚合发行版**：所有新的 `.prop` 文件都在单个每日标签（`build-YYYYMMDD`）下发布。
-- **Telegram 通知**：发送带有可点击下载链接的格式化消息。
-
-#### 所需 Secret
-
-| Secret | 说明 |
-|--------|------|
-| `TELEGRAM_BOT_TOKEN` | 来自 [@BotFather](https://t.me/BotFather) 的 Telegram 机器人令牌 |
-| `TELEGRAM_CHAT_ID` | 目标聊天 ID（用户、群组或频道） |
-
-## ✨ 主要特性
-
-- **自动获取 OTA**：直接从 Google 官方来源下载最新构建。
-- **现代文件系统支持**：处理 EROFS、ext4、sparse 镜像以及 boot/init_boot ramdisk。
-- **完整 `.prop` 生成**：从每个分区的 build.prop 为每台设备构建单个组织良好的 `.prop`（product、vendor、odm、system、system_ext、system_dlkm 等）。
-- **内存高效提取**：payload 分区逐个转储，以避免在大型 OTA 上发生 OOM。
-- **跨平台包管理**：`requirements.sh` 支持 apt、pacman、dnf、yum、zypper、apk、xbps、brew 和 Termux。
-- **存储与分发**：
-  - **在仓库中**：每个 `.prop` 提交到 `props/<codename>/`，进行版本管理且可浏览。
-  - **作为发行版资产**：每个 `.prop` 在每日标签下发布以供直接下载。
-- **GitHub Actions 集成**：
-  - **定时工作流**：按计划自动执行更新、提取和发布。
-  - **防止重复发行版**：通过检查现有发行版的资产来避免冗余发行。
-  - **幂等发行版**：若再次触发，会重新上传到现有的每日发行标签。
-  - **Telegram 通知**：及时接收带有可点击下载链接的更新。
-
-## 📝 负责任使用准则
-
-本项目仅用于教育和实验目的。尽管它以高效为设计目标，但负责任地使用本工具至关重要。
-
-- **代码审查**：在任何环境中部署之前，请彻底审查并理解代码。
-- **安全最佳实践**：遵守行业安全标准和法律合规要求。
-
-对于因使用本项目而导致的任何误用或损害，本项目的创建者概不负责。
-
-## 致谢
-
-本项目是 **[@T3SL4](https://github.com/T3SL4)** 的 **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** 的一个分支，后者开创了从 OTA 到 prop 的提取流水线。此处将其重塑为存储和分发 `.prop` 文件而非可安装模块。原始作品的全部功劳归于其作者。
+本项目是 **[@T3SL4](https://github.com/T3SL4)** 的 **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** 的 fork，后者开创了从 OTA 到 prop 的提取流水线。原始作品的全部功劳归其作者所有。
 
 ## 联系方式
 
@@ -136,10 +57,10 @@
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## 许可证
+## License
 
-**GNU GPL-3.0-or-later** - 参见 [LICENSE](LICENSE)。Copyleft：任何分发修改版本的人都必须以相同条款提供其源代码。
+**GNU GPL-3.0-or-later** - 参见 [LICENSE](LICENSE)。Copyleft：任何分发修改版本的人都必须在相同条款下提供其源代码。
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`

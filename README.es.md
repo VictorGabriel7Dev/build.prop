@@ -2,128 +2,49 @@
 
 # Pixel Prop Builder
 
-*Extrae y distribuye el `.prop` completo de Pixel directamente desde las imágenes OTA de Google*
+*Un archivo navegable y actualizado automáticamente de archivos `.prop` reales de Pixel, directo desde las imágenes OTA de Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Extrae y gestiona sin esfuerzo las propiedades del sistema a partir de las actualizaciones OTA de Pixel con esta robusta suite de automatización. Extrae el `.prop` completo y organizado de cada dispositivo directamente desde las imágenes OTA oficiales de Google y luego **almacena y distribuye esos archivos `.prop`** - tanto versionados en el repositorio como publicados como assets de release. Sin módulos instalables: solo las propiedades.
+Un archivo versionado del `build.prop` completo de cada Pixel, extraído directamente de las imágenes OTA oficiales de Google y mantenido al día de forma automática. El `.prop` de cada dispositivo se guarda en el repositorio y se publica como asset de release, listo para navegar o descargar sin necesidad de ninguna herramienta.
 
-## 🚀 Inicio rápido
+## 📥 Consigue un `.prop`
 
-### Requisitos previos
+Dos maneras, sin configuración necesaria:
 
-- **Entorno tipo Unix**: Linux o macOS con Bash.
-- **Utilidades esenciales**:
-  - `zip`, `unzip`, `p7zip-full`
-  - `dos2unix`, `aria2`, `curl`
-  - `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`
-  - `xxd`, `jq`
-- **Python ≥3.8**:
+- **Navega por el repositorio**: abre [`props/<codename>/`](props/) y elige `<codename>_<build_id>.prop`.
+- **Descarga desde Releases**: toma el archivo de la [release](https://github.com/VictorGabriel7Dev/build.prop/releases) más reciente (con la etiqueta `build-YYYYMMDD`).
 
-    ```bash
-    sudo apt-get update -y
-    sudo apt-get install -y python3 python3-pip python3-venv jq xxd \
-      p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix aria2 curl
-    ```
+Cada `.prop` es el conjunto completo y organizado de propiedades de build de ese dispositivo y build exactos (product, vendor, odm, system, system_ext, system_dlkm y más).
 
-## Instalación
+## 🔧 Compílalo tú mismo
 
-1. **Clona el repositorio**:
+Para extraer un `.prop` localmente en vez de descargarlo, necesitas un entorno tipo Unix (Linux o macOS con Bash) además de `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` y Python ≥3.8 con `payload_dumper`. El `requirements.sh` instala las dependencias en la mayoría de los gestores de paquetes (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
-   ```bash
-   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-   ```
+```bash
+git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+pip3 install payload_dumper
+./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
+./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+```
 
-2. **Crea y activa un entorno virtual** (opcional pero recomendado):
+Los dispositivos compatibles son las imágenes de fábrica y OTA en [Google Android Images](https://developers.google.com/android/images) y en las [páginas de OTA Beta](https://developer.android.com/about/versions/17/download-ota). La extracción lee cada partición del payload de una en una (bajo consumo de memoria) y maneja imágenes EROFS, ext4, sparse y boot/init_boot.
 
-    ```bash
-    python3 -m venv .venv
-    . .venv/bin/activate
-    ```
+## 🤖 Automatización
 
-3. **Instala las dependencias**:
+Un pipeline de GitHub Actions (`.github/workflows/build.yml`) mantiene el archivo al día:
 
-    ```bash
-    pip3 install payload_dumper
-    ```
+- Se ejecuta semanalmente, y bajo demanda vía `workflow_dispatch` con una lista de dispositivos separada por espacios o `all`; cada dispositivo se compila en paralelo.
+- Extrae el `.prop`, hace commit de los nuevos en `props/<codename>/` y los publica como assets bajo una única etiqueta diaria (`build-YYYYMMDD`).
+- Omite los archivos `.prop` ya publicados y notifica a Telegram con enlaces de descarga clicables.
 
-## Uso
-
-### Local
-
-1. **Descarga las imágenes OTA más recientes**:
-
-    ```bash
-    ./download_latest_ota_build.sh <device_name> [device_name ...]
-    ```
-
-    Ejemplos:
-    - `./download_latest_ota_build.sh husky`
-    - `./download_latest_ota_build.sh cubs grizzly_beta kodiak_beta17 yogi`
-
-    #### Dispositivos compatibles en las imágenes de fábrica u OTA deseadas en [Google Android Images](https://developers.google.com/android/images) o en las [páginas de OTA Beta](https://developer.android.com/about/versions/17/download-ota).
-
-2. **Extrae las imágenes y recopila el `.prop`**:
-
-    ```bash
-    ./extract_images.sh
-    ```
-
-    Esto automáticamente:
-    - Extrae las particiones de payload.bin una por una (bajo consumo de memoria)
-    - Detecta y maneja imágenes **EROFS**, **ext4**, **sparse** y **boot/init_boot**
-    - Construye el `.prop` completo y organizado a partir del build.prop de cada partición
-    - Lo guarda en `props/<codename>/<codename>_<build_id>.prop`
-
-### GitHub Actions
-
-El repositorio incluye una canalización de CI totalmente automatizada (`.github/workflows/build.yml`):
-
-- **Compilaciones programadas**: se ejecutan todos los domingos a medianoche UTC.
-- **Ejecución manual**: actívala mediante `workflow_dispatch` con una lista de dispositivos separada por espacios o `all`.
-- **Compilaciones en matriz**: cada dispositivo se procesa en paralelo.
-- **Prevención de duplicados**: omite los `.prop` que ya están presentes en releases existentes.
-- **Versionado en el repositorio**: los `.prop` nuevos se confirman en `props/<codename>/`.
-- **Releases agregadas**: todos los `.prop` nuevos se publican bajo una única etiqueta diaria (`build-YYYYMMDD`).
-- **Notificaciones de Telegram**: envía un mensaje con formato y enlaces de descarga en los que se puede hacer clic.
-
-#### Secrets necesarios
-
-| Secret | Descripción |
-|--------|-------------|
-| `TELEGRAM_BOT_TOKEN` | Tu token de bot de Telegram, obtenido de [@BotFather](https://t.me/BotFather) |
-| `TELEGRAM_CHAT_ID` | ID del chat de destino (usuario, grupo o canal) |
-
-## ✨ Características principales
-
-- **Adquisición automática de OTA**: descarga las compilaciones más recientes directamente de las fuentes oficiales de Google.
-- **Compatibilidad con sistemas de archivos modernos**: maneja imágenes EROFS, ext4, sparse y ramdisks boot/init_boot.
-- **Generación del `.prop` completo**: construye un único `.prop` organizado por dispositivo a partir del build.prop de cada partición (product, vendor, odm, system, system_ext, system_dlkm y más).
-- **Extracción eficiente en memoria**: las particiones del payload se vuelcan una por una para evitar OOM en OTAs grandes.
-- **Gestión de paquetes multiplataforma**: `requirements.sh` admite apt, pacman, dnf, yum, zypper, apk, xbps, brew y Termux.
-- **Almacenamiento y distribución**:
-  - **En el repositorio**: cada `.prop` se confirma en `props/<codename>/`, versionado y navegable.
-  - **Como assets de release**: cada `.prop` se publica bajo la etiqueta diaria para descarga directa.
-- **Integración con GitHub Actions**:
-  - **Workflows programados**: automatizan actualizaciones, extracción y releases según un calendario.
-  - **Prevención de releases duplicadas**: evita releases redundantes comprobando los assets de releases existentes.
-  - **Releases idempotentes**: vuelve a subir a una etiqueta de release diaria existente si se reactiva.
-  - **Notificaciones de Telegram**: recibe actualizaciones oportunas con enlaces de descarga en los que se puede hacer clic.
-
-## 📝 Pautas de uso responsable
-
-Este proyecto se ofrece con fines educativos y experimentales. Aunque está diseñado para ser eficiente, es crucial usar esta herramienta de forma responsable.
-
-- **Revisión del código**: revisa y comprende bien el código antes de desplegarlo en cualquier entorno.
-- **Buenas prácticas de seguridad**: cumple con los estándares del sector en materia de seguridad y conformidad legal.
-
-Los creadores de este proyecto no se hacen responsables de ningún uso indebido ni de los daños derivados de su uso.
+Los forks que ejecutan el pipeline necesitan dos secrets: `TELEGRAM_BOT_TOKEN` (de [@BotFather](https://t.me/BotFather)) y `TELEGRAM_CHAT_ID`.
 
 ## Agradecimientos
 
-Este proyecto es un fork de **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** de **[@T3SL4](https://github.com/T3SL4)**, que fue pionero en el pipeline de extracción de OTA a prop. Aquí se reformula para almacenar y distribuir archivos `.prop` en lugar de módulos instalables. Todo el crédito del trabajo original es de su autor.
+Este proyecto es un fork de **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** de **[@T3SL4](https://github.com/T3SL4)**, que fue pionero en el pipeline de extracción de OTA a prop. Todo el crédito por el trabajo original es de su autor.
 
 ## Contacto
 
@@ -138,8 +59,8 @@ Este proyecto es un fork de **[Pixel-Props/build.prop](https://github.com/Pixel-
 
 ## Licencia
 
-**GNU GPL-3.0-or-later** - consulta [LICENSE](LICENSE). Copyleft: quien distribuya una versión modificada debe ofrecer su código fuente bajo los mismos términos.
+**GNU GPL-3.0-or-later** - consulta [LICENSE](LICENSE). Copyleft: cualquiera que distribuya una versión modificada debe ofrecer su código fuente bajo los mismos términos.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`
