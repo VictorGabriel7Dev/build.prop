@@ -1,11 +1,27 @@
 #!/bin/bash
+# ======================================================================
+#  PIXEL PROP BUILDER  ::  Pixel build.prop archive
+#  Extract and distribute the full Pixel build.prop from Google's OTA images.
+#
+#  Copyright (C) 2026  VictorGabriel7Dev
+#  SPDX-License-Identifier: GPL-3.0-or-later
+#  Fork of Pixel-Props/build.prop by @T3SL4.
+#
+#  Free software under the GNU GPL v3 or later: distribute a modified
+#  version and you MUST offer its source under the same terms.
+#
+#  Site      : https://victorgabriel.dev
+#  Source    : https://github.com/VictorGabriel7Dev/build.prop
+#  GitHub    : @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
+#  Telegram  : @VictorGabriel_Dev https://t.me/VictorGabriel_Dev
+#  Discord   : @VictorGabriel.dev https://discord.com/users/1481407654458036265
+#  LinkedIn  : in/victorgabriel-dev https://www.linkedin.com/in/victorgabriel-dev
+#  Instagram : @VictorGabriel_Dev https://www.instagram.com/VictorGabriel_Dev
+#  WhatsApp  : @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
+#  E-mail    : contato@victorgabriel.dev
+# ======================================================================
 #
 # collect_prop.sh - collect the generated .prop into <codename>/<codename>_<build_id>.prop.
-# This repo distributes .prop files (not installable modules); each file carries the
-# project header below.
-#
-# Pixel Prop Builder - https://github.com/VictorGabriel7Dev/build.prop
-# Site: https://victorgabriel.dev | GitHub: @VictorGabriel7Dev | E-mail: contato@victorgabriel.dev
 
 # Using util_functions.sh
 [ -f "util_functions.sh" ] && . ./util_functions.sh || { echo "util_functions.sh not found" && exit 1; }
@@ -25,20 +41,29 @@ build_id=$(grep_prop "ro.build.id" "$content")
 out="${codename}/${codename}_${build_id}.prop"
 mkdir -p "${codename}"
 {
-  cat <<EOF
-# Pixel Prop Builder  -  ${codename} build.prop (build ${build_id})
-# Full build.prop extracted from the official Google OTA factory image.
+  cat <<'EOF'
+# ======================================================================
+#  PIXEL PROP BUILDER  ::  Pixel build.prop archive
+#  Extract and distribute the full Pixel build.prop from Google's OTA images.
 #
-# Project : https://github.com/VictorGabriel7Dev/build.prop
-# Site    : https://victorgabriel.dev
-# GitHub  : @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
-# Telegram: @VictorGabriel_Dev https://t.me/VictorGabriel_Dev
-# Discord : @VictorGabriel.dev https://discord.com/users/1481407654458036265
-# LinkedIn: in/victorgabriel-dev https://www.linkedin.com/in/victorgabriel-dev
-# Instagram: @VictorGabriel_Dev https://www.instagram.com/VictorGabriel_Dev
-# WhatsApp: @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
-# E-mail  : contato@victorgabriel.dev
+#  Copyright (C) 2026  VictorGabriel7Dev
+#  SPDX-License-Identifier: GPL-3.0-or-later
+#  Fork of Pixel-Props/build.prop by @T3SL4.
 #
+#  Free software under the GNU GPL v3 or later: distribute a modified
+#  version and you MUST offer its source under the same terms.
+#
+#  Site      : https://victorgabriel.dev
+#  Source    : https://github.com/VictorGabriel7Dev/build.prop
+#  GitHub    : @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
+#  Telegram  : @VictorGabriel_Dev https://t.me/VictorGabriel_Dev
+#  Discord   : @VictorGabriel.dev https://discord.com/users/1481407654458036265
+#  LinkedIn  : in/victorgabriel-dev https://www.linkedin.com/in/victorgabriel-dev
+#  Instagram : @VictorGabriel_Dev https://www.instagram.com/VictorGabriel_Dev
+#  WhatsApp  : @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
+#  E-mail    : contato@victorgabriel.dev
+# ======================================================================
+
 EOF
   cat "$prop"
 } > "$out"
