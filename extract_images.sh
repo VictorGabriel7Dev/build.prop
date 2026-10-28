@@ -145,8 +145,8 @@ for dir in "$EI"/*; do  # List directory ./*
 	fi
 done
 
-# Build props, feature and module files after extraction
-[ -d "$EI" ] && print_message "Building module props and features…\n" info
+# Build props and collect .prop files after extraction
+[ -d "$EI" ] && print_message "Building props and collecting .prop files…\n" info
 for dir in "$EI"/*; do  # List directory ./*
 	if [ -d "$dir" ]; then # Check if it is a directory
 		dir=${dir%*/}         # Remove last /
@@ -155,22 +155,13 @@ for dir in "$EI"/*; do  # List directory ./*
 		# Time the extraction
 		extraction_start=$(date +%s)
 
-		# Build system.prop
+		# Build system.prop (the full, organized .prop with all partitions)
 		print_message "Building props…" info
 		./build_props.sh "$dir"
 
-		# Build product sysconfig for Pixel Experience features
-		print_message "Building sysconfig features…" info
-		./build_sysconfig.sh "$dir"
-
-		# Build media bootanimation
-		# (Optional) It increases the module size significantly!
-		# print_message "Building media bootanimation…" info
-		# ./build_bootanimation.sh "$dir"
-
-		# Build Magisk module
-		print_message "Building module…" info
-		./build_module.sh "$dir"
+		# Collect the .prop file (module building removed; this repo distributes .prop)
+		print_message "Collecting .prop…" info
+		./collect_prop.sh "$dir"
 
 		# Time the extraction
 		extraction_end=$(date +%s)

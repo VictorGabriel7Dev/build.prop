@@ -11,6 +11,9 @@ on:
         required: true
         default: 'all'
 
+permissions:
+  contents: write
+
 jobs:
   # ------------------------------------------------------------------
   # PREPARE: Determine which devices to build based on input or default list
@@ -45,7 +48,7 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   # ------------------------------------------------------------------
-  # BUILD: Download OTA, extract props, build module, and check for duplicates
+  # BUILD: Download OTA, extract props, collect the .prop, check for duplicates
   # ------------------------------------------------------------------
   build:
     needs: prepare
@@ -71,22 +74,22 @@ jobs:
       - name: Download OTA for ${{ matrix.device }}
         run: bash download_latest_ota_build.sh ${{ matrix.device }}
 
-      - name: Extract and build
+      - name: Extract and collect props
         run: bash extract_images.sh
 
-      # Check if this module version was already released to avoid duplicates
+      # Check if this .prop was already released to avoid duplicates
       - name: Check for duplicates
         id: check
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          zip=$(find . -maxdepth 1 -name "*.zip" -type f -print -quit 2>/dev/null)
-          if [ -z "$zip" ]; then
+          prop=$(find props -maxdepth 2 -name "*.prop" -type f -print -quit 2>/dev/null)
+          if [ -z "$prop" ]; then
             echo "has_new=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
 
-          name=$(basename "$zip")
+          name=$(basename "$prop")
           echo "Built: $name"
 
           # Paginate through ALL releases to build a complete asset list
@@ -102,74 +105,65 @@ jobs:
             page=$((page + 1))
           done
 
-          # Skip if this exact zip was already released
+          # Skip if this exact .prop was already released
           if grep -qxF "$name" "$EXISTING" 2>/dev/null; then
             echo "SKIP (already released): $name"
             echo "has_new=false" >> "$GITHUB_OUTPUT"
-            rm -f "$zip"
             exit 0
           fi
 
-          # Extract metadata from the built module
+          # Metadata straight from the .prop (system.prop format)
           codename=$(echo "$name" | cut -d_ -f1 | tr '[:upper:]' '[:lower:]')
-          prop=$(find extracted_images -maxdepth 2 -name "module.prop" -path "*/${codename}-ota-*" 2>/dev/null | head -1)
-          prop_dir=$(dirname "$prop")
-          desc=""
-          device_name=""
-          build_desc=""
-          if [ -f "$prop" ]; then
-            desc=$(grep '^description=' "$prop" | cut -d= -f2- | head -1)
-            if [ -f "$prop_dir/system.prop" ]; then
-              device_name=$(grep -m1 '^ro.product.model=' "$prop_dir/system.prop" 2>/dev/null | cut -d= -f2- | head -1)
-              build_desc=$(grep -m1 '^ro.build.description=' "$prop_dir/system.prop" 2>/dev/null | cut -d= -f2- | head -1)
-            fi
-          fi
+          device_name=$(grep -m1 '^ro.product.model=' "$prop" 2>/dev/null | cut -d= -f2- | head -1)
+          build_desc=$(grep -m1 '^ro.build.description=' "$prop" 2>/dev/null | cut -d= -f2- | head -1)
           [ -z "$device_name" ] && device_name="${codename^}"
 
-          zip_hash=$(sha256sum "$zip" | awk '{print $1}')
+          prop_hash=$(sha256sum "$prop" | awk '{print $1}')
 
-          mkdir -p upload
-          mv "$zip" upload/
+          # Upload layout: keep the props/<codename>/ path + flat copy for release assets
+          mkdir -p "upload/props/${codename}"
+          cp -f "$prop" "upload/props/${codename}/${name}"
+          cp -f "$prop" "upload/${name}"
 
-          # Save structured metadata for the release aggregation step
           jq -n \
             --arg codename "$codename" \
-            --arg zip_name "$name" \
-            --arg sha256 "$zip_hash" \
+            --arg prop_name "$name" \
+            --arg sha256 "$prop_hash" \
             --arg device_name "$device_name" \
-            --arg description "$desc" \
             --arg build_desc "$build_desc" \
-            '{codename: $codename, zip_name: $zip_name, sha256: $sha256, device_name: $device_name, description: $description, build_desc: $build_desc}' \
+            '{codename: $codename, prop_name: $prop_name, sha256: $sha256, device_name: $device_name, build_desc: $build_desc}' \
             > "upload/metadata-${codename}.json"
 
           echo "has_new=true" >> "$GITHUB_OUTPUT"
 
-      # Upload module + metadata artifact for the release job to collect
+      # Upload .prop + metadata artifact for the release job to collect
       - name: Upload artifact
         if: steps.check.outputs.has_new == 'true'
         uses: actions/upload-artifact@v4
         with:
-          name: module-${{ matrix.device }}
+          name: prop-${{ matrix.device }}
           path: upload/*
           retention-days: 1
 
   # ------------------------------------------------------------------
-  # RELEASE: Aggregate all built modules, create GitHub release, notify Telegram
+  # RELEASE: Commit new .prop into the repo, publish release, notify Telegram
   # ------------------------------------------------------------------
   release:
     needs: [prepare, build]
     runs-on: ubuntu-latest
     if: always()
     steps:
+      - uses: actions/checkout@v4
+
       - name: Download artifacts
         uses: actions/download-artifact@v4
         with:
-          pattern: module-*
+          pattern: prop-*
           merge-multiple: true
-          path: new_modules/
+          path: new_props/
         continue-on-error: true
 
-      # Collect all modules, generate release notes, publish release, and notify
+      # Commit the new .prop files into the repo, publish the release, notify
       - name: Aggregate and publish
         id: aggregate
         env:
@@ -178,7 +172,7 @@ jobs:
           # Pass device list via env to avoid subshell/quote issues
           DEVICES_JSON: ${{ needs.prepare.outputs.devices }}
         run: |
-          COUNT=$(ls new_modules/*.zip 2>/dev/null | wc -l)
+          COUNT=$(ls new_props/*.prop 2>/dev/null | wc -l)
           if [ "$COUNT" -eq 0 ]; then
             echo "has_new=false" >> "$GITHUB_OUTPUT"
             exit 0
@@ -190,46 +184,55 @@ jobs:
           # Read ordered device list into a bash array (avoids subshell issues)
           mapfile -t devices < <(echo "$DEVICES_JSON" | jq -r '.[]')
 
-          # Build per-device release notes in prepare-step order
-          RELEASE_BODY="Automated build with $COUNT new module(s)."$'\n\n'
-          for device in "${devices[@]}"; do
-            json="new_modules/metadata-${device}.json"
-            [ -f "$json" ] || continue
+          # 1) Commit the new .prop files into props/<codename>/ in the repo
+          if [ -d new_props/props ]; then
+            cp -rf new_props/props/. props/
+            git config user.name  "github-actions[bot]"
+            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+            git add props/
+            if ! git diff --cached --quiet; then
+              git commit -m "props: ${TAG} (${COUNT} new)"
+              git push
+            fi
+          fi
 
+          # 2) Build per-device release notes in prepare-step order
+          RELEASE_BODY="Automated build with $COUNT new .prop file(s)."$'\n\n'
+          for device in "${devices[@]}"; do
+            json="new_props/metadata-${device}.json"
+            [ -f "$json" ] || continue
             codename=$(jq -r '.codename' "$json")
-            zip_name=$(jq -r '.zip_name' "$json")
+            prop_name=$(jq -r '.prop_name' "$json")
             sha256=$(jq -r '.sha256' "$json")
             device_name=$(jq -r '.device_name' "$json")
             build_desc=$(jq -r '.build_desc // empty' "$json")
-
             RELEASE_BODY+="## ${device_name} (${codename^})"$'\n'
-            RELEASE_BODY+="- File name: \`${zip_name}\`"$'\n'
+            RELEASE_BODY+="- File name: \`${prop_name}\`"$'\n'
             RELEASE_BODY+="- Build Description: \`${build_desc}\`"$'\n'
             RELEASE_BODY+="- File hash (SHA256): \`${sha256}\`"$'\n\n'
           done
-
           printf '%s' "$RELEASE_BODY" > /tmp/release_notes.md
 
-          # Build Telegram device list in the same order
+          # 3) Telegram device list in the same order
           DEVICE_LIST=""
           for device in "${devices[@]}"; do
-            json="new_modules/metadata-${device}.json"
+            json="new_props/metadata-${device}.json"
             [ -f "$json" ] || continue
-            zip_name=$(jq -r '.zip_name' "$json")
+            prop_name=$(jq -r '.prop_name' "$json")
             device_name=$(jq -r '.device_name' "$json")
-            download_url="${REPO_URL}/releases/download/${TAG}/${zip_name}"
-            DEVICE_LIST+="- **${device_name}**: [${zip_name}](${download_url})"$'\n'
+            download_url="${REPO_URL}/releases/download/${TAG}/${prop_name}"
+            DEVICE_LIST+="- **${device_name}**: [${prop_name}](${download_url})"$'\n'
           done
 
-          # Create release if it doesn't exist, otherwise upload to existing
+          # 4) Create release if it doesn't exist, otherwise upload to existing
           if gh release view "$TAG" &>/dev/null; then
             echo "Release $TAG already exists, uploading assets..."
-            gh release upload "$TAG" new_modules/*.zip --clobber
+            gh release upload "$TAG" new_props/*.prop --clobber
           else
             gh release create "$TAG" \
               --title "$TAG" \
               --notes-file /tmp/release_notes.md \
-              new_modules/*.zip
+              new_props/*.prop
           fi
 
           echo "has_new=true" >> "$GITHUB_OUTPUT"
@@ -253,7 +256,7 @@ jobs:
             **Pixel Props — New OTA Available !**
 
             **Tag**: [${{ steps.aggregate.outputs.tag }}](https://github.com/${{ github.repository }}/releases/tag/${{ steps.aggregate.outputs.tag }})
-            **Modules**: ${{ steps.aggregate.outputs.count }}
+            **Props**: ${{ steps.aggregate.outputs.count }}
 
             **Devices**:
             ${{ steps.aggregate.outputs.devices }}
