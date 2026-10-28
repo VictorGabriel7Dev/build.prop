@@ -1,7 +1,14 @@
+**English** | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md)
 
-# Pixel Prop Builder: Streamlined OTA to .prop Extraction
+# Pixel Prop Builder
 
-Effortlessly extract and manage system properties from Pixel OTA updates with this robust automation suite. It extracts the full, organized `.prop` for each device straight from Google's official OTA images and stores and distributes those `.prop` files - no installable modules.
+*Extract and distribute the full Pixel `.prop` straight from Google's OTA images*
+
+[![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
+[![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
+[![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
+
+Effortlessly extract and manage system properties from Pixel OTA updates with this robust automation suite. It extracts the full, organized `.prop` for each device straight from Google's official OTA images, then **stores and distributes those `.prop` files** - both versioned in the repository and published as release assets. No installable modules: just the properties.
 
 ## 🚀 Quick Start
 
@@ -26,7 +33,7 @@ Effortlessly extract and manage system properties from Pixel OTA updates with th
 1. **Clone the repository**:
 
    ```bash
-   git clone https://github.com/Pixel-Props/build.prop && cd build.prop
+   git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
    ```
 
 2. **Create and activate a virtual environment** (optional but recommended):
@@ -104,8 +111,6 @@ The repository includes a fully automated CI pipeline (`.github/workflows/build.
   - **Duplicate Release Prevention**: Prevents redundant releases by checking existing release assets.
   - **Idempotent Releases**: Re-uploads to an existing daily release tag if re-triggered.
   - **Telegram Notifications**: Receive timely updates with clickable download links.
-- **Future Enhancements**:
-  - **[Pixel.Features](https://github.com/Pixel-Props/pixel.features/)**: Add support for building Pixel-specific features (currently includes `sysconfigs`).
 
 ## 📝 Responsible Usage Guidelines
 
@@ -116,6 +121,25 @@ This project is provided for educational and experimental purposes. While design
 
 The creators of this project are not liable for any misuse or damages resulting from its use.
 
+## Acknowledgements
+
+This project is a fork of **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** by **[@T3SL4](https://github.com/T3SL4)**, which pioneered the OTA-to-prop extraction pipeline. It is reshaped here to store and distribute `.prop` files instead of installable modules. Full credit for the original work goes to its author.
+
+## Contact
+
+- https://victorgabriel.dev
+- **GitHub:** @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
+- **Telegram:** @VictorGabriel_Dev https://t.me/VictorGabriel_Dev
+- **Discord:** @VictorGabriel.dev https://discord.com/users/1481407654458036265
+- **LinkedIn:** in/victorgabriel-dev https://www.linkedin.com/in/victorgabriel-dev
+- **Instagram:** @VictorGabriel_Dev https://www.instagram.com/VictorGabriel_Dev
+- **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
+- **E-mail:** contato@victorgabriel.dev
+
+## License
+
+**GNU GPL-3.0-or-later** - see [LICENSE](LICENSE). Copyleft: anyone who distributes a modified version must offer its source under the same terms.
+
 ---
 
-Ready to streamline your Android customization workflow? Dive in and unlock the power of automated `.prop` extraction! Contributions are welcome to enhance the project's functionality and scope.
+`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `magisk` `kernelsu` `system-properties` `automation`
