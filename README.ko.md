@@ -14,7 +14,7 @@
 
 설정이 필요 없는 두 가지 방법:
 
-- **저장소 탐색하기**: [`props/<codename>/`](props/)를 열고 `<codename>_<build_id>.prop`을 선택하세요.
+- **저장소 탐색하기**: [`<codename>/`](.)를 열고 `<codename>_<build_id>.prop`을 선택하세요.
 - **Releases에서 다운로드하기**: 최신 [릴리스](https://github.com/VictorGabriel7Dev/build.prop/releases)(`build-YYYYMMDD`로 태그됨)에서 파일을 받으세요.
 
 각 `.prop`은 해당 기기와 빌드에 정확히 대응하는, 완전하고 정리된 빌드 속성 집합입니다(product, vendor, odm, system, system_ext, system_dlkm 등).
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 지원되는 기기는 [Google Android Images](https://developers.google.com/android/images)와 [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota)에 있는 팩토리 이미지 및 OTA 이미지입니다. 추출은 각 payload 파티션을 한 번에 하나씩 읽으며(낮은 메모리), EROFS, ext4, sparse 및 boot/init_boot 이미지를 처리합니다.
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 GitHub Actions 파이프라인(`.github/workflows/build.yml`)이 아카이브를 최신 상태로 유지합니다:
 
 - 매주 실행되며, 공백으로 구분된 기기 목록 또는 `all`을 사용해 `workflow_dispatch`로 필요할 때도 실행할 수 있습니다. 각 기기는 병렬로 빌드됩니다.
-- `.prop`을 추출하고, 새로운 것들을 `props/<codename>/` 아래에 커밋하며, 단일 일일 태그(`build-YYYYMMDD`) 아래에 자산으로 게시합니다.
+- `.prop`을 추출하고, 새로운 것들을 `<codename>/` 아래에 커밋하며, 단일 일일 태그(`build-YYYYMMDD`) 아래에 자산으로 게시합니다.
 - 이미 릴리스된 `.prop` 파일은 건너뛰고, 클릭 가능한 다운로드 링크와 함께 Telegram으로 알립니다.
 
 파이프라인을 실행하는 fork에는 두 개의 시크릿이 필요합니다: `TELEGRAM_BOT_TOKEN`([@BotFather](https://t.me/BotFather)에서 발급)과 `TELEGRAM_CHAT_ID`.

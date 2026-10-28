@@ -17,7 +17,7 @@ codename=$(grep_prop "ro.product.vendor.name" "$content")
 build_id=$(grep_prop "ro.build.id" "$content")
 [ -z "$codename" ] || [ -z "$build_id" ] && { print_message "Missing codename/build_id in \"$dir\"" error && exit 1; }
 
-out="props/${codename}/${codename}_${build_id}.prop"
-mkdir -p "props/${codename}"
+out="${codename}/${codename}_${build_id}.prop"
+mkdir -p "${codename}"
 cp -f "$prop" "$out"
 print_message "Prop saved to \"$out\"" info

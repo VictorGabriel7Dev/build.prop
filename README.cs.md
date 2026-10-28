@@ -14,7 +14,7 @@ Verzovaný archiv kompletního `build.prop` každého Pixelu, extrahovaný pří
 
 Dva způsoby, bez nutnosti nastavení:
 
-- **Procházet repozitář**: otevřete [`props/<codename>/`](props/) a vyberte `<codename>_<build_id>.prop`.
+- **Procházet repozitář**: otevřete [`<codename>/`](.) a vyberte `<codename>_<build_id>.prop`.
 - **Stáhnout z vydání**: získejte soubor z nejnovějšího [vydání](https://github.com/VictorGabriel7Dev/build.prop/releases) (se značkou `build-YYYYMMDD`).
 
 Každý `.prop` je kompletní, uspořádaná sada vlastností sestavení pro přesně dané zařízení a sestavení (product, vendor, odm, system, system_ext, system_dlkm a další).
@@ -27,7 +27,7 @@ Chcete-li extrahovat `.prop` lokálně místo jeho stažení, potřebujete prost
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Podporovaná zařízení jsou tovární a OTA obrazy na [Google Android Images](https://developers.google.com/android/images) a [stránkách Beta OTA](https://developer.android.com/about/versions/17/download-ota). Extrakce čte každý oddíl payloadu po jednom (nízká spotřeba paměti) a zpracovává obrazy EROFS, ext4, sparse a boot/init_boot.
@@ -37,7 +37,7 @@ Podporovaná zařízení jsou tovární a OTA obrazy na [Google Android Images](
 Pipeline GitHub Actions (`.github/workflows/build.yml`) udržuje archiv aktuální:
 
 - Běží týdně a na vyžádání přes `workflow_dispatch` se seznamem zařízení odděleným mezerami nebo `all`; každé zařízení se sestavuje paralelně.
-- Extrahuje `.prop`, commituje nové soubory do `props/<codename>/` a publikuje je jako přílohy pod jednou denní značkou (`build-YYYYMMDD`).
+- Extrahuje `.prop`, commituje nové soubory do `<codename>/` a publikuje je jako přílohy pod jednou denní značkou (`build-YYYYMMDD`).
 - Přeskakuje soubory `.prop`, které již byly vydány, a upozorňuje Telegram s klikatelnými odkazy ke stažení.
 
 Forky, které spouštějí pipeline, potřebují dvě tajemství: `TELEGRAM_BOT_TOKEN` (od [@BotFather](https://t.me/BotFather)) a `TELEGRAM_CHAT_ID`.

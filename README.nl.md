@@ -14,7 +14,7 @@ Een geversioneerd archief van de volledige `build.prop` van elke Pixel, rechtstr
 
 Twee manieren, geen installatie nodig:
 
-- **Doorzoek de repository**: open [`props/<codename>/`](props/) en kies `<codename>_<build_id>.prop`.
+- **Doorzoek de repository**: open [`<codename>/`](.) en kies `<codename>_<build_id>.prop`.
 - **Download uit Releases**: pak het bestand uit de nieuwste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (getagd met `build-YYYYMMDD`).
 
 Elke `.prop` is de volledige, geordende set build-eigenschappen voor precies dat apparaat en die build (product, vendor, odm, system, system_ext, system_dlkm en meer).
@@ -27,7 +27,7 @@ Om een `.prop` lokaal te extraheren in plaats van hem te downloaden, heb je een 
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Ondersteunde apparaten zijn de factory- en OTA-images op [Google Android Images](https://developers.google.com/android/images) en de [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). De extractie leest elke payload-partitie één voor één (laag geheugengebruik) en verwerkt EROFS-, ext4-, sparse- en boot/init_boot-images.
@@ -37,7 +37,7 @@ Ondersteunde apparaten zijn de factory- en OTA-images op [Google Android Images]
 Een GitHub Actions-pijplijn (`.github/workflows/build.yml`) houdt het archief actueel:
 
 - Draait wekelijks en op aanvraag via `workflow_dispatch` met een door spaties gescheiden apparatenlijst of `all`; elk apparaat wordt parallel gebouwd.
-- Extraheert de `.prop`, commit nieuwe onder `props/<codename>/` en publiceert ze als assets onder één enkele dagelijkse tag (`build-YYYYMMDD`).
+- Extraheert de `.prop`, commit nieuwe onder `<codename>/` en publiceert ze als assets onder één enkele dagelijkse tag (`build-YYYYMMDD`).
 - Slaat `.prop`-bestanden over die al zijn uitgebracht en stuurt een melding naar Telegram met aanklikbare downloadlinks.
 
 Forks die de pijplijn draaien, hebben twee secrets nodig: `TELEGRAM_BOT_TOKEN` (van [@BotFather](https://t.me/BotFather)) en `TELEGRAM_CHAT_ID`.

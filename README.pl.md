@@ -14,7 +14,7 @@ Wersjonowane archiwum pełnego `build.prop` każdego Pixela, wyodrębnione bezpo
 
 Dwa sposoby, bez konfiguracji:
 
-- **Przeglądaj repozytorium**: otwórz [`props/<codename>/`](props/) i wybierz `<codename>_<build_id>.prop`.
+- **Przeglądaj repozytorium**: otwórz [`<codename>/`](.) i wybierz `<codename>_<build_id>.prop`.
 - **Pobierz z Releases**: pobierz plik z najnowszego [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (oznaczonego tagiem `build-YYYYMMDD`).
 
 Każdy `.prop` to pełny, uporządkowany zestaw właściwości kompilacji dla dokładnie tego urządzenia i tej kompilacji (product, vendor, odm, system, system_ext, system_dlkm i więcej).
@@ -27,7 +27,7 @@ Aby wyodrębnić `.prop` lokalnie, zamiast go pobierać, potrzebujesz środowisk
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Obsługiwane urządzenia to obrazy factory i OTA z [Google Android Images](https://developers.google.com/android/images) oraz [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). Wyodrębnianie odczytuje każdą partycję payload po kolei (niskie zużycie pamięci) i obsługuje obrazy EROFS, ext4, sparse oraz boot/init_boot.
@@ -37,7 +37,7 @@ Obsługiwane urządzenia to obrazy factory i OTA z [Google Android Images](https
 Potok GitHub Actions (`.github/workflows/build.yml`) utrzymuje archiwum w aktualności:
 
 - Uruchamia się co tydzień oraz na żądanie przez `workflow_dispatch` z listą urządzeń rozdzieloną spacjami lub `all`; każde urządzenie jest budowane równolegle.
-- Wyodrębnia `.prop`, zatwierdza nowe pod `props/<codename>/` i publikuje je jako zasoby pod jednym dziennym tagiem (`build-YYYYMMDD`).
+- Wyodrębnia `.prop`, zatwierdza nowe pod `<codename>/` i publikuje je jako zasoby pod jednym dziennym tagiem (`build-YYYYMMDD`).
 - Pomija pliki `.prop` już wydane i powiadamia Telegram klikalnymi linkami do pobrania.
 
 Forki uruchamiające potok potrzebują dwóch sekretów: `TELEGRAM_BOT_TOKEN` (od [@BotFather](https://t.me/BotFather)) i `TELEGRAM_CHAT_ID`.

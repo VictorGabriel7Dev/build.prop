@@ -14,7 +14,7 @@ Một kho lưu trữ theo phiên bản chứa toàn bộ `build.prop` của từ
 
 Hai cách, không cần thiết lập gì:
 
-- **Duyệt kho**: mở [`props/<codename>/`](props/) và chọn `<codename>_<build_id>.prop`.
+- **Duyệt kho**: mở [`<codename>/`](.) và chọn `<codename>_<build_id>.prop`.
 - **Tải từ Releases**: lấy tệp từ [release](https://github.com/VictorGabriel7Dev/build.prop/releases) mới nhất (được gắn thẻ `build-YYYYMMDD`).
 
 Mỗi `.prop` là tập hợp đầy đủ và được sắp xếp các thuộc tính build cho đúng thiết bị và bản build đó (product, vendor, odm, system, system_ext, system_dlkm và nhiều hơn nữa).
@@ -27,7 +27,7 @@ Mỗi `.prop` là tập hợp đầy đủ và được sắp xếp các thuộc
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Các thiết bị được hỗ trợ là những ảnh factory và OTA trên [Google Android Images](https://developers.google.com/android/images) và các [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). Quá trình trích xuất đọc từng phân vùng payload một lần một (ít bộ nhớ) và xử lý các ảnh EROFS, ext4, sparse và boot/init_boot.
@@ -37,7 +37,7 @@ Các thiết bị được hỗ trợ là những ảnh factory và OTA trên [G
 Một pipeline GitHub Actions (`.github/workflows/build.yml`) giữ cho kho lưu trữ luôn cập nhật:
 
 - Chạy hàng tuần, và theo yêu cầu qua `workflow_dispatch` với danh sách thiết bị phân tách bằng khoảng trắng hoặc `all`; mỗi thiết bị được build song song.
-- Trích xuất `.prop`, commit những tệp mới vào `props/<codename>/`, và phát hành chúng dưới dạng tài nguyên dưới một thẻ hằng ngày duy nhất (`build-YYYYMMDD`).
+- Trích xuất `.prop`, commit những tệp mới vào `<codename>/`, và phát hành chúng dưới dạng tài nguyên dưới một thẻ hằng ngày duy nhất (`build-YYYYMMDD`).
 - Bỏ qua các tệp `.prop` đã được phát hành và thông báo qua Telegram kèm các liên kết tải xuống có thể nhấp được.
 
 Các fork chạy pipeline cần hai secret: `TELEGRAM_BOT_TOKEN` (từ [@BotFather](https://t.me/BotFather)) và `TELEGRAM_CHAT_ID`.

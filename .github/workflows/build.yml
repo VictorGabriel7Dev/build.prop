@@ -85,7 +85,7 @@ jobs:
         env:
           GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         run: |
-          prop=$(find props -maxdepth 2 -name "*.prop" -type f -print -quit 2>/dev/null)
+          prop=$(find . -mindepth 2 -maxdepth 2 -name "*.prop" -type f -not -path "./payload_dumper/*" -print -quit 2>/dev/null)
           if [ -z "$prop" ]; then
             echo "has_new=false" >> "$GITHUB_OUTPUT"
             exit 0
@@ -122,9 +122,9 @@ jobs:
 
           prop_hash=$(sha256sum "$prop" | awk '{print $1}')
 
-          # Upload layout: keep the props/<codename>/ path + flat copy for release assets
-          mkdir -p "upload/props/${codename}"
-          cp -f "$prop" "upload/props/${codename}/${name}"
+          # Upload layout: the <codename>/ dir (for the repo) + a flat copy for release assets
+          mkdir -p "upload/${codename}"
+          cp -f "$prop" "upload/${codename}/${name}"
           cp -f "$prop" "upload/${name}"
 
           jq -n \
@@ -186,12 +186,15 @@ jobs:
           # Read ordered device list into a bash array (avoids subshell issues)
           mapfile -t devices < <(echo "$DEVICES_JSON" | jq -r '.[]')
 
-          # 1) Commit the new .prop files into props/<codename>/ in the repo
-          if [ -d new_props/props ]; then
-            cp -rf new_props/props/. props/
+          # 1) Commit the new .prop files into <codename>/ at the repo root
+          CODENAMES=$(for j in new_props/metadata-*.json; do jq -r '.codename' "$j"; done 2>/dev/null | sort -u)
+          for cn in $CODENAMES; do
+            [ -d "new_props/$cn" ] && cp -rf "new_props/$cn" ./
+          done
+          if [ -n "$CODENAMES" ]; then
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add props/
+            git add -- $CODENAMES
             if ! git diff --cached --quiet; then
               git commit -m "props: ${TAG} (${COUNT} new)"
               git push

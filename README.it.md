@@ -14,7 +14,7 @@ Un archivio versionato del `build.prop` completo di ogni Pixel, estratto diretta
 
 Due modi, senza alcuna configurazione:
 
-- **Sfoglia il repository**: apri [`props/<codename>/`](props/) e scegli `<codename>_<build_id>.prop`.
+- **Sfoglia il repository**: apri [`<codename>/`](.) e scegli `<codename>_<build_id>.prop`.
 - **Scarica dalle Releases**: prendi il file dalla [release](https://github.com/VictorGabriel7Dev/build.prop/releases) più recente (con il tag `build-YYYYMMDD`).
 
 Ogni `.prop` è l'insieme completo e organizzato delle proprietà di build per quel preciso dispositivo e build (product, vendor, odm, system, system_ext, system_dlkm e altro).
@@ -27,7 +27,7 @@ Per estrarre un `.prop` localmente invece di scaricarlo, ti serve un ambiente Un
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 I dispositivi supportati sono le immagini di fabbrica e OTA su [Google Android Images](https://developers.google.com/android/images) e sulle [pagine OTA Beta](https://developer.android.com/about/versions/17/download-ota). L'estrazione legge ogni partizione del payload una alla volta (basso consumo di memoria) e gestisce immagini EROFS, ext4, sparse e boot/init_boot.
@@ -37,7 +37,7 @@ I dispositivi supportati sono le immagini di fabbrica e OTA su [Google Android I
 Una pipeline di GitHub Actions (`.github/workflows/build.yml`) mantiene l'archivio aggiornato:
 
 - Viene eseguita settimanalmente, e su richiesta tramite `workflow_dispatch` con un elenco di dispositivi separati da spazi oppure `all`; ogni dispositivo viene compilato in parallelo.
-- Estrae il `.prop`, committa quelli nuovi in `props/<codename>/` e li pubblica come asset sotto un unico tag giornaliero (`build-YYYYMMDD`).
+- Estrae il `.prop`, committa quelli nuovi in `<codename>/` e li pubblica come asset sotto un unico tag giornaliero (`build-YYYYMMDD`).
 - Salta i file `.prop` già pubblicati e notifica Telegram con link di download cliccabili.
 
 I fork che eseguono la pipeline hanno bisogno di due secret: `TELEGRAM_BOT_TOKEN` (da [@BotFather](https://t.me/BotFather)) e `TELEGRAM_CHAT_ID`.

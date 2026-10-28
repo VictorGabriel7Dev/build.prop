@@ -14,7 +14,7 @@
 
 طريقتان، دون الحاجة إلى أي إعداد:
 
-- **تصفَّح المستودع**: افتح [`props/<codename>/`](props/) واختر `<codename>_<build_id>.prop`.
+- **تصفَّح المستودع**: افتح [`<codename>/`](.) واختر `<codename>_<build_id>.prop`.
 - **نزِّل من Releases**: احصل على الملف من أحدث [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (الموسوم بـ `build-YYYYMMDD`).
 
 كل ملف `.prop` هو المجموعة الكاملة والمنظَّمة من خصائص build لذلك الجهاز وذلك الإصدار بالتحديد (product وvendor وodm وsystem وsystem_ext وsystem_dlkm وأكثر).
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 الأجهزة المدعومة هي صور factory وOTA الموجودة على [Google Android Images](https://developers.google.com/android/images) و[صفحات Beta OTA](https://developer.android.com/about/versions/17/download-ota). يقرأ الاستخراج كل قسم payload واحداً تلو الآخر (ذاكرة منخفضة) ويتعامل مع صور EROFS وext4 وsparse وboot/init_boot.
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 يُبقي خط أنابيب GitHub Actions (`.github/workflows/build.yml`) الأرشيف محدَّثاً:
 
 - يعمل أسبوعياً، وعند الطلب عبر `workflow_dispatch` بقائمة أجهزة مفصولة بمسافات أو `all`؛ يُبنى كل جهاز بالتوازي.
-- يستخرج ملف `.prop`، ويُودِع الملفات الجديدة ضمن `props/<codename>/`، وينشرها كأصول ضمن وسم يومي واحد (`build-YYYYMMDD`).
+- يستخرج ملف `.prop`، ويُودِع الملفات الجديدة ضمن `<codename>/`، وينشرها كأصول ضمن وسم يومي واحد (`build-YYYYMMDD`).
 - يتخطى ملفات `.prop` التي سبق إصدارها ويُخطر Telegram بروابط تنزيل قابلة للنقر.
 
 تحتاج النسخ المتفرعة التي تشغّل خط الأنابيب إلى سرّين اثنين: `TELEGRAM_BOT_TOKEN` (من [@BotFather](https://t.me/BotFather)) و`TELEGRAM_CHAT_ID`.

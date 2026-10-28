@@ -14,7 +14,7 @@ Ett versionshanterat arkiv med varje Pixels fullständiga `build.prop`, extraher
 
 Två sätt, ingen konfiguration behövs:
 
-- **Bläddra i förvaret**: öppna [`props/<codename>/`](props/) och välj `<codename>_<build_id>.prop`.
+- **Bläddra i förvaret**: öppna [`<codename>/`](.) och välj `<codename>_<build_id>.prop`.
 - **Ladda ner från Releases**: hämta filen från den senaste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (taggad `build-YYYYMMDD`).
 
 Varje `.prop` är den fullständiga, organiserade uppsättningen byggegenskaper för exakt den enheten och den bygget (product, vendor, odm, system, system_ext, system_dlkm med mera).
@@ -27,7 +27,7 @@ För att extrahera en `.prop` lokalt i stället för att ladda ner den behöver 
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Stödda enheter är factory- och OTA-avbilderna på [Google Android Images](https://developers.google.com/android/images) och [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). Extraktionen läser varje payload-partition en i taget (lågt minnesbehov) och hanterar EROFS-, ext4-, sparse- och boot/init_boot-avbilder.
@@ -37,7 +37,7 @@ Stödda enheter är factory- och OTA-avbilderna på [Google Android Images](http
 En GitHub Actions-pipeline (`.github/workflows/build.yml`) håller arkivet aktuellt:
 
 - Körs varje vecka och på begäran via `workflow_dispatch` med en mellanslagsseparerad enhetslista eller `all`; varje enhet byggs parallellt.
-- Extraherar `.prop`, committar nya under `props/<codename>/` och publicerar dem som tillgångar under en enda daglig tagg (`build-YYYYMMDD`).
+- Extraherar `.prop`, committar nya under `<codename>/` och publicerar dem som tillgångar under en enda daglig tagg (`build-YYYYMMDD`).
 - Hoppar över `.prop`-filer som redan släppts och aviserar Telegram med klickbara nedladdningslänkar.
 
 Forkar som kör pipelinen behöver två hemligheter: `TELEGRAM_BOT_TOKEN` (från [@BotFather](https://t.me/BotFather)) och `TELEGRAM_CHAT_ID`.

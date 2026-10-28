@@ -14,7 +14,7 @@ Her Pixel'in tam `build.prop` dosyasının, doğrudan Google'ın resmi OTA imajl
 
 İki yol, kuruluma gerek yok:
 
-- **Depoya göz atın**: [`props/<codename>/`](props/) dizinini açın ve `<codename>_<build_id>.prop` dosyasını seçin.
+- **Depoya göz atın**: [`<codename>/`](.) dizinini açın ve `<codename>_<build_id>.prop` dosyasını seçin.
 - **Sürümlerden indirin**: dosyayı en son [sürümden](https://github.com/VictorGabriel7Dev/build.prop/releases) alın (`build-YYYYMMDD` etiketli).
 
 Her `.prop`, tam olarak o cihaz ve derleme için eksiksiz, düzenlenmiş derleme özellikleri kümesidir (product, vendor, odm, system, system_ext, system_dlkm ve daha fazlası).
@@ -27,7 +27,7 @@ Bir `.prop` dosyasını indirmek yerine yerel olarak çıkarmak için, Unix benz
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Desteklenen cihazlar, [Google Android Images](https://developers.google.com/android/images) ve [Beta OTA sayfalarındaki](https://developer.android.com/about/versions/17/download-ota) fabrika ve OTA imajlarıdır. Çıkarma işlemi her payload bölümünü teker teker okur (düşük bellek) ve EROFS, ext4, sparse ve boot/init_boot imajlarını işler.
@@ -37,7 +37,7 @@ Desteklenen cihazlar, [Google Android Images](https://developers.google.com/andr
 Bir GitHub Actions ardışık düzeni (`.github/workflows/build.yml`) arşivi güncel tutar:
 
 - Haftalık olarak ve istek üzerine `workflow_dispatch` aracılığıyla boşlukla ayrılmış bir cihaz listesi veya `all` ile çalışır; her cihaz paralel olarak derlenir.
-- `.prop` dosyasını çıkarır, yenilerini `props/<codename>/` altına commitler ve bunları tek bir günlük etiket (`build-YYYYMMDD`) altında varlık olarak yayımlar.
+- `.prop` dosyasını çıkarır, yenilerini `<codename>/` altına commitler ve bunları tek bir günlük etiket (`build-YYYYMMDD`) altında varlık olarak yayımlar.
 - Zaten yayımlanmış `.prop` dosyalarını atlar ve tıklanabilir indirme bağlantılarıyla Telegram'ı bilgilendirir.
 
 Ardışık düzeni çalıştıran çatalların iki gizli değere ihtiyacı vardır: `TELEGRAM_BOT_TOKEN` ([@BotFather](https://t.me/BotFather) üzerinden) ve `TELEGRAM_CHAT_ID`.

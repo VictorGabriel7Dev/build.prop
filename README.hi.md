@@ -14,7 +14,7 @@
 
 दो तरीके, किसी सेटअप की आवश्यकता नहीं:
 
-- **रिपॉज़िटरी ब्राउज़ करें**: [`props/<codename>/`](props/) खोलें और `<codename>_<build_id>.prop` चुनें।
+- **रिपॉज़िटरी ब्राउज़ करें**: [`<codename>/`](.) खोलें और `<codename>_<build_id>.prop` चुनें।
 - **Releases से डाउनलोड करें**: नवीनतम [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (टैग `build-YYYYMMDD`) से फ़ाइल प्राप्त करें।
 
 प्रत्येक `.prop` उस सटीक डिवाइस और build के लिए build प्रॉपर्टीज़ का पूर्ण, व्यवस्थित सेट है (product, vendor, odm, system, system_ext, system_dlkm और अधिक)।
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 समर्थित डिवाइस [Google Android Images](https://developers.google.com/android/images) और [Beta OTA पृष्ठों](https://developer.android.com/about/versions/17/download-ota) पर उपलब्ध factory और OTA इमेज हैं। निष्कर्षण प्रत्येक payload पार्टीशन को एक-एक करके पढ़ता है (कम मेमोरी) और EROFS, ext4, sparse तथा boot/init_boot इमेज को संभालता है।
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 एक GitHub Actions पाइपलाइन (`.github/workflows/build.yml`) संग्रह को वर्तमान रखती है:
 
 - साप्ताहिक रूप से चलती है, और `workflow_dispatch` के माध्यम से मांग पर, स्पेस से अलग की गई डिवाइस सूची या `all` के साथ; प्रत्येक डिवाइस समानांतर में build होता है।
-- `.prop` निकालती है, नई फ़ाइलों को `props/<codename>/` के अंतर्गत कमिट करती है, और उन्हें एक ही दैनिक टैग (`build-YYYYMMDD`) के अंतर्गत एसेट के रूप में प्रकाशित करती है।
+- `.prop` निकालती है, नई फ़ाइलों को `<codename>/` के अंतर्गत कमिट करती है, और उन्हें एक ही दैनिक टैग (`build-YYYYMMDD`) के अंतर्गत एसेट के रूप में प्रकाशित करती है।
 - पहले से रिलीज़ की जा चुकी `.prop` फ़ाइलों को छोड़ देती है और क्लिक करने योग्य डाउनलोड लिंक के साथ Telegram को सूचित करती है।
 
 इस पाइपलाइन को चलाने वाले फ़ोर्क को दो secrets की आवश्यकता होती है: `TELEGRAM_BOT_TOKEN` ([@BotFather](https://t.me/BotFather) से) और `TELEGRAM_CHAT_ID`।

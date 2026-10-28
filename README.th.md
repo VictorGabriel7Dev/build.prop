@@ -14,7 +14,7 @@
 
 สองวิธี ไม่ต้องตั้งค่าใด ๆ:
 
-- **เรียกดูที่เก็บโค้ด**: เปิด [`props/<codename>/`](props/) แล้วเลือก `<codename>_<build_id>.prop`
+- **เรียกดูที่เก็บโค้ด**: เปิด [`<codename>/`](.) แล้วเลือก `<codename>_<build_id>.prop`
 - **ดาวน์โหลดจาก Releases**: ดึงไฟล์จาก [release](https://github.com/VictorGabriel7Dev/build.prop/releases) ล่าสุด (ติดแท็ก `build-YYYYMMDD`)
 
 `.prop` แต่ละไฟล์คือชุดคุณสมบัติ build ฉบับเต็มที่จัดระเบียบแล้วสำหรับอุปกรณ์และ build นั้นโดยเฉพาะ (product, vendor, odm, system, system_ext, system_dlkm และอื่น ๆ)
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 อุปกรณ์ที่รองรับคืออิมเมจ factory และ OTA ที่อยู่บน [Google Android Images](https://developers.google.com/android/images) และ [หน้า Beta OTA](https://developer.android.com/about/versions/17/download-ota) การแยกไฟล์จะอ่านแต่ละพาร์ทิชันของ payload ทีละรายการ (ใช้หน่วยความจำต่ำ) และรองรับอิมเมจแบบ EROFS, ext4, sparse และ boot/init_boot
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 ไปป์ไลน์ GitHub Actions (`.github/workflows/build.yml`) คอยให้คลังเก็บเป็นปัจจุบันอยู่เสมอ:
 
 - ทำงานรายสัปดาห์ และตามคำสั่งผ่าน `workflow_dispatch` ด้วยรายชื่ออุปกรณ์ที่คั่นด้วยช่องว่างหรือ `all` โดยแต่ละอุปกรณ์จะ build แบบขนานกัน
-- แยกไฟล์ `.prop`, commit ไฟล์ใหม่ไว้ภายใต้ `props/<codename>/` และเผยแพร่เป็นแอสเซตภายใต้แท็กรายวันแท็กเดียว (`build-YYYYMMDD`)
+- แยกไฟล์ `.prop`, commit ไฟล์ใหม่ไว้ภายใต้ `<codename>/` และเผยแพร่เป็นแอสเซตภายใต้แท็กรายวันแท็กเดียว (`build-YYYYMMDD`)
 - ข้ามไฟล์ `.prop` ที่เผยแพร่ไปแล้ว และแจ้ง Telegram พร้อมลิงก์ดาวน์โหลดที่คลิกได้
 
 Fork ที่รันไปป์ไลน์นี้ต้องใช้ secret สองรายการ: `TELEGRAM_BOT_TOKEN` (จาก [@BotFather](https://t.me/BotFather)) และ `TELEGRAM_CHAT_ID`

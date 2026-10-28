@@ -14,7 +14,7 @@
 
 دو راه، بدون نیاز به هیچ راه‌اندازی:
 
-- **مرور مخزن**: [`props/<codename>/`](props/) را باز کنید و `<codename>_<build_id>.prop` را انتخاب کنید.
+- **مرور مخزن**: [`<codename>/`](.) را باز کنید و `<codename>_<build_id>.prop` را انتخاب کنید.
 - **دانلود از Releases**: فایل را از آخرین [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (با برچسب `build-YYYYMMDD`) بگیرید.
 
 هر `.prop` مجموعه‌ی کامل و سازمان‌یافته‌ی ویژگی‌های build برای همان دستگاه و build دقیق است (product، vendor، odm، system، system_ext، system_dlkm و بیشتر).
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 دستگاه‌های پشتیبانی‌شده همان ایمیج‌های factory و OTA در [Google Android Images](https://developers.google.com/android/images) و [صفحات Beta OTA](https://developer.android.com/about/versions/17/download-ota) هستند. استخراج هر پارتیشن payload را یکی‌یکی می‌خواند (مصرف حافظه‌ی کم) و ایمیج‌های EROFS، ext4، sparse و boot/init_boot را مدیریت می‌کند.
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 یک خط‌لوله‌ی GitHub Actions (`.github/workflows/build.yml`) آرشیو را به‌روز نگه می‌دارد:
 
 - به‌صورت هفتگی اجرا می‌شود و به‌صورت درخواستی از طریق `workflow_dispatch` با فهرستی از دستگاه‌ها که با فاصله جدا شده‌اند یا `all`؛ هر دستگاه به‌صورت موازی build می‌شود.
-- `.prop` را استخراج می‌کند، موارد جدید را زیر `props/<codename>/` کامیت می‌کند و آن‌ها را به‌عنوان دارایی‌ها زیر یک برچسب روزانه‌ی واحد (`build-YYYYMMDD`) منتشر می‌کند.
+- `.prop` را استخراج می‌کند، موارد جدید را زیر `<codename>/` کامیت می‌کند و آن‌ها را به‌عنوان دارایی‌ها زیر یک برچسب روزانه‌ی واحد (`build-YYYYMMDD`) منتشر می‌کند.
 - از فایل‌های `.prop` که قبلاً منتشر شده‌اند صرف‌نظر می‌کند و تلگرام را با لینک‌های دانلود قابل‌کلیک مطلع می‌سازد.
 
 فورک‌هایی که این خط‌لوله را اجرا می‌کنند به دو secret نیاز دارند: `TELEGRAM_BOT_TOKEN` (از [@BotFather](https://t.me/BotFather)) و `TELEGRAM_CHAT_ID`.

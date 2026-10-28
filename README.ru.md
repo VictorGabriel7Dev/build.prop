@@ -14,7 +14,7 @@
 
 Два способа, настройка не требуется:
 
-- **Просмотр репозитория**: откройте [`props/<codename>/`](props/) и выберите `<codename>_<build_id>.prop`.
+- **Просмотр репозитория**: откройте [`<codename>/`](.) и выберите `<codename>_<build_id>.prop`.
 - **Загрузка из релизов**: возьмите файл из последнего [релиза](https://github.com/VictorGabriel7Dev/build.prop/releases) (с тегом `build-YYYYMMDD`).
 
 Каждый `.prop` - это полный, организованный набор свойств сборки для этого конкретного устройства и сборки (product, vendor, odm, system, system_ext, system_dlkm и другие).
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Поддерживаемые устройства - это заводские и OTA-образы на [Google Android Images](https://developers.google.com/android/images) и [страницах Beta OTA](https://developer.android.com/about/versions/17/download-ota). Извлечение читает каждый раздел payload по одному (низкое потребление памяти) и обрабатывает образы EROFS, ext4, sparse и boot/init_boot.
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 Конвейер GitHub Actions (`.github/workflows/build.yml`) поддерживает архив в актуальном состоянии:
 
 - Запускается еженедельно, а также по требованию через `workflow_dispatch` со списком устройств через пробел или `all`; каждое устройство собирается параллельно.
-- Извлекает `.prop`, коммитит новые файлы в `props/<codename>/` и публикует их как ресурсы под единым ежедневным тегом (`build-YYYYMMDD`).
+- Извлекает `.prop`, коммитит новые файлы в `<codename>/` и публикует их как ресурсы под единым ежедневным тегом (`build-YYYYMMDD`).
 - Пропускает уже выпущенные файлы `.prop` и уведомляет Telegram с кликабельными ссылками для загрузки.
 
 Форкам, запускающим конвейер, нужны два секрета: `TELEGRAM_BOT_TOKEN` (от [@BotFather](https://t.me/BotFather)) и `TELEGRAM_CHAT_ID`.

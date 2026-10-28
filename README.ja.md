@@ -14,7 +14,7 @@
 
 設定不要の 2 つの方法：
 
-- **リポジトリを閲覧する**：[`props/<codename>/`](props/) を開いて `<codename>_<build_id>.prop` を選びます。
+- **リポジトリを閲覧する**：[`<codename>/`](.) を開いて `<codename>_<build_id>.prop` を選びます。
 - **Releases からダウンロードする**：最新の[リリース](https://github.com/VictorGabriel7Dev/build.prop/releases)（`build-YYYYMMDD` でタグ付け）からファイルを取得します。
 
 各 `.prop` は、その正確なデバイスとビルドに対応するビルドプロパティの完全で整理された一式です（product、vendor、odm、system、system_ext、system_dlkm など）。
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 対応デバイスは、[Google Android Images](https://developers.google.com/android/images) および [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota) にあるファクトリーイメージと OTA イメージです。抽出処理は各 payload パーティションを一度に 1 つずつ読み込み（低メモリ）、EROFS、ext4、sparse、boot/init_boot イメージを扱います。
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 GitHub Actions のパイプライン（`.github/workflows/build.yml`）がアーカイブを最新に保ちます：
 
 - 毎週実行され、スペース区切りのデバイスリストまたは `all` を指定して `workflow_dispatch` でオンデマンドにも実行できます。各デバイスは並列でビルドされます。
-- `.prop` を抽出し、新しいものを `props/<codename>/` の下にコミットし、単一の日次タグ（`build-YYYYMMDD`）の下でアセットとして公開します。
+- `.prop` を抽出し、新しいものを `<codename>/` の下にコミットし、単一の日次タグ（`build-YYYYMMDD`）の下でアセットとして公開します。
 - すでにリリース済みの `.prop` ファイルはスキップし、クリック可能なダウンロードリンクとともに Telegram へ通知します。
 
 パイプラインを実行する fork には 2 つのシークレットが必要です：`TELEGRAM_BOT_TOKEN`（[@BotFather](https://t.me/BotFather) から取得）と `TELEGRAM_CHAT_ID`。

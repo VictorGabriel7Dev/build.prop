@@ -14,7 +14,7 @@ Arsip berversi dari `build.prop` lengkap setiap Pixel, diekstrak langsung dari i
 
 Dua cara, tanpa pengaturan:
 
-- **Jelajahi repositori**: buka [`props/<codename>/`](props/) dan pilih `<codename>_<build_id>.prop`.
+- **Jelajahi repositori**: buka [`<codename>/`](.) dan pilih `<codename>_<build_id>.prop`.
 - **Unduh dari Releases**: ambil file dari [rilis](https://github.com/VictorGabriel7Dev/build.prop/releases) terbaru (dengan tag `build-YYYYMMDD`).
 
 Setiap `.prop` adalah kumpulan properti build yang lengkap dan terorganisir untuk perangkat dan build persis tersebut (product, vendor, odm, system, system_ext, system_dlkm dan lainnya).
@@ -27,7 +27,7 @@ Untuk mengekstrak `.prop` secara lokal alih-alih mengunduhnya, Anda memerlukan l
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 Perangkat yang didukung adalah image factory dan OTA di [Google Android Images](https://developers.google.com/android/images) dan [halaman Beta OTA](https://developer.android.com/about/versions/17/download-ota). Ekstraksi membaca setiap partisi payload satu per satu (memori rendah) dan menangani image EROFS, ext4, sparse dan boot/init_boot.
@@ -37,7 +37,7 @@ Perangkat yang didukung adalah image factory dan OTA di [Google Android Images](
 Pipeline GitHub Actions (`.github/workflows/build.yml`) menjaga arsip tetap mutakhir:
 
 - Berjalan mingguan, dan sesuai permintaan melalui `workflow_dispatch` dengan daftar perangkat yang dipisahkan spasi atau `all`; setiap perangkat dibangun secara paralel.
-- Mengekstrak `.prop`, meng-commit yang baru di bawah `props/<codename>/`, dan mempublikasikannya sebagai aset di bawah satu tag harian (`build-YYYYMMDD`).
+- Mengekstrak `.prop`, meng-commit yang baru di bawah `<codename>/`, dan mempublikasikannya sebagai aset di bawah satu tag harian (`build-YYYYMMDD`).
 - Melewati file `.prop` yang sudah dirilis dan memberi tahu Telegram dengan tautan unduhan yang dapat diklik.
 
 Fork yang menjalankan pipeline memerlukan dua secret: `TELEGRAM_BOT_TOKEN` (dari [@BotFather](https://t.me/BotFather)) dan `TELEGRAM_CHAT_ID`.

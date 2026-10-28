@@ -14,7 +14,7 @@
 
 两种方式，无需任何设置：
 
-- **浏览仓库**：打开 [`props/<codename>/`](props/) 并选择 `<codename>_<build_id>.prop`。
+- **浏览仓库**：打开 [`<codename>/`](.) 并选择 `<codename>_<build_id>.prop`。
 - **从 Releases 下载**：从最新的[发布](https://github.com/VictorGabriel7Dev/build.prop/releases)（标记为 `build-YYYYMMDD`）中获取文件。
 
 每个 `.prop` 都是该确切设备和构建的完整、有序的构建属性集合（product、vendor、odm、system、system_ext、system_dlkm 等）。
@@ -27,7 +27,7 @@
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
 ./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
-./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
+./extract_images.sh                                              # -> <codename>/<codename>_<build_id>.prop
 ```
 
 支持的设备是 [Google Android Images](https://developers.google.com/android/images) 以及 [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota) 上的工厂镜像和 OTA 镜像。提取过程逐个读取每个 payload 分区（低内存占用），并处理 EROFS、ext4、sparse 以及 boot/init_boot 镜像。
@@ -37,7 +37,7 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 一条 GitHub Actions 流水线（`.github/workflows/build.yml`）使归档保持最新：
 
 - 每周运行，也可通过 `workflow_dispatch` 按需运行，传入以空格分隔的设备列表或 `all`；每台设备并行构建。
-- 提取 `.prop`，将新文件提交到 `props/<codename>/` 下，并在单个每日标签（`build-YYYYMMDD`）下将它们作为资源发布。
+- 提取 `.prop`，将新文件提交到 `<codename>/` 下，并在单个每日标签（`build-YYYYMMDD`）下将它们作为资源发布。
 - 跳过已发布的 `.prop` 文件，并通过 Telegram 发送带可点击下载链接的通知。
 
 运行该流水线的 fork 需要两个密钥：`TELEGRAM_BOT_TOKEN`（来自 [@BotFather](https://t.me/BotFather)）和 `TELEGRAM_CHAT_ID`。
