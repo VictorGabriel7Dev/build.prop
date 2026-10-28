@@ -24,8 +24,8 @@ Her `.prop`, tam olarak o cihaz ve derleme için eksiksiz, düzenlenmiş derleme
 Bir `.prop` dosyasını indirmek yerine yerel olarak çıkarmak için, Unix benzeri bir ortama (Bash ile Linux veya macOS) ve ayrıca `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` ve `payload_dumper` ile Python ≥3.8 sürümüne ihtiyacınız vardır. `requirements.sh` bağımlılıkları çoğu paket yöneticisinde kurar (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

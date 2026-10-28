@@ -24,8 +24,8 @@ Každý `.prop` je kompletní, uspořádaná sada vlastností sestavení pro př
 Chcete-li extrahovat `.prop` lokálně místo jeho stažení, potřebujete prostředí podobné Unixu (Linux nebo macOS s Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` a Python ≥3.8 s `payload_dumper`. `requirements.sh` nainstaluje závislosti ve většině správců balíčků (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

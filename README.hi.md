@@ -24,8 +24,8 @@
 किसी `.prop` को डाउनलोड करने के बजाय स्थानीय रूप से निकालने के लिए, आपको एक Unix-जैसे वातावरण (Bash के साथ Linux या macOS) के साथ-साथ `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, और `payload_dumper` के साथ Python ≥3.8 की आवश्यकता है। `requirements.sh` अधिकांश पैकेज मैनेजरों में निर्भरताएँ स्थापित करता है (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux)।
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

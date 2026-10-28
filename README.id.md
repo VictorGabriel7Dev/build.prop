@@ -24,8 +24,8 @@ Setiap `.prop` adalah kumpulan properti build yang lengkap dan terorganisir untu
 Untuk mengekstrak `.prop` secara lokal alih-alih mengunduhnya, Anda memerlukan lingkungan mirip Unix (Linux atau macOS dengan Bash) ditambah `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, dan Python ≥3.8 dengan `payload_dumper`. `requirements.sh` memasang dependensi di sebagian besar manajer paket (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

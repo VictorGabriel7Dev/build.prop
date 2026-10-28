@@ -24,8 +24,8 @@
 لاستخراج ملف `.prop` محلياً بدلاً من تنزيله، تحتاج إلى بيئة شبيهة بـ Unix (Linux أو macOS مع Bash) بالإضافة إلى `p7zip-full` و`e2fsprogs` و`erofs-utils` و`lz4` و`cpio` و`dos2unix` و`aria2` و`curl` و`xxd` و`jq`، وPython ≥3.8 مع `payload_dumper`. يقوم `requirements.sh` بتثبيت التبعيات عبر معظم مديري الحزم (apt وpacman وdnf وyum وzypper وapk وxbps وbrew وTermux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

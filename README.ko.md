@@ -24,8 +24,8 @@
 다운로드하는 대신 로컬에서 `.prop`을 추출하려면 Unix 계열 환경(Bash가 있는 Linux 또는 macOS)과 함께 `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, 그리고 `payload_dumper`가 포함된 Python ≥3.8이 필요합니다. `requirements.sh`는 대부분의 패키지 관리자(apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux)에서 의존성을 설치합니다.
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

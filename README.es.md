@@ -24,8 +24,8 @@ Cada `.prop` es el conjunto completo y organizado de propiedades de build de ese
 Para extraer un `.prop` localmente en vez de descargarlo, necesitas un entorno tipo Unix (Linux o macOS con Bash) además de `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` y Python ≥3.8 con `payload_dumper`. El `requirements.sh` instala las dependencias en la mayoría de los gestores de paquetes (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

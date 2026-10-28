@@ -59,6 +59,8 @@ jobs:
         device: ${{ fromJson(needs.prepare.outputs.devices) }}
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: recursive
 
       - name: Install system dependencies
         run: |
@@ -68,7 +70,7 @@ jobs:
 
       - name: Install Python dependencies
         run: |
-          pip3 install payload_dumper
+          pip3 install ./payload_dumper
           which payload_dumper || echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
       - name: Download OTA for ${{ matrix.device }}

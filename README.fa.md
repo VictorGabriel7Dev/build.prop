@@ -24,8 +24,8 @@
 برای استخراج یک `.prop` به‌صورت محلی به‌جای دانلود آن، به یک محیط شبه‌Unix (لینوکس یا macOS با Bash) به‌همراه `p7zip-full`، `e2fsprogs`، `erofs-utils`، `lz4`، `cpio`، `dos2unix`، `aria2`، `curl`، `xxd`، `jq` و Python ≥3.8 با `payload_dumper` نیاز دارید. `requirements.sh` وابستگی‌ها را در بیشتر مدیران بسته نصب می‌کند (apt، pacman، dnf، yum، zypper، apk، xbps، brew، Termux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

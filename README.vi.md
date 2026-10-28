@@ -24,8 +24,8 @@ Mỗi `.prop` là tập hợp đầy đủ và được sắp xếp các thuộc
 Để trích xuất một `.prop` cục bộ thay vì tải xuống, bạn cần một môi trường kiểu Unix (Linux hoặc macOS có Bash) cùng với `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, và Python ≥3.8 có `payload_dumper`. `requirements.sh` cài đặt các phụ thuộc trên hầu hết các trình quản lý gói (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

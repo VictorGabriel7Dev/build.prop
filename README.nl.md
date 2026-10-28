@@ -24,8 +24,8 @@ Elke `.prop` is de volledige, geordende set build-eigenschappen voor precies dat
 Om een `.prop` lokaal te extraheren in plaats van hem te downloaden, heb je een Unix-achtige omgeving nodig (Linux of macOS met Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` en Python ≥3.8 met `payload_dumper`. `requirements.sh` installeert de afhankelijkheden voor de meeste pakketbeheerders (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

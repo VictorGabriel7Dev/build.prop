@@ -24,8 +24,8 @@
 要在本地提取 `.prop` 而不是下载它，你需要一个类 Unix 环境（带 Bash 的 Linux 或 macOS），外加 `p7zip-full`、`e2fsprogs`、`erofs-utils`、`lz4`、`cpio`、`dos2unix`、`aria2`、`curl`、`xxd`、`jq`，以及 Python ≥3.8 和 `payload_dumper`。`requirements.sh` 可在大多数包管理器上安装这些依赖（apt、pacman、dnf、yum、zypper、apk、xbps、brew、Termux）。
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

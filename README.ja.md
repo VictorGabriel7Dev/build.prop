@@ -24,8 +24,8 @@
 ダウンロードする代わりにローカルで `.prop` を抽出するには、Unix 系環境（Bash を備えた Linux または macOS）に加えて、`p7zip-full`、`e2fsprogs`、`erofs-utils`、`lz4`、`cpio`、`dos2unix`、`aria2`、`curl`、`xxd`、`jq`、そして `payload_dumper` を含む Python ≥3.8 が必要です。`requirements.sh` はほとんどのパッケージマネージャー（apt、pacman、dnf、yum、zypper、apk、xbps、brew、Termux）で依存関係をインストールします。
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```

@@ -24,8 +24,8 @@
 หากต้องการแยกไฟล์ `.prop` ในเครื่องเองแทนการดาวน์โหลด คุณต้องมีสภาพแวดล้อมแบบ Unix (Linux หรือ macOS ที่มี Bash) พร้อมกับ `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` และ Python ≥3.8 พร้อม `payload_dumper` โดย `requirements.sh` จะติดตั้ง dependency เหล่านี้ผ่านตัวจัดการแพ็กเกจส่วนใหญ่ (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux)
 
 ```bash
-git clone https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
-pip3 install payload_dumper
+git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
+./requirements.sh
 ./download_latest_ota_build.sh <device_name> [device_name ...]   # e.g. husky  |  cubs grizzly_beta
 ./extract_images.sh                                              # -> props/<codename>/<codename>_<build_id>.prop
 ```
