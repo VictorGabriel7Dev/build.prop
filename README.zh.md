@@ -63,4 +63,4 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`

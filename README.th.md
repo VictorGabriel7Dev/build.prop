@@ -63,4 +63,4 @@ Fork ที่รันไปป์ไลน์นี้ต้องใช้ se
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`

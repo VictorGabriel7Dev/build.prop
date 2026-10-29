@@ -63,4 +63,4 @@ GitHub Actions のパイプライン（`.github/workflows/build.yml`）がアー
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`

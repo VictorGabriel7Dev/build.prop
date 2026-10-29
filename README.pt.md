@@ -63,4 +63,4 @@ Este projeto é um fork de **[Pixel-Props/build.prop](https://github.com/Pixel-P
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`

@@ -63,4 +63,4 @@ Bu proje, OTA'dan prop'a çıkarma ardışık düzenine öncülük eden **[@T3SL
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`

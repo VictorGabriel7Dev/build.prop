@@ -63,4 +63,4 @@ GitHub Actions 파이프라인(`.github/workflows/build.yml`)이 아카이브를
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `device-fingerprint` `play-integrity` `attestation` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
