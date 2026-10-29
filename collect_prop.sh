@@ -72,6 +72,8 @@ mkdir -p "${codename}"
 # ======================================================================
 
 EOF
-  cat "$prop"
+  # só as linhas de propriedade (key=value); descarta QUALQUER comentário do extrator
+  # (ex. o "# Beautiful Pixel Props / By @T3SL4" que o build_props.sh do Tesla injeta)
+  grep -vE '^[[:space:]]*#' "$prop" | grep '='
 } > "$out"
 print_message "Prop saved to \"$out\"" info
