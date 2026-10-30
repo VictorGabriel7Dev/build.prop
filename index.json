@@ -1,0 +1,691 @@
+{
+  "generated": "2026-10-30T00:47:51Z",
+  "devices": {
+    "akita": {
+      "model": "Pixel 8a",
+      "soc": "Google Tensor G3",
+      "first_api_level": 34,
+      "channels": {
+        "release": {
+          "latest": "akita/akita_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "akita/akita_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "dbe8088b2fc9d962a5586b0468123b2fed19810d91efaaa3367705c55bec0d61"
+        },
+        "canary": {
+          "latest": "akita/akita_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "7c94a251d169473bb9d461ae8ae37b6ab84e08cadf8ddf19c0ed8ddcefeb88b3"
+        }
+      }
+    },
+    "blazer": {
+      "model": "Pixel 10 Pro",
+      "soc": "Google Tensor G5",
+      "first_api_level": 36,
+      "channels": {
+        "release": {
+          "latest": "blazer/blazer_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "blazer/blazer_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "2998e8f5a3c59d764e90e5b5f659c156b9acac429d09f11dd5ba1459c917aa81"
+        },
+        "canary": {
+          "latest": "blazer/blazer_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "e4a5e60d44713d3cf425d6f742ff43f47f9df44a65facb7c4d08b98c94a4ff86"
+        }
+      }
+    },
+    "bluejay": {
+      "model": "Pixel 6a",
+      "soc": "Google Tensor",
+      "first_api_level": 32,
+      "channels": {
+        "release": {
+          "latest": "bluejay/bluejay_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "bluejay/bluejay_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "ed6919d7a3db52906b0ac8254fbfc40a87e3289f97149e2c1b465778a0a51204"
+        },
+        "canary": {
+          "latest": "bluejay/bluejay_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "53e01801d63cea605565f748f3a82270bda802c2149dcac530cbe04889efb5c0"
+        }
+      }
+    },
+    "caiman": {
+      "model": "Pixel 9 Pro",
+      "soc": "Google Tensor G4",
+      "first_api_level": 34,
+      "channels": {
+        "release": {
+          "latest": "caiman/caiman_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "caiman/caiman_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "d53bc141ab2c24ad8d03d05674f83d2ca14d5d97f340457af68380fb9c14c18c"
+        },
+        "canary": {
+          "latest": "caiman/caiman_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "f1e9c837828c86b2465960c10f2c2492fcdd00dc2051675a6e2bd12a097f3ef6"
+        }
+      }
+    },
+    "cheetah": {
+      "model": "Pixel 7 Pro",
+      "soc": "Google GS201",
+      "first_api_level": 33,
+      "channels": {
+        "release": {
+          "latest": "cheetah/cheetah_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "cheetah/cheetah_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "bee189ce429b446ae4b1111e3f3d3b3486c3c8a4c6c09b5a9c8945ab22e36147"
+        },
+        "canary": {
+          "latest": "cheetah/cheetah_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "629ea937695f50d90c41228f329eb25ebf4e120db54a820591b672e26ada7dca"
+        }
+      }
+    },
+    "comet": {
+      "model": "Pixel 9 Pro Fold",
+      "soc": "Google Tensor G4",
+      "first_api_level": 34,
+      "channels": {
+        "release": {
+          "latest": "comet/comet_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "comet/comet_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "f8645bb3ddaa4f0bc4f820031469532d177f0c9377de1fe429e3fad9afc8b17a"
+        },
+        "canary": {
+          "latest": "comet/comet_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "bef74abc9378c5da95c9651d68473cc0d8b013423008f8c6133b7891594f2f27"
+        }
+      }
+    },
+    "cubs": {
+      "model": "Pixel 11",
+      "soc": "Google Tensor G6",
+      "first_api_level": 37,
+      "channels": {
+        "release": {
+          "latest": "cubs/cubs_16262255.prop",
+          "build": "CD1A.261005.003",
+          "incremental": "16262255",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        }
+      }
+    },
+    "felix": {
+      "model": "Pixel Fold",
+      "soc": "Google GS201",
+      "first_api_level": 33,
+      "channels": {
+        "release": {
+          "latest": "felix/felix_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "felix/felix_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "1cb1cc88414047599c81f1738c43725640c96fc8c2d796a612514f13ba0dee55"
+        },
+        "canary": {
+          "latest": "felix/felix_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "fcf0de6f9212810b1e867ef9167fb74ee9430625f4aa695bfde7ce0edf63c88e"
+        }
+      }
+    },
+    "frankel": {
+      "model": "Pixel 10",
+      "soc": "Google Tensor G5",
+      "first_api_level": 36,
+      "channels": {
+        "release": {
+          "latest": "frankel/frankel_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "frankel/frankel_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "b77969a438b4a42aec6a897a59613b75b4ae4322d72a17e4cbbabb2736257e79"
+        },
+        "canary": {
+          "latest": "frankel/frankel_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "40272da1ed02cbe415623b2a013a8c7ecd23e987200fb26fcaa9d2e38ffacb30"
+        }
+      }
+    },
+    "grizzly": {
+      "model": "Pixel 11 Pro",
+      "soc": "Google Tensor G6",
+      "first_api_level": 37,
+      "channels": {
+        "release": {
+          "latest": "grizzly/grizzly_16262255.prop",
+          "build": "CD1A.261005.003",
+          "incremental": "16262255",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        }
+      }
+    },
+    "husky": {
+      "model": "Pixel 8 Pro",
+      "soc": "Google Tensor G3",
+      "first_api_level": 34,
+      "channels": {
+        "release": {
+          "latest": "husky/husky_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "husky/husky_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "59ff748472aabcf627d4feaa6f1ab558d059180c3f62a3f95225fb9dba61515c"
+        },
+        "canary": {
+          "latest": "husky/husky_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "ca35c66ff69b76a25eef4b2e2a988fef859445cf7250133a3c0d466dacd09f29"
+        }
+      }
+    },
+    "kodiak": {
+      "model": "Pixel 11 Pro XL",
+      "soc": "Google Tensor G6",
+      "first_api_level": 37,
+      "channels": {
+        "release": {
+          "latest": "kodiak/kodiak_16262255.prop",
+          "build": "CD1A.261005.003",
+          "incremental": "16262255",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        }
+      }
+    },
+    "komodo": {
+      "model": "Pixel 9 Pro XL",
+      "soc": "Google Tensor G4",
+      "first_api_level": 34,
+      "channels": {
+        "release": {
+          "latest": "komodo/komodo_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "komodo/komodo_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "cb85cf28212e2181960cd223764b915eb0902c66c3fee855ce22f85e1656dd5f"
+        },
+        "canary": {
+          "latest": "komodo/komodo_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "9aa654afce66fbb48f8019ccb4ae85bff50ccf5bedd808f2a8f466a1032a99de"
+        }
+      }
+    },
+    "lynx": {
+      "model": "Pixel 7a",
+      "soc": "Google GS201",
+      "first_api_level": 33,
+      "channels": {
+        "release": {
+          "latest": "lynx/lynx_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "lynx/lynx_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "8ac55243db872beaed78c3cfb139bf28dca8bbcc8aced52415da131143e57a48"
+        },
+        "canary": {
+          "latest": "lynx/lynx_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "93545fc1ab061e99e1a9a6d2abcff0146b77fc374b41d4f1554741ef53a51570"
+        }
+      }
+    },
+    "mustang": {
+      "model": "Pixel 10 Pro XL",
+      "soc": "Google Tensor G5",
+      "first_api_level": 36,
+      "channels": {
+        "release": {
+          "latest": "mustang/mustang_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "mustang/mustang_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "b3a201f9e8873d87d2458487536c3b29c87a62524e70bf00b3ba385ae65eb8b6"
+        },
+        "canary": {
+          "latest": "mustang/mustang_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "2d2423be1ec9791ef50726722998c04bb07f5b77c3702c53f606c65c4339dc97"
+        }
+      }
+    },
+    "oriole": {
+      "model": "Pixel 6",
+      "soc": "Google Tensor",
+      "first_api_level": 31,
+      "channels": {
+        "release": {
+          "latest": "oriole/oriole_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "oriole/oriole_beta_16064790.prop",
+          "build": "CP31.260623.012",
+          "incremental": "16064790",
+          "security_patch": "2026-07-05",
+          "android": "17",
+          "vbmeta_digest": "410d1e4f7c37cbbcb1dddc364c391521a7a9773ac127b30a57abb238b13a5482"
+        },
+        "canary": {
+          "latest": "oriole/oriole_canary_16004061.prop",
+          "build": "ZP11.260717.006",
+          "incremental": "16004061",
+          "security_patch": "2026-08-05",
+          "android": "17",
+          "vbmeta_digest": "1dd5959838539a817f70f324c4064203767e34d64a2e85b66b8edb17e072eb2e"
+        }
+      }
+    },
+    "panther": {
+      "model": "Pixel 7",
+      "soc": "Google GS201",
+      "first_api_level": 33,
+      "channels": {
+        "release": {
+          "latest": "panther/panther_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "panther/panther_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "b7efc736c169b6c1158daa6a6f4e6a344dec53306ced80434aac12fdcb271b58"
+        },
+        "canary": {
+          "latest": "panther/panther_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "3101a3a77c50c311eda3472404af1e64960af0aa8dee111cdb831ebb5ff61380"
+        }
+      }
+    },
+    "rango": {
+      "model": "Pixel 10 Pro Fold",
+      "soc": "Google Tensor G5",
+      "first_api_level": 36,
+      "channels": {
+        "release": {
+          "latest": "rango/rango_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "rango/rango_beta_16596456.prop",
+          "build": "CP41.260831.019",
+          "incremental": "16596456",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "413162d38de0299f36e6214f8d3b184b6f0d5ff592f6b49e6cd916f51d272349"
+        },
+        "canary": {
+          "latest": "rango/rango_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "e98a4539b93052fe0d9b4080e02bf6e155ce07f8054a6b00cc74a1b7118e72d5"
+        }
+      }
+    },
+    "raven": {
+      "model": "Pixel 6 Pro",
+      "soc": "Google Tensor",
+      "first_api_level": 31,
+      "channels": {
+        "release": {
+          "latest": "raven/raven_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "raven/raven_beta_16064790.prop",
+          "build": "CP31.260623.012",
+          "incremental": "16064790",
+          "security_patch": "2026-07-05",
+          "android": "17",
+          "vbmeta_digest": "f7b59eb2aeffa1278da8c3baed95131d09a56ef9284e751eac5d719ccf376a3e"
+        },
+        "canary": {
+          "latest": "raven/raven_canary_16004061.prop",
+          "build": "ZP11.260717.006",
+          "incremental": "16004061",
+          "security_patch": "2026-08-05",
+          "android": "17",
+          "vbmeta_digest": "b78cecc19d58c3f43bb236f21a63a709d85ca2f368e54fa21e45db5041e68d17"
+        }
+      }
+    },
+    "shiba": {
+      "model": "Pixel 8",
+      "soc": "Google Tensor G3",
+      "first_api_level": 34,
+      "channels": {
+        "release": {
+          "latest": "shiba/shiba_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "shiba/shiba_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "0de7a8334b843fe2b6f4a769f0a9921697f2181636a3a23713f6d23b2e64bb4b"
+        },
+        "canary": {
+          "latest": "shiba/shiba_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "e01656969c94fd5cd5ed96f5d3304437fed7b4dfb1b260fa5a9ecfd5be448c09"
+        }
+      }
+    },
+    "stallion": {
+      "model": "Pixel 10a",
+      "soc": "Google Tensor G4",
+      "first_api_level": 35,
+      "channels": {
+        "release": {
+          "latest": "stallion/stallion_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "stallion/stallion_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "99db288ed700995dcf06a83c0912b96906f56251d0b84c5f9b1ea175a54c351e"
+        },
+        "canary": {
+          "latest": "stallion/stallion_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "68d8b2c3c42cc8d238c81221af56a565db73775f345f3d649c3df2a06d3d8a68"
+        }
+      }
+    },
+    "tangorpro": {
+      "model": "Pixel Tablet",
+      "soc": "Google GS201",
+      "first_api_level": 33,
+      "channels": {
+        "release": {
+          "latest": "tangorpro/tangorpro_16269273.prop",
+          "build": "CP3A.261005.002.A1",
+          "incremental": "16269273",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "tangorpro/tangorpro_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "dd4f02ee0b7126ff2cb877b3e555c00c4b0f4de9b8259f0d0ae7e049334a42e2"
+        },
+        "canary": {
+          "latest": "tangorpro/tangorpro_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "84c6784d68f7dbfca84df595460d492b65e8ed847c7461cb2666d3578d68ec63"
+        }
+      }
+    },
+    "tegu": {
+      "model": "Pixel 9a",
+      "soc": "Google Tensor G4",
+      "first_api_level": 35,
+      "channels": {
+        "release": {
+          "latest": "tegu/tegu_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "tegu/tegu_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "0ef19d1f2fc16e1b9c2b2e0c48bb4a2479d49a9c146a3f88b0972ef3975c14d1"
+        },
+        "canary": {
+          "latest": "tegu/tegu_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "da948fb6ae21b6046ef161407501a5259dc58fa92aa4b27360461a7c62937ed2"
+        }
+      }
+    },
+    "tokay": {
+      "model": "Pixel 9",
+      "soc": "Google Tensor G4",
+      "first_api_level": 34,
+      "channels": {
+        "release": {
+          "latest": "tokay/tokay_16271449.prop",
+          "build": "CP3A.261005.005",
+          "incremental": "16271449",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "tokay/tokay_beta_16708287.prop",
+          "build": "DP11.261016.003",
+          "incremental": "16708287",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "a079981f39fdedbc7055664a8b36e636e2bdf6583095489413ba3e6eea11d338"
+        },
+        "canary": {
+          "latest": "tokay/tokay_canary_16484274.prop",
+          "build": "ZP11.260918.007",
+          "incremental": "16484274",
+          "security_patch": "2026-10-05",
+          "android": "17",
+          "vbmeta_digest": "f393bd59c26e9c65d683a1ebe231a9a6001539663ddde37d6551a6083b9ed3ef"
+        }
+      }
+    },
+    "yogi": {
+      "model": "Pixel 11 Pro Fold",
+      "soc": "Google Tensor G6",
+      "first_api_level": 37,
+      "channels": {
+        "release": {
+          "latest": "yogi/yogi_16262255.prop",
+          "build": "CD1A.261005.003",
+          "incremental": "16262255",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        }
+      }
+    }
+  }
+}

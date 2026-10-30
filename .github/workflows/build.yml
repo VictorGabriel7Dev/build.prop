@@ -217,6 +217,8 @@ jobs:
             git config user.name  "github-actions[bot]"
             git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
             git add -- $CODENAMES
+            # regenerate index.json so it always matches the .prop in the tree
+            python3 gen_index.py . && git add index.json
             if ! git diff --cached --quiet; then
               git commit -m "props: ${TAG} (${COUNT} new)"
               git push
