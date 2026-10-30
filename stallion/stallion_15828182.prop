@@ -46,6 +46,7 @@ ro.board.api_frozen=true
 ro.board.api_level=202604
 ro.board.platform=zumapro
 ro.boot.dynamic_partitions=true
+ro.boot.vbmeta.digest=23cf565b5be55de01b6a12ee3edd5ac1ff7adee0c05ce7bc7a914fc26f3d13af
 ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay
 ro.build.ab_update=true
 ro.build.backported_fixes.alias_bitset.long_list=114

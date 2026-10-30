@@ -45,6 +45,7 @@ ro.board.api_frozen=true
 ro.board.api_level=202604
 ro.board.platform=laguna
 ro.boot.dynamic_partitions=true
+ro.boot.vbmeta.digest=8bb77c862dd42eda95ce182b2a2b01a7eb8d9e4b22293b9a1a374c4febd2abe2
 ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay
 ro.build.ab_update=true
 ro.build.backported_fixes.alias_bitset.long_list=114

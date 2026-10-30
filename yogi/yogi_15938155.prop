@@ -44,6 +44,7 @@ ro.board.api_frozen=true
 ro.board.api_level=202604
 ro.board.platform=malibu
 ro.boot.dynamic_partitions=true
+ro.boot.vbmeta.digest=da0638974c323d259b5ba2ced3bed107c805b61b90adc3ac99c9c20cae4d89a2
 ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay
 ro.build.ab_update=true
 ro.build.backported_fixes.alias_bitset.long_list=114

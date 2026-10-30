@@ -36,6 +36,7 @@ ro.board.api_frozen=true
 ro.board.api_level=202604
 ro.board.platform=gs101
 ro.boot.dynamic_partitions=true
+ro.boot.vbmeta.digest=e963a7d9dbf1fcb5ca975f841a56d865f169571903a1731aec32ebfafa7a53fd
 ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay
 ro.build.ab_update=true
 ro.build.backported_fixes.alias_bitset.long_list=114

@@ -47,6 +47,7 @@ ro.board.api_level=202604
 ro.board.boot_timeout=300
 ro.board.platform=laguna
 ro.boot.dynamic_partitions=true
+ro.boot.vbmeta.digest=c0fd80fa0fa8bbc80d9924feebd0658eeedb6dc174bfedc7ee784297cbac0d76
 ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay
 ro.build.ab_update=true
 ro.build.backported_fixes.alias_bitset.long_list=114

@@ -40,6 +40,7 @@ ro.board.api_frozen=true
 ro.board.api_level=202604
 ro.board.platform=gs201
 ro.boot.dynamic_partitions=true
+ro.boot.vbmeta.digest=085091a853acb6974ec2a8840a7dab0c32fd2bd319cbe739fbeb26df11556def
 ro.boot.vendor.overlay.theme=com.android.internal.systemui.navbar.gestural;com.google.android.systemui.gxoverlay
 ro.bootanim.set_orientation_4619827677550801152=ORIENTATION_270
 ro.build.ab_update=true

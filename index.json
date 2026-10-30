@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-30T10:58:49Z",
+  "generated": "2026-10-30T11:19:52Z",
   "devices": {
     "akita": {
       "model": "Pixel 8a",
@@ -11,7 +11,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "cb17bc7fed666bec652dfb3492c6245cb8b4f2aa9ee1641a1cdfe078b2925a4c"
         },
         "beta": {
           "latest": "akita/akita_beta_16708287.prop",
@@ -41,7 +42,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "005ecde565614015eacfb8ccb5ed77d554e5fe0a6d5a9df3744cea65baa09ad0"
         },
         "beta": {
           "latest": "blazer/blazer_beta_16708287.prop",
@@ -71,7 +73,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "e963a7d9dbf1fcb5ca975f841a56d865f169571903a1731aec32ebfafa7a53fd"
         },
         "beta": {
           "latest": "bluejay/bluejay_beta_16708287.prop",
@@ -101,7 +104,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "a8bbdc1c39caba938781d0984e6a3db0ffa6b715c4d3fc46e0a729340110c70d"
         },
         "beta": {
           "latest": "caiman/caiman_beta_16708287.prop",
@@ -131,7 +135,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "b702cd181a202e360c246ddd09d0be85562a257994aae70c724c5ddf0a35e3bf"
         },
         "beta": {
           "latest": "cheetah/cheetah_beta_16708287.prop",
@@ -161,7 +166,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "744c0fc20bfb1296b529a25e907d35fd1a11cbb155f15f2395bfaa4d559c0ee9"
         },
         "beta": {
           "latest": "comet/comet_beta_16708287.prop",
@@ -191,7 +197,8 @@
           "build": "CD1A.261005.003.B1",
           "incremental": "16433324",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "841e1ebca282a704278918182be940554d1784f6c72adec397f447642a29d9e9"
         },
         "beta": {
           "latest": "cubs/cubs_beta_16730940.prop",
@@ -221,7 +228,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "d256d92db7e8a6ee3f85fbe391aaaf541278a6a0702ca3a38655a68a73c19bc7"
         },
         "beta": {
           "latest": "felix/felix_beta_16708287.prop",
@@ -251,7 +259,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "d3aa69e37b25b723279dd628f936a732150016cf18262bd06e72d4d07212d866"
         },
         "beta": {
           "latest": "frankel/frankel_beta_16708287.prop",
@@ -281,7 +290,8 @@
           "build": "CD1A.261005.003.B1",
           "incremental": "16433324",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "84848b7962158a75323280dbdca3413f5413ac8d754b91d11b54cfd9bc9ccf16"
         },
         "beta": {
           "latest": "grizzly/grizzly_beta_16730940.prop",
@@ -311,7 +321,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "c1b2e8b637f69c52f62fea146b7f3f4167d8f0fa8e2f2bbd76548de7d5809c2f"
         },
         "beta": {
           "latest": "husky/husky_beta_16708287.prop",
@@ -341,7 +352,8 @@
           "build": "CD1A.261005.003.B1",
           "incremental": "16433324",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "a0302c0928ec51236678e6b16e232dd97f5a441260a2c3bc9fa924c0339a2507"
         },
         "beta": {
           "latest": "kodiak/kodiak_beta_16730940.prop",
@@ -371,7 +383,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "2a968cedb7d0fd53a819730e77ff9312ec9261da11cf4d83cb71e52521171ac2"
         },
         "beta": {
           "latest": "komodo/komodo_beta_16708287.prop",
@@ -401,7 +414,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "dd39ba65c94a24c482c22e1a17892bddfba47c30c3eca00f582f11baf3d4df42"
         },
         "beta": {
           "latest": "lynx/lynx_beta_16708287.prop",
@@ -431,7 +445,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "37c3cd63bdcac46053b89f98b7484100952b564448d17b28417761f78261706d"
         },
         "beta": {
           "latest": "mustang/mustang_beta_16708287.prop",
@@ -461,7 +476,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "a9880cfc8b0dada0b3905679bdbe88b76d93f07174df26d880b5dbfbcc91e6c1"
         },
         "beta": {
           "latest": "oriole/oriole_beta_16064790.prop",
@@ -491,7 +507,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "62980a3e921e5e9534a5bde748a7a7615c2b0748dfe5237dfcaa16ba77e9d5b2"
         },
         "beta": {
           "latest": "panther/panther_beta_16708287.prop",
@@ -521,7 +538,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "1933d4189e28d9aae75cea6d050c95c709a588e2b2a5a874346cf957f119b20e"
         },
         "beta": {
           "latest": "rango/rango_beta_16708287.prop",
@@ -551,7 +569,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "f93150e0e1eee719047cd3b965cb767995378fafad793dea324b01fa648bb8bf"
         },
         "beta": {
           "latest": "raven/raven_beta_16064790.prop",
@@ -581,7 +600,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "ef9a42b7a175f6ee454ad887e83230a75f0afa32bb448e1996baffcdf4ac792d"
         },
         "beta": {
           "latest": "shiba/shiba_beta_16708287.prop",
@@ -611,7 +631,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "9a6f568ea8d090e03a2b6b1d4c6419bb3b6d20da00bfe84b12acd1276b1190e3"
         },
         "beta": {
           "latest": "stallion/stallion_beta_16708287.prop",
@@ -641,7 +662,8 @@
           "build": "CP3A.261005.002.A1",
           "incremental": "16269273",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "ddd8ce81fb43609548592a7d66e41d446ba12741f68f7e155f472871a4b937d7"
         },
         "beta": {
           "latest": "tangorpro/tangorpro_beta_16708287.prop",
@@ -671,7 +693,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "8d201666d0dd4449c24fa862771535187382ce21e66b81a9d499ffc1b201d074"
         },
         "beta": {
           "latest": "tegu/tegu_beta_16708287.prop",
@@ -701,7 +724,8 @@
           "build": "CP3A.261005.005",
           "incremental": "16271449",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "63696163d17569800ff3be642c8b906649e5580d7542046dd88695c8afe50483"
         },
         "beta": {
           "latest": "tokay/tokay_beta_16708287.prop",
@@ -731,7 +755,8 @@
           "build": "CD1A.261005.003.B1",
           "incremental": "16433324",
           "security_patch": "2026-10-05",
-          "android": "17"
+          "android": "17",
+          "vbmeta_digest": "f63a14b31fb6c2e38174cc14931479cd18cf2d1f686c6e47f7ca5c284e672a70"
         },
         "beta": {
           "latest": "yogi/yogi_beta_16730940.prop",
