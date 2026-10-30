@@ -23,9 +23,10 @@
 name: Build and Release Pixel Props
 
 on:
-  schedule:
-    # Run every Sunday at 00:00 UTC
-    - cron: '0 0 * * 0'
+  # Scheduled auto-build is intentionally disabled: the authoritative build.prop
+  # corpus is produced out-of-band (full partitions + vbmeta.digest) and pushed here.
+  # This workflow stays as a generic, manual-only fallback (dispatch) that produces a
+  # basic latest-build .prop; it is NOT the source of the published corpus.
   workflow_dispatch:
     inputs:
       devices:
