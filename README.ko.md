@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Google의 OTA 이미지에서 바로 가져온 실제 Pixel `.prop` 파일을 탐색할 수 있고 자동으로 업데이트되는 아카이브*
+*Google의 공식 이미지에서 바로 가져온 실제 Pixel `build.prop` 데이터를 탐색할 수 있고 자동으로 업데이트되는 아카이브*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-각 Pixel의 전체 `build.prop`을 버전별로 보관하는 아카이브로, Google 공식 OTA 이미지에서 직접 추출하여 자동으로 최신 상태를 유지합니다. 모든 기기의 `.prop`은 저장소에 보관되고 릴리스 자산으로 게시되므로, 어떠한 도구도 필요 없이 바로 탐색하거나 다운로드할 수 있습니다.
+최근의 모든 Pixel에 대해 **각 채널의 최근 4개 빌드**(stable, beta, canary)를 버전별로 보관하는 아카이브로, Google 공식 팩토리 이미지와 OTA 이미지에서 직접 추출합니다. 각 항목은 **전체** `build.prop`으로, **모든 파티션**(system, system_ext, product, vendor, odm 및 `_dlkm` 이미지)에 걸쳐 병합되며 **`ro.boot.vbmeta.digest`**(verified boot 해시)를 담고 있습니다. 모든 것이 저장소에 보관되고, 머신으로 읽을 수 있는 `index.json`에 색인되며, 릴리스 자산으로 게시됩니다. 어떠한 도구도 필요하지 않습니다.
 
-## 📥 Get a `.prop`
+## 📥 Get the data
 
-설정이 필요 없는 두 가지 방법:
+설정이 필요 없는 세 가지 방법:
 
-- **저장소 탐색하기**: [`<codename>/`](.)를 열고 `<codename>_<build_id>.prop`을 선택하세요.
-- **Releases에서 다운로드하기**: 최신 [릴리스](https://github.com/VictorGabriel7Dev/build.prop/releases)(`build-YYYYMMDD`로 태그됨)에서 파일을 받으세요.
+- **저장소 탐색하기**: [`<codename>/`](.)를 열고 파일을 선택하세요. 채널별 명명 규칙:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`**: 각 기기 → 채널 → 최신 빌드를 매핑하는 머신 판독용 매니페스트로, `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental`, `vbmeta_digest`를 포함합니다. 자동화와 도구 연동에 이상적입니다.
+- **Releases**: 최신 [릴리스](https://github.com/VictorGabriel7Dev/build.prop/releases)(`build-YYYYMMDD`로 태그됨)에서 전체 코퍼스를 단일 `.zip`(및 `index.json`)으로 다운로드하세요.
 
-각 `.prop`은 해당 기기와 빌드에 정확히 대응하는, 완전하고 정리된 빌드 속성 집합입니다(product, vendor, odm, system, system_ext, system_dlkm 등).
+각 `.prop`은 해당 기기와 빌드에 정확히 대응하는, 완전하고 정리된 속성 집합입니다 - 모든 파티션과 함께 `ro.boot.vbmeta.digest`도 포함합니다.
 
-## 🔧 Build it yourself
+## 🗂️ What's inside
 
-다운로드하는 대신 로컬에서 `.prop`을 추출하려면 Unix 계열 환경(Bash가 있는 Linux 또는 macOS)과 함께 `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, 그리고 `payload_dumper`가 포함된 Python ≥3.8이 필요합니다. `requirements.sh`는 대부분의 패키지 관리자(apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux)에서 의존성을 설치합니다.
+- **최근의 모든 Pixel 기기**(Pixel 6 및 이후 기종).
+- **기기당 세 개의 채널** - stable, beta, canary, 각각의 최신 빌드(Google이 실제로 게시하는 내용에 따라 다름. 일부 신규 기기는 canary에 아직 빌드가 한두 개뿐일 수 있습니다).
+- **전체 `build.prop`**, 빌드당 약 300-390개의 속성으로, 모든 파티션에서 병합됩니다.
+- **`vbmeta.digest`**(verified boot 해시)가 속성과 함께 저장됩니다.
+
+## 🔧 Build one yourself
+
+다운로드하는 대신 로컬에서 단일 `.prop`을 추출하려면 Unix 계열 환경(Bash가 있는 Linux 또는 macOS)과 함께 `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, 그리고 `payload_dumper`가 포함된 Python ≥3.8이 필요합니다. `requirements.sh`는 대부분의 패키지 관리자(apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux)에서 의존성을 설치합니다.
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ## 🤖 Automation
 
-GitHub Actions 파이프라인(`.github/workflows/build.yml`)이 아카이브를 최신 상태로 유지합니다:
+아카이브는 자동으로 최신 상태를 유지합니다: Google이 새 빌드를 게시하면 추출되고(전체, 모든 파티션, `vbmeta.digest` 포함), 새로운 `.prop`이 `<codename>/` 아래에 커밋되며, `index.json`이 갱신되고, 날짜가 붙은 릴리스(`build-YYYYMMDD`)가 생성되어 관찰자들이 모든 업데이트 물결마다 알림을 받습니다.
 
-- 매주 실행되며, 공백으로 구분된 기기 목록 또는 `all`을 사용해 `workflow_dispatch`로 필요할 때도 실행할 수 있습니다. 각 기기는 병렬로 빌드됩니다.
-- `.prop`을 추출하고, 새로운 것들을 `<codename>/` 아래에 커밋하며, 단일 일일 태그(`build-YYYYMMDD`) 아래에 자산으로 게시합니다.
-- 이미 릴리스된 `.prop` 파일은 건너뛰고, 클릭 가능한 다운로드 링크와 함께 Telegram으로 알립니다.
-
-파이프라인을 실행하는 fork에는 두 개의 시크릿이 필요합니다: `TELEGRAM_BOT_TOKEN`([@BotFather](https://t.me/BotFather)에서 발급)과 `TELEGRAM_CHAT_ID`.
+범용이고 온디맨드인 `.github/workflows/build.yml`(`workflow_dispatch`)도 기기의 최신 `.prop`을 수동으로 빌드하기 위한 대체 수단으로 제공됩니다.
 
 ## Acknowledgements
 
@@ -63,4 +70,4 @@ GitHub Actions 파이프라인(`.github/workflows/build.yml`)이 아카이브를
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

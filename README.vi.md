@@ -2,22 +2,33 @@
 
 # Pixel Prop Builder
 
-*Một kho lưu trữ có thể duyệt, tự động cập nhật các tệp `.prop` Pixel thật, lấy thẳng từ các ảnh OTA của Google*
+*Một kho lưu trữ có thể duyệt, tự động cập nhật dữ liệu `build.prop` Pixel thật, lấy thẳng từ các ảnh chính thức của Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Một kho lưu trữ theo phiên bản chứa toàn bộ `build.prop` của từng máy Pixel, được trích xuất trực tiếp từ các ảnh OTA chính thức của Google và tự động giữ cho luôn cập nhật. Tệp `.prop` của mỗi thiết bị được lưu trong kho và được phát hành dưới dạng tài nguyên release, sẵn sàng để duyệt hoặc tải xuống mà không cần bất kỳ công cụ nào.
+Một kho lưu trữ theo phiên bản gồm **4 bản build gần nhất của mỗi kênh** (stable, beta và canary) cho mọi máy Pixel gần đây, được trích xuất trực tiếp từ các ảnh factory và OTA chính thức của Google. Mỗi mục là tệp `build.prop` **đầy đủ**, được gộp từ **mọi phân vùng** (system, system_ext, product, vendor, odm và các ảnh `_dlkm`), và mang theo **`ro.boot.vbmeta.digest`** (hash verified boot). Mọi thứ được lưu trong kho, được lập chỉ mục trong một `index.json` mà máy đọc được, và được phát hành dưới dạng tài nguyên release. Không cần công cụ nào.
 
-## 📥 Get a `.prop`
+## 📥 Get the data
 
-Hai cách, không cần thiết lập gì:
+Ba cách, không cần thiết lập gì:
 
-- **Duyệt kho**: mở [`<codename>/`](.) và chọn `<codename>_<build_id>.prop`.
-- **Tải từ Releases**: lấy tệp từ [release](https://github.com/VictorGabriel7Dev/build.prop/releases) mới nhất (được gắn thẻ `build-YYYYMMDD`).
+- **Duyệt kho** - mở [`<codename>/`](.) và chọn một tệp. Đặt tên theo kênh:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - một manifest mà máy đọc được, ánh xạ mỗi thiết bị → kênh → bản build mới nhất, với `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` và `vbmeta_digest`. Lý tưởng cho tự động hóa và công cụ.
+- **Releases** - tải toàn bộ kho ngữ liệu dưới dạng một tệp `.zip` duy nhất (kèm `index.json`) từ [release](https://github.com/VictorGabriel7Dev/build.prop/releases) mới nhất (được gắn thẻ `build-YYYYMMDD`).
 
-Mỗi `.prop` là tập hợp đầy đủ và được sắp xếp các thuộc tính build cho đúng thiết bị và bản build đó (product, vendor, odm, system, system_ext, system_dlkm và nhiều hơn nữa).
+Mỗi `.prop` là tập hợp đầy đủ và được sắp xếp các thuộc tính cho đúng thiết bị và bản build đó - tất cả phân vùng, cộng với `ro.boot.vbmeta.digest`.
+
+## 🗂️ What's inside
+
+- **Mọi thiết bị Pixel gần đây** (Pixel 6 trở lên).
+- **Ba kênh cho mỗi thiết bị** - stable, beta và canary, các bản build mới nhất của mỗi kênh (tùy theo những gì Google thực sự phát hành; một số thiết bị hoàn toàn mới vẫn chỉ có một hoặc hai bản build trên canary).
+- **`build.prop` đầy đủ** cho mỗi bản build (~300-390 thuộc tính), được gộp từ tất cả phân vùng.
+- **`vbmeta.digest`** (hash verified boot) được lưu cùng với các thuộc tính.
 
 ## 🔧 Build it yourself
 
@@ -34,13 +45,9 @@ Các thiết bị được hỗ trợ là những ảnh factory và OTA trên [G
 
 ## 🤖 Automation
 
-Một pipeline GitHub Actions (`.github/workflows/build.yml`) giữ cho kho lưu trữ luôn cập nhật:
+Kho lưu trữ tự động được giữ cập nhật: khi Google phát hành các bản build mới, chúng được trích xuất (đầy đủ, tất cả phân vùng, kèm `vbmeta.digest`), các tệp `.prop` mới được commit vào `<codename>/`, `index.json` được làm mới, và một release có ngày tháng (`build-YYYYMMDD`) được tạo để những người theo dõi được thông báo về mỗi đợt.
 
-- Chạy hàng tuần, và theo yêu cầu qua `workflow_dispatch` với danh sách thiết bị phân tách bằng khoảng trắng hoặc `all`; mỗi thiết bị được build song song.
-- Trích xuất `.prop`, commit những tệp mới vào `<codename>/`, và phát hành chúng dưới dạng tài nguyên dưới một thẻ hằng ngày duy nhất (`build-YYYYMMDD`).
-- Bỏ qua các tệp `.prop` đã được phát hành và thông báo qua Telegram kèm các liên kết tải xuống có thể nhấp được.
-
-Các fork chạy pipeline cần hai secret: `TELEGRAM_BOT_TOKEN` (từ [@BotFather](https://t.me/BotFather)) và `TELEGRAM_CHAT_ID`.
+Một `.github/workflows/build.yml` tổng quát, chạy theo yêu cầu cũng có sẵn (`workflow_dispatch`) như một phương án dự phòng thủ công để build `.prop` mới nhất của một thiết bị.
 
 ## Acknowledgements
 
@@ -63,4 +70,4 @@ Dự án này là một fork của **[Pixel-Props/build.prop](https://github.com
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

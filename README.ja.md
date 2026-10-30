@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Google の OTA イメージから直接取得した、本物の Pixel `.prop` ファイルを閲覧でき、自動更新されるアーカイブ*
+*Google の公式イメージから直接取得した、本物の Pixel `build.prop` データを閲覧でき、自動更新されるアーカイブ*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-各 Pixel の完全な `build.prop` をバージョン管理してアーカイブしたリポジトリです。Google 公式の OTA イメージから直接抽出し、自動的に最新の状態に保たれます。各デバイスの `.prop` はリポジトリに保存され、リリースアセットとして公開されるため、ツールなしで閲覧やダウンロードができます。
+最近の各 Pixel について **各チャンネルの直近 4 ビルド**（stable、beta、canary）をバージョン管理してアーカイブしたリポジトリで、Google 公式のファクトリーイメージと OTA イメージから直接抽出しています。各エントリは**完全な** `build.prop` であり、**すべてのパーティション**（system、system_ext、product、vendor、odm、および `_dlkm` イメージ）を横断してマージされ、**`ro.boot.vbmeta.digest`**（verified boot ハッシュ）を含みます。すべてがリポジトリに保存され、機械可読の `index.json` にインデックスされ、リリースアセットとして公開されます。ツールは不要です。
 
-## 📥 Get a `.prop`
+## 📥 Get the data
 
-設定不要の 2 つの方法：
+セットアップ不要の 3 つの方法：
 
-- **リポジトリを閲覧する**：[`<codename>/`](.) を開いて `<codename>_<build_id>.prop` を選びます。
-- **Releases からダウンロードする**：最新の[リリース](https://github.com/VictorGabriel7Dev/build.prop/releases)（`build-YYYYMMDD` でタグ付け）からファイルを取得します。
+- **リポジトリを閲覧する**：[`<codename>/`](.) を開いてファイルを選びます。チャンネルごとの命名：
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`**：各デバイス → チャンネル → 最新ビルドを対応づける機械可読のマニフェストで、`model`、`soc`、`first_api_level`、`security_patch`、`android`、`build`、`incremental`、`vbmeta_digest` を含みます。自動化やツール連携に最適です。
+- **Releases**：最新の[リリース](https://github.com/VictorGabriel7Dev/build.prop/releases)（`build-YYYYMMDD` でタグ付け）から、コーパス全体を単一の `.zip`（および `index.json`）としてダウンロードします。
 
-各 `.prop` は、その正確なデバイスとビルドに対応するビルドプロパティの完全で整理された一式です（product、vendor、odm、system、system_ext、system_dlkm など）。
+各 `.prop` は、その正確なデバイスとビルドに対応するプロパティの完全で整理された一式です - すべてのパーティションに加え、`ro.boot.vbmeta.digest` も含みます。
 
-## 🔧 Build it yourself
+## 🗂️ What's inside
 
-ダウンロードする代わりにローカルで `.prop` を抽出するには、Unix 系環境（Bash を備えた Linux または macOS）に加えて、`p7zip-full`、`e2fsprogs`、`erofs-utils`、`lz4`、`cpio`、`dos2unix`、`aria2`、`curl`、`xxd`、`jq`、そして `payload_dumper` を含む Python ≥3.8 が必要です。`requirements.sh` はほとんどのパッケージマネージャー（apt、pacman、dnf、yum、zypper、apk、xbps、brew、Termux）で依存関係をインストールします。
+- **最近の各 Pixel デバイス**（Pixel 6 以降）。
+- **デバイスごとに 3 チャンネル** - stable、beta、canary、それぞれの最新ビルド（Google が実際に公開している内容に依存します。発売直後のデバイスでは canary にまだ 1～2 ビルドしかない場合もあります）。
+- **完全な `build.prop`**、ビルドごとに約 300-390 個のプロパティで、すべてのパーティションからマージされています。
+- **`vbmeta.digest`**（verified boot ハッシュ）がプロパティと並んで保存されます。
+
+## 🔧 Build one yourself
+
+ダウンロードする代わりにローカルで単一の `.prop` を抽出するには、Unix 系環境（Bash を備えた Linux または macOS）に加えて、`p7zip-full`、`e2fsprogs`、`erofs-utils`、`lz4`、`cpio`、`dos2unix`、`aria2`、`curl`、`xxd`、`jq`、そして `payload_dumper` を含む Python ≥3.8 が必要です。`requirements.sh` はほとんどのパッケージマネージャー（apt、pacman、dnf、yum、zypper、apk、xbps、brew、Termux）で依存関係をインストールします。
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ## 🤖 Automation
 
-GitHub Actions のパイプライン（`.github/workflows/build.yml`）がアーカイブを最新に保ちます：
+アーカイブは自動的に最新に保たれます：Google が新しいビルドを公開すると、それらが抽出され（完全、全パーティション、`vbmeta.digest` 付き）、新しい `.prop` が `<codename>/` の下にコミットされ、`index.json` が更新され、日付入りのリリース（`build-YYYYMMDD`）が作成されるため、ウォッチャーは更新のたびに通知を受け取ります。
 
-- 毎週実行され、スペース区切りのデバイスリストまたは `all` を指定して `workflow_dispatch` でオンデマンドにも実行できます。各デバイスは並列でビルドされます。
-- `.prop` を抽出し、新しいものを `<codename>/` の下にコミットし、単一の日次タグ（`build-YYYYMMDD`）の下でアセットとして公開します。
-- すでにリリース済みの `.prop` ファイルはスキップし、クリック可能なダウンロードリンクとともに Telegram へ通知します。
-
-パイプラインを実行する fork には 2 つのシークレットが必要です：`TELEGRAM_BOT_TOKEN`（[@BotFather](https://t.me/BotFather) から取得）と `TELEGRAM_CHAT_ID`。
+汎用でオンデマンドの `.github/workflows/build.yml`（`workflow_dispatch`）も、デバイスの最新 `.prop` を手動でビルドするためのフォールバックとして利用できます。
 
 ## Acknowledgements
 
@@ -63,4 +70,4 @@ GitHub Actions のパイプライン（`.github/workflows/build.yml`）がアー
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

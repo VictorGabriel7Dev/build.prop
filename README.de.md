@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Ein durchsuchbares, automatisch aktualisiertes Archiv echter Pixel-`.prop`-Dateien, direkt aus Googles OTA-Images*
+*Ein durchsuchbares, automatisch aktualisiertes Archiv echter Pixel-`build.prop`-Daten, direkt aus Googles offiziellen Images*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Ein versioniertes Archiv der vollständigen `build.prop` jedes Pixel, direkt aus Googles offiziellen OTA-Images extrahiert und automatisch auf dem neuesten Stand gehalten. Die `.prop` jedes Geräts wird im Repository gespeichert und als Release-Asset veröffentlicht, bereit zum Durchsuchen oder Herunterladen, ohne dass Werkzeuge erforderlich sind.
+Ein versioniertes Archiv der **letzten 4 Builds jedes Kanals** (stable, beta und canary) für jedes aktuelle Pixel, direkt aus Googles offiziellen Factory- und OTA-Images extrahiert. Jeder Eintrag ist die **vollständige** `build.prop`, zusammengeführt aus **allen Partitionen** (system, system_ext, product, vendor, odm und den `_dlkm`-Images), und trägt den **`ro.boot.vbmeta.digest`** (Verified-Boot-Hash). Alles wird im Repository gespeichert, in einer maschinenlesbaren `index.json` indexiert und als Release-Assets veröffentlicht. Keine Werkzeuge erforderlich.
 
-## 📥 Get a `.prop`
+## 📥 Die Daten holen
 
-Zwei Wege, keine Einrichtung nötig:
+Drei Wege, keine Einrichtung nötig:
 
-- **Das Repository durchsuchen**: öffne [`<codename>/`](.) und wähle `<codename>_<build_id>.prop`.
-- **Aus den Releases herunterladen**: hol dir die Datei aus dem neuesten [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (getaggt mit `build-YYYYMMDD`).
+- **Das Repository durchsuchen** - öffne [`<codename>/`](.) und wähle eine Datei. Benennung nach Kanal:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - ein maschinenlesbares Manifest, das jedes Gerät → Kanal → neuesten Build abbildet, mit `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` und `vbmeta_digest`. Ideal für Automatisierung und Werkzeuge.
+- **Releases** - lade das gesamte Korpus als eine einzige `.zip` (plus `index.json`) aus dem neuesten [release](https://github.com/VictorGabriel7Dev/build.prop/releases) herunter (getaggt mit `build-YYYYMMDD`).
 
-Jede `.prop` ist der vollständige, organisierte Satz der Build-Eigenschaften für genau dieses Gerät und diesen Build (product, vendor, odm, system, system_ext, system_dlkm und mehr).
+Jede `.prop` ist der vollständige, organisierte Satz der Eigenschaften für genau dieses Gerät und diesen Build - alle Partitionen, plus `ro.boot.vbmeta.digest`.
 
-## 🔧 Build it yourself
+## 🗂️ Was enthalten ist
 
-Um eine `.prop` lokal zu extrahieren, statt sie herunterzuladen, brauchst du eine Unix-ähnliche Umgebung (Linux oder macOS mit Bash) sowie `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` und Python ≥3.8 mit `payload_dumper`. `requirements.sh` installiert die Abhängigkeiten über die meisten Paketmanager hinweg (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
+- **Jedes aktuelle Pixel-Gerät** (Pixel 6 und neuer).
+- **Drei Kanäle pro Gerät** - stable, beta und canary, jeweils die neuesten Builds (abhängig davon, was Google tatsächlich veröffentlicht; manche brandneuen Geräte haben auf canary noch nur ein oder zwei Builds).
+- **Vollständige `build.prop`** pro Build (~300-390 Eigenschaften), aus allen Partitionen zusammengeführt.
+- **`vbmeta.digest`** (der Verified-Boot-Hash) neben den Eigenschaften gespeichert.
+
+## 🔧 Selbst bauen
+
+Um eine einzelne `.prop` lokal zu extrahieren, statt sie herunterzuladen, brauchst du eine Unix-ähnliche Umgebung (Linux oder macOS mit Bash) sowie `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` und Python ≥3.8 mit `payload_dumper`. `requirements.sh` installiert die Abhängigkeiten über die meisten Paketmanager hinweg (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -32,21 +43,17 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 Unterstützte Geräte sind die Factory- und OTA-Images auf [Google Android Images](https://developers.google.com/android/images) und den [Beta OTA pages](https://developer.android.com/about/versions/17/download-ota). Die Extraktion liest jede Payload-Partition einzeln nacheinander (geringer Speicherbedarf) und verarbeitet EROFS-, ext4-, sparse- und boot/init_boot-Images.
 
-## 🤖 Automation
+## 🤖 Automatisierung
 
-Eine GitHub-Actions-Pipeline (`.github/workflows/build.yml`) hält das Archiv aktuell:
+Das Archiv bleibt automatisch aktuell: sobald Google neue Builds veröffentlicht, werden sie extrahiert (vollständig, alle Partitionen, mit `vbmeta.digest`), die neuen `.prop` werden unter `<codename>/` committet, die `index.json` wird aktualisiert und ein datiertes Release (`build-YYYYMMDD`) wird erstellt, sodass Watcher bei jeder Welle benachrichtigt werden.
 
-- Läuft wöchentlich und bei Bedarf über `workflow_dispatch` mit einer durch Leerzeichen getrennten Geräteliste oder `all`; jedes Gerät wird parallel gebaut.
-- Extrahiert die `.prop`, committet neue unter `<codename>/` und veröffentlicht sie als Assets unter einem einzigen täglichen Tag (`build-YYYYMMDD`).
-- Überspringt `.prop`-Dateien, die bereits veröffentlicht wurden, und benachrichtigt Telegram mit anklickbaren Download-Links.
+Eine generische, bedarfsgesteuerte `.github/workflows/build.yml` steht ebenfalls bereit (`workflow_dispatch`) als manuelle Rückfalloption, um die neueste `.prop` eines Geräts zu bauen.
 
-Forks, die die Pipeline ausführen, benötigen zwei Secrets: `TELEGRAM_BOT_TOKEN` (von [@BotFather](https://t.me/BotFather)) und `TELEGRAM_CHAT_ID`.
-
-## Acknowledgements
+## Danksagungen
 
 Dieses Projekt ist ein Fork von **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** von **[@T3SL4](https://github.com/T3SL4)**, das die OTA-zu-prop-Extraktionspipeline begründet hat. Die volle Anerkennung für die ursprüngliche Arbeit gebührt ihrem Autor.
 
-## Contact
+## Kontakt
 
 - https://victorgabriel.dev
 - **GitHub:** @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
@@ -57,10 +64,10 @@ Dieses Projekt ist ein Fork von **[Pixel-Props/build.prop](https://github.com/Pi
 - **WhatsApp:** @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 - **E-mail:** contato@victorgabriel.dev
 
-## License
+## Lizenz
 
 **GNU GPL-3.0-or-later** - siehe [LICENSE](LICENSE). Copyleft: Wer eine modifizierte Version verteilt, muss deren Quellcode zu denselben Bedingungen anbieten.
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

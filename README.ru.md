@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Просматриваемый, автоматически обновляемый архив реальных файлов `.prop` для Pixel, напрямую из OTA-образов Google*
+*Просматриваемый, автоматически обновляемый архив реальных данных `build.prop` для Pixel, прямо из официальных образов Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Версионированный архив полного `build.prop` каждого Pixel, извлечённого напрямую из официальных OTA-образов Google и автоматически поддерживаемого в актуальном состоянии. Файл `.prop` каждого устройства хранится в репозитории и публикуется как ресурс релиза, готовый к просмотру или загрузке без каких-либо инструментов.
+Версионированный архив **последних 4 сборок каждого канала** (stable, beta и canary) для каждого современного Pixel, извлечённый напрямую из официальных заводских и OTA-образов Google. Каждая запись - это **полный** `build.prop`, объединённый по **всем разделам** (system, system_ext, product, vendor, odm и образы `_dlkm`), и содержит **`ro.boot.vbmeta.digest`** (хеш verified boot). Всё хранится в репозитории, индексируется в машиночитаемом `index.json` и публикуется как ресурсы релиза. Инструменты не требуются.
 
-## 📥 Получить `.prop`
+## 📥 Получить данные
 
-Два способа, настройка не требуется:
+Три способа, настройка не требуется:
 
-- **Просмотр репозитория**: откройте [`<codename>/`](.) и выберите `<codename>_<build_id>.prop`.
-- **Загрузка из релизов**: возьмите файл из последнего [релиза](https://github.com/VictorGabriel7Dev/build.prop/releases) (с тегом `build-YYYYMMDD`).
+- **Просмотр репозитория** - откройте [`<codename>/`](.) и выберите файл. Именование по каналам:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - машиночитаемый манифест, сопоставляющий каждое устройство → канал → последнюю сборку, с `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` и `vbmeta_digest`. Идеально для автоматизации и инструментов.
+- **Релизы** - загрузите весь корпус одним `.zip` (плюс `index.json`) из последнего [релиза](https://github.com/VictorGabriel7Dev/build.prop/releases) (с тегом `build-YYYYMMDD`).
 
-Каждый `.prop` - это полный, организованный набор свойств сборки для этого конкретного устройства и сборки (product, vendor, odm, system, system_ext, system_dlkm и другие).
+Каждый `.prop` - это полный, организованный набор свойств для этого конкретного устройства и сборки - все разделы, плюс `ro.boot.vbmeta.digest`.
+
+## 🗂️ Что внутри
+
+- **Каждое современное устройство Pixel** (Pixel 6 и новее).
+- **Три канала на устройство** - stable, beta и canary, последние сборки каждого (в зависимости от того, что Google фактически публикует; у некоторых совсем новых устройств пока есть лишь одна-две сборки на canary).
+- **Полный `build.prop`** на каждую сборку (~300-390 свойств), объединённый из всех разделов.
+- **`vbmeta.digest`** (хеш verified boot) хранится рядом со свойствами.
 
 ## 🔧 Собрать самостоятельно
 
-Чтобы извлечь `.prop` локально вместо его загрузки, вам понадобится Unix-подобное окружение (Linux или macOS с Bash) плюс `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` и Python ≥3.8 с `payload_dumper`. `requirements.sh` устанавливает зависимости в большинстве менеджеров пакетов (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
+Чтобы извлечь один `.prop` локально вместо его загрузки, вам понадобится Unix-подобное окружение (Linux или macOS с Bash) плюс `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` и Python ≥3.8 с `payload_dumper`. `requirements.sh` устанавливает зависимости в большинстве менеджеров пакетов (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ## 🤖 Автоматизация
 
-Конвейер GitHub Actions (`.github/workflows/build.yml`) поддерживает архив в актуальном состоянии:
+Архив автоматически поддерживается в актуальном состоянии: по мере публикации Google новых сборок они извлекаются (полностью, все разделы, с `vbmeta.digest`), новые `.prop` коммитятся в `<codename>/`, `index.json` обновляется, и выпускается датированный релиз (`build-YYYYMMDD`), чтобы наблюдатели получали уведомление о каждой волне.
 
-- Запускается еженедельно, а также по требованию через `workflow_dispatch` со списком устройств через пробел или `all`; каждое устройство собирается параллельно.
-- Извлекает `.prop`, коммитит новые файлы в `<codename>/` и публикует их как ресурсы под единым ежедневным тегом (`build-YYYYMMDD`).
-- Пропускает уже выпущенные файлы `.prop` и уведомляет Telegram с кликабельными ссылками для загрузки.
-
-Форкам, запускающим конвейер, нужны два секрета: `TELEGRAM_BOT_TOKEN` (от [@BotFather](https://t.me/BotFather)) и `TELEGRAM_CHAT_ID`.
+Также доступен универсальный `.github/workflows/build.yml` по требованию (`workflow_dispatch`) как ручной резервный вариант для сборки последнего `.prop` устройства.
 
 ## Благодарности
 
@@ -63,4 +70,4 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

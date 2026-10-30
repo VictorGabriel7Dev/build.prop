@@ -2,22 +2,33 @@
 
 # Pixel Prop Builder
 
-*คลังไฟล์ `.prop` จริงของ Pixel ที่เรียกดูได้และอัปเดตอัตโนมัติ ตรงจากอิมเมจ OTA ของ Google*
+*คลังข้อมูล `build.prop` จริงของ Pixel ที่เรียกดูได้และอัปเดตอัตโนมัติ ตรงจากอิมเมจอย่างเป็นทางการของ Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-คลังเก็บแบบมีเวอร์ชันของ `build.prop` ฉบับเต็มของ Pixel แต่ละเครื่อง ซึ่งดึงมาโดยตรงจากอิมเมจ OTA อย่างเป็นทางการของ Google และคงความเป็นปัจจุบันไว้โดยอัตโนมัติ ไฟล์ `.prop` ของทุกอุปกรณ์ถูกเก็บไว้ในที่เก็บโค้ดและเผยแพร่เป็นแอสเซตของ release พร้อมให้เรียกดูหรือดาวน์โหลดได้โดยไม่ต้องใช้เครื่องมือใด ๆ
+คลังเก็บแบบมีเวอร์ชันของ **4 build ล่าสุดของแต่ละ channel** (stable, beta และ canary) สำหรับ Pixel รุ่นใหม่ ๆ ทุกเครื่อง ซึ่งดึงมาโดยตรงจากอิมเมจ factory และ OTA อย่างเป็นทางการของ Google แต่ละรายการคือ `build.prop` **ฉบับเต็ม** ที่รวมจาก **ทุกพาร์ทิชัน** (system, system_ext, product, vendor, odm และอิมเมจ `_dlkm`) และมี **`ro.boot.vbmeta.digest`** (hash ของ verified boot) ทุกอย่างถูกเก็บไว้ในที่เก็บโค้ด จัดทำดัชนีไว้ใน `index.json` ที่เครื่องอ่านได้ และเผยแพร่เป็นแอสเซตของ release โดยไม่ต้องใช้เครื่องมือใด ๆ
 
-## 📥 Get a `.prop`
+## 📥 Get the data
 
-สองวิธี ไม่ต้องตั้งค่าใด ๆ:
+สามวิธี ไม่ต้องตั้งค่าใด ๆ:
 
-- **เรียกดูที่เก็บโค้ด**: เปิด [`<codename>/`](.) แล้วเลือก `<codename>_<build_id>.prop`
-- **ดาวน์โหลดจาก Releases**: ดึงไฟล์จาก [release](https://github.com/VictorGabriel7Dev/build.prop/releases) ล่าสุด (ติดแท็ก `build-YYYYMMDD`)
+- **เรียกดูที่เก็บโค้ด** - เปิด [`<codename>/`](.) แล้วเลือกไฟล์ การตั้งชื่อตาม channel:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - ไฟล์ manifest ที่เครื่องอ่านได้ ซึ่งจับคู่แต่ละอุปกรณ์ → channel → build ล่าสุด พร้อม `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` และ `vbmeta_digest` เหมาะอย่างยิ่งสำหรับงานอัตโนมัติและเครื่องมือต่าง ๆ
+- **Releases** - ดาวน์โหลดคลังข้อมูลทั้งหมดเป็นไฟล์ `.zip` ไฟล์เดียว (พร้อม `index.json`) จาก [release](https://github.com/VictorGabriel7Dev/build.prop/releases) ล่าสุด (ติดแท็ก `build-YYYYMMDD`)
 
-`.prop` แต่ละไฟล์คือชุดคุณสมบัติ build ฉบับเต็มที่จัดระเบียบแล้วสำหรับอุปกรณ์และ build นั้นโดยเฉพาะ (product, vendor, odm, system, system_ext, system_dlkm และอื่น ๆ)
+`.prop` แต่ละไฟล์คือชุดคุณสมบัติฉบับเต็มที่จัดระเบียบแล้วสำหรับอุปกรณ์และ build นั้นโดยเฉพาะ - ทุกพาร์ทิชัน พร้อม `ro.boot.vbmeta.digest`
+
+## 🗂️ What's inside
+
+- **อุปกรณ์ Pixel รุ่นใหม่ทุกเครื่อง** (Pixel 6 ขึ้นไป)
+- **สาม channel ต่ออุปกรณ์** - stable, beta และ canary ซึ่งเป็น build ล่าสุดของแต่ละอัน (ขึ้นอยู่กับสิ่งที่ Google เผยแพร่จริง อุปกรณ์ใหม่เอี่ยมบางเครื่องยังมีเพียงหนึ่งหรือสอง build บน canary)
+- **`build.prop` ฉบับเต็ม** ต่อ build (~300-390 คุณสมบัติ) รวมจากทุกพาร์ทิชัน
+- **`vbmeta.digest`** (hash ของ verified boot) ถูกเก็บไว้ข้างคุณสมบัติ
 
 ## 🔧 Build it yourself
 
@@ -34,13 +45,9 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ## 🤖 Automation
 
-ไปป์ไลน์ GitHub Actions (`.github/workflows/build.yml`) คอยให้คลังเก็บเป็นปัจจุบันอยู่เสมอ:
+คลังเก็บจะเป็นปัจจุบันโดยอัตโนมัติ: เมื่อ Google เผยแพร่ build ใหม่ build เหล่านั้นจะถูกแยกออกมา (ฉบับเต็ม ทุกพาร์ทิชัน พร้อม `vbmeta.digest`) ไฟล์ `.prop` ใหม่จะถูก commit ไว้ภายใต้ `<codename>/` `index.json` จะถูกรีเฟรช และมีการสร้าง release ที่ระบุวันที่ (`build-YYYYMMDD`) เพื่อให้ผู้ติดตามได้รับแจ้งทุกระลอก
 
-- ทำงานรายสัปดาห์ และตามคำสั่งผ่าน `workflow_dispatch` ด้วยรายชื่ออุปกรณ์ที่คั่นด้วยช่องว่างหรือ `all` โดยแต่ละอุปกรณ์จะ build แบบขนานกัน
-- แยกไฟล์ `.prop`, commit ไฟล์ใหม่ไว้ภายใต้ `<codename>/` และเผยแพร่เป็นแอสเซตภายใต้แท็กรายวันแท็กเดียว (`build-YYYYMMDD`)
-- ข้ามไฟล์ `.prop` ที่เผยแพร่ไปแล้ว และแจ้ง Telegram พร้อมลิงก์ดาวน์โหลดที่คลิกได้
-
-Fork ที่รันไปป์ไลน์นี้ต้องใช้ secret สองรายการ: `TELEGRAM_BOT_TOKEN` (จาก [@BotFather](https://t.me/BotFather)) และ `TELEGRAM_CHAT_ID`
+นอกจากนี้ยังมี `.github/workflows/build.yml` แบบทั่วไปที่เรียกใช้ตามคำสั่ง (`workflow_dispatch`) ให้ใช้เป็นทางสำรองแบบแมนนวลสำหรับการ build `.prop` ล่าสุดของอุปกรณ์หนึ่ง ๆ
 
 ## Acknowledgements
 
@@ -63,4 +70,4 @@ Fork ที่รันไปป์ไลน์นี้ต้องใช้ se
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

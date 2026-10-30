@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*أرشيف قابل للتصفح ويُحدَّث تلقائياً لملفات `.prop` الحقيقية لأجهزة Pixel، مأخوذة مباشرة من صور OTA من Google*
+*أرشيف قابل للتصفح ويُحدَّث تلقائياً لبيانات `build.prop` الحقيقية لأجهزة Pixel، مأخوذة مباشرة من صور Google الرسمية*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-أرشيف مُصدَّر لملف `build.prop` الكامل لكل جهاز Pixel، مُستخرَج مباشرة من صور OTA الرسمية من Google ويُبقى مُحدَّثاً تلقائياً. يُخزَّن ملف `.prop` لكل جهاز في المستودع ويُنشَر كأصل ضمن release، جاهز للتصفح أو التنزيل دون الحاجة إلى أي أدوات.
+أرشيف مُصدَّر يضم **آخر 4 إصدارات (builds) من كل قناة** (stable وbeta وcanary) لكل جهاز Pixel حديث، مُستخرَج مباشرة من صور factory وOTA الرسمية من Google. كل مُدخَل هو `build.prop` **الكامل**، مدموج عبر **كل الأقسام** (system وsystem_ext وproduct وvendor وodm وصور `_dlkm`)، ويحمل **`ro.boot.vbmeta.digest`** (قيمة تجزئة verified boot). كل شيء مُخزَّن في المستودع، ومُفهرَس في ملف `index.json` قابل للقراءة آلياً، ومنشور كأصول ضمن release. لا حاجة إلى أي أدوات.
 
-## 📥 Get a `.prop`
+## 📥 Get the data
 
-طريقتان، دون الحاجة إلى أي إعداد:
+ثلاث طرق، دون الحاجة إلى أي إعداد:
 
-- **تصفَّح المستودع**: افتح [`<codename>/`](.) واختر `<codename>_<build_id>.prop`.
-- **نزِّل من Releases**: احصل على الملف من أحدث [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (الموسوم بـ `build-YYYYMMDD`).
+- **تصفَّح المستودع**: افتح [`<codename>/`](.) واختر ملفاً. التسمية بحسب القناة:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`**: بيان قابل للقراءة آلياً يربط كل جهاز → قناة → أحدث build، مع `model` و`soc` و`first_api_level` و`security_patch` و`android` و`build` و`incremental` و`vbmeta_digest`. مثالي للأتمتة والأدوات.
+- **Releases**: نزِّل المجموعة الكاملة كملف `.zip` واحد (بالإضافة إلى `index.json`) من أحدث [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (الموسوم بـ `build-YYYYMMDD`).
 
-كل ملف `.prop` هو المجموعة الكاملة والمنظَّمة من خصائص build لذلك الجهاز وذلك الإصدار بالتحديد (product وvendor وodm وsystem وsystem_ext وsystem_dlkm وأكثر).
+كل ملف `.prop` هو المجموعة الكاملة والمنظَّمة من الخصائص لذلك الجهاز وذلك الإصدار بالتحديد - كل الأقسام، بالإضافة إلى `ro.boot.vbmeta.digest`.
 
-## 🔧 Build it yourself
+## 🗂️ What's inside
 
-لاستخراج ملف `.prop` محلياً بدلاً من تنزيله، تحتاج إلى بيئة شبيهة بـ Unix (Linux أو macOS مع Bash) بالإضافة إلى `p7zip-full` و`e2fsprogs` و`erofs-utils` و`lz4` و`cpio` و`dos2unix` و`aria2` و`curl` و`xxd` و`jq`، وPython ≥3.8 مع `payload_dumper`. يقوم `requirements.sh` بتثبيت التبعيات عبر معظم مديري الحزم (apt وpacman وdnf وyum وzypper وapk وxbps وbrew وTermux).
+- **كل جهاز Pixel حديث** (Pixel 6 وما بعده).
+- **ثلاث قنوات لكل جهاز** - stable وbeta وcanary، أحدث إصدار من كل منها (رهناً بما تنشره Google فعلياً؛ بعض الأجهزة الجديدة تماماً لا تزال تحتوي على إصدار أو اثنين فقط على canary).
+- **`build.prop` الكامل** لكل build (نحو 300-390 خاصية)، مدموج من كل الأقسام.
+- **`vbmeta.digest`** (قيمة تجزئة verified boot) مُخزَّن جنباً إلى جنب مع الخصائص.
+
+## 🔧 Build one yourself
+
+لاستخراج ملف `.prop` واحد محلياً بدلاً من تنزيله، تحتاج إلى بيئة شبيهة بـ Unix (Linux أو macOS مع Bash) بالإضافة إلى `p7zip-full` و`e2fsprogs` و`erofs-utils` و`lz4` و`cpio` و`dos2unix` و`aria2` و`curl` و`xxd` و`jq`، وPython ≥3.8 مع `payload_dumper`. يقوم `requirements.sh` بتثبيت التبعيات عبر معظم مديري الحزم (apt وpacman وdnf وyum وzypper وapk وxbps وbrew وTermux).
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ## 🤖 Automation
 
-يُبقي خط أنابيب GitHub Actions (`.github/workflows/build.yml`) الأرشيف محدَّثاً:
+يبقى الأرشيف محدَّثاً تلقائياً: ما إن تنشر Google إصدارات جديدة حتى تُستخرَج (كاملة، كل الأقسام، مع `vbmeta.digest`)، وتُودَع ملفات `.prop` الجديدة ضمن `<codename>/`، ويُحدَّث `index.json`، ويُنشأ release مؤرَّخ (`build-YYYYMMDD`) كي يُخطَر المتابعون بكل موجة.
 
-- يعمل أسبوعياً، وعند الطلب عبر `workflow_dispatch` بقائمة أجهزة مفصولة بمسافات أو `all`؛ يُبنى كل جهاز بالتوازي.
-- يستخرج ملف `.prop`، ويُودِع الملفات الجديدة ضمن `<codename>/`، وينشرها كأصول ضمن وسم يومي واحد (`build-YYYYMMDD`).
-- يتخطى ملفات `.prop` التي سبق إصدارها ويُخطر Telegram بروابط تنزيل قابلة للنقر.
-
-تحتاج النسخ المتفرعة التي تشغّل خط الأنابيب إلى سرّين اثنين: `TELEGRAM_BOT_TOKEN` (من [@BotFather](https://t.me/BotFather)) و`TELEGRAM_CHAT_ID`.
+يتوفر أيضاً ملف `.github/workflows/build.yml` عام وعند الطلب (`workflow_dispatch`) كحل بديل يدوي لبناء أحدث `.prop` لجهاز ما.
 
 ## Acknowledgements
 
@@ -63,4 +70,4 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

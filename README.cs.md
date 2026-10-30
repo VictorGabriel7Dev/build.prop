@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Procházitelný, automaticky aktualizovaný archiv skutečných souborů `.prop` pro Pixel, přímo z OTA obrazů Googlu*
+*Procházitelný, automaticky aktualizovaný archiv skutečných dat `build.prop` pro Pixel, přímo z oficiálních obrazů Googlu*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Verzovaný archiv kompletního `build.prop` každého Pixelu, extrahovaný přímo z oficiálních OTA obrazů Googlu a automaticky udržovaný aktuální. Soubor `.prop` každého zařízení je uložen v repozitáři a publikován jako příloha vydání, připravený k procházení nebo stažení bez jakýchkoli nástrojů.
+Verzovaný archiv **posledních 4 sestavení z každého kanálu** (stable, beta a canary) pro každý současný Pixel, extrahovaný přímo z oficiálních továrních a OTA obrazů Googlu. Každá položka je **kompletní** `build.prop`, sloučený napříč **všemi oddíly** (system, system_ext, product, vendor, odm a obrazy `_dlkm`), a obsahuje **`ro.boot.vbmeta.digest`** (hash verified boot). Vše je uloženo v repozitáři, indexováno ve strojově čitelném `index.json` a publikováno jako přílohy vydání. Nejsou potřeba žádné nástroje.
 
-## 📥 Získat `.prop`
+## 📥 Získat data
 
-Dva způsoby, bez nutnosti nastavení:
+Tři způsoby, bez nutnosti nastavení:
 
-- **Procházet repozitář**: otevřete [`<codename>/`](.) a vyberte `<codename>_<build_id>.prop`.
-- **Stáhnout z vydání**: získejte soubor z nejnovějšího [vydání](https://github.com/VictorGabriel7Dev/build.prop/releases) (se značkou `build-YYYYMMDD`).
+- **Procházet repozitář** - otevřete [`<codename>/`](.) a vyberte soubor. Pojmenování podle kanálu:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - strojově čitelný manifest mapující každé zařízení → kanál → nejnovější sestavení, s `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` a `vbmeta_digest`. Ideální pro automatizaci a nástroje.
+- **Vydání** - stáhněte celý korpus jako jeden `.zip` (plus `index.json`) z nejnovějšího [vydání](https://github.com/VictorGabriel7Dev/build.prop/releases) (se značkou `build-YYYYMMDD`).
 
-Každý `.prop` je kompletní, uspořádaná sada vlastností sestavení pro přesně dané zařízení a sestavení (product, vendor, odm, system, system_ext, system_dlkm a další).
+Každý `.prop` je kompletní, uspořádaná sada vlastností pro přesně dané zařízení a sestavení - všechny oddíly, plus `ro.boot.vbmeta.digest`.
+
+## 🗂️ Co je uvnitř
+
+- **Každé současné zařízení Pixel** (Pixel 6 a novější).
+- **Tři kanály na zařízení** - stable, beta a canary, nejnovější sestavení každého z nich (podle toho, co Google skutečně publikuje; některá zcela nová zařízení mají zatím jen jedno nebo dvě sestavení na canary).
+- **Kompletní `build.prop`** na každé sestavení (~300-390 vlastností), sloučený ze všech oddílů.
+- **`vbmeta.digest`** (hash verified boot) uložený spolu s vlastnostmi.
 
 ## 🔧 Sestavit svépomocí
 
-Chcete-li extrahovat `.prop` lokálně místo jeho stažení, potřebujete prostředí podobné Unixu (Linux nebo macOS s Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` a Python ≥3.8 s `payload_dumper`. `requirements.sh` nainstaluje závislosti ve většině správců balíčků (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
+Chcete-li extrahovat jeden `.prop` lokálně místo jeho stažení, potřebujete prostředí podobné Unixu (Linux nebo macOS s Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` a Python ≥3.8 s `payload_dumper`. `requirements.sh` nainstaluje závislosti ve většině správců balíčků (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ Podporovaná zařízení jsou tovární a OTA obrazy na [Google Android Images](
 
 ## 🤖 Automatizace
 
-Pipeline GitHub Actions (`.github/workflows/build.yml`) udržuje archiv aktuální:
+Archiv se automaticky udržuje aktuální: jakmile Google publikuje nová sestavení, jsou extrahována (kompletně, všechny oddíly, s `vbmeta.digest`), nové `.prop` jsou commitovány do `<codename>/`, `index.json` je obnoven a je vytvořeno datované vydání (`build-YYYYMMDD`), aby byli sledující upozorněni na každou vlnu.
 
-- Běží týdně a na vyžádání přes `workflow_dispatch` se seznamem zařízení odděleným mezerami nebo `all`; každé zařízení se sestavuje paralelně.
-- Extrahuje `.prop`, commituje nové soubory do `<codename>/` a publikuje je jako přílohy pod jednou denní značkou (`build-YYYYMMDD`).
-- Přeskakuje soubory `.prop`, které již byly vydány, a upozorňuje Telegram s klikatelnými odkazy ke stažení.
-
-Forky, které spouštějí pipeline, potřebují dvě tajemství: `TELEGRAM_BOT_TOKEN` (od [@BotFather](https://t.me/BotFather)) a `TELEGRAM_CHAT_ID`.
+K dispozici je také obecný `.github/workflows/build.yml` na vyžádání (`workflow_dispatch`) jako ruční záložní možnost pro sestavení nejnovějšího `.prop` zařízení.
 
 ## Poděkování
 
@@ -63,4 +70,4 @@ Tento projekt je fork **[Pixel-Props/build.prop](https://github.com/Pixel-Props/
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

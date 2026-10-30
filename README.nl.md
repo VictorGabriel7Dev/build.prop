@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Een doorzoekbaar, automatisch bijgewerkt archief van echte Pixel-`.prop`-bestanden, rechtstreeks uit Googles OTA-images*
+*Een doorzoekbaar, automatisch bijgewerkt archief van echte Pixel-`build.prop`-gegevens, rechtstreeks uit Googles officiële images*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Een geversioneerd archief van de volledige `build.prop` van elke Pixel, rechtstreeks uit Googles officiële OTA-images geëxtraheerd en automatisch up-to-date gehouden. De `.prop` van elk apparaat wordt in de repository opgeslagen en als release-asset gepubliceerd, klaar om te doorbladeren of te downloaden zonder dat er gereedschap nodig is.
+Een geversioneerd archief van de **laatste 4 builds van elk kanaal** (stable, beta en canary) voor elke recente Pixel, rechtstreeks uit Googles officiële factory- en OTA-images geëxtraheerd. Elk item is de **volledige** `build.prop`, samengevoegd over **elke partitie** (system, system_ext, product, vendor, odm en de `_dlkm`-images), en bevat de **`ro.boot.vbmeta.digest`** (verified boot-hash). Alles wordt in de repository opgeslagen, geïndexeerd in een machineleesbare `index.json` en gepubliceerd als release-assets. Geen gereedschap nodig.
 
-## 📥 Get a `.prop`
+## 📥 Get the data
 
-Twee manieren, geen installatie nodig:
+Drie manieren, geen installatie nodig:
 
-- **Doorzoek de repository**: open [`<codename>/`](.) en kies `<codename>_<build_id>.prop`.
-- **Download uit Releases**: pak het bestand uit de nieuwste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (getagd met `build-YYYYMMDD`).
+- **Doorzoek de repository** - open [`<codename>/`](.) en kies een bestand. Naamgeving per kanaal:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - een machineleesbaar manifest dat elk apparaat → kanaal → nieuwste build koppelt, met `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` en `vbmeta_digest`. Ideaal voor automatisering en tooling.
+- **Releases** - download het hele corpus als één `.zip` (plus `index.json`) uit de nieuwste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (getagd met `build-YYYYMMDD`).
 
-Elke `.prop` is de volledige, geordende set build-eigenschappen voor precies dat apparaat en die build (product, vendor, odm, system, system_ext, system_dlkm en meer).
+Elke `.prop` is de volledige, geordende set eigenschappen voor precies dat apparaat en die build - alle partities, plus `ro.boot.vbmeta.digest`.
 
-## 🔧 Build it yourself
+## 🗂️ What's inside
 
-Om een `.prop` lokaal te extraheren in plaats van hem te downloaden, heb je een Unix-achtige omgeving nodig (Linux of macOS met Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` en Python ≥3.8 met `payload_dumper`. `requirements.sh` installeert de afhankelijkheden voor de meeste pakketbeheerders (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
+- **Elk recent Pixel-apparaat** (Pixel 6 en nieuwer).
+- **Drie kanalen per apparaat** - stable, beta en canary, de nieuwste builds van elk (afhankelijk van wat Google daadwerkelijk publiceert; sommige gloednieuwe apparaten hebben voorlopig pas een build of twee op canary).
+- **Volledige `build.prop`** per build (~300-390 eigenschappen), samengevoegd uit alle partities.
+- **`vbmeta.digest`** (de verified boot-hash) opgeslagen naast de eigenschappen.
+
+## 🔧 Build one yourself
+
+Om één `.prop` lokaal te extraheren in plaats van hem te downloaden, heb je een Unix-achtige omgeving nodig (Linux of macOS met Bash) plus `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq` en Python ≥3.8 met `payload_dumper`. `requirements.sh` installeert de afhankelijkheden voor de meeste pakketbeheerders (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ Ondersteunde apparaten zijn de factory- en OTA-images op [Google Android Images]
 
 ## 🤖 Automation
 
-Een GitHub Actions-pijplijn (`.github/workflows/build.yml`) houdt het archief actueel:
+Het archief blijft automatisch actueel: zodra Google nieuwe builds publiceert, worden ze geëxtraheerd (volledig, alle partities, met `vbmeta.digest`), de nieuwe `.prop` worden vastgelegd onder `<codename>/`, `index.json` wordt vernieuwd en er wordt een gedateerde release (`build-YYYYMMDD`) uitgebracht, zodat volgers van elke golf op de hoogte worden gebracht.
 
-- Draait wekelijks en op aanvraag via `workflow_dispatch` met een door spaties gescheiden apparatenlijst of `all`; elk apparaat wordt parallel gebouwd.
-- Extraheert de `.prop`, commit nieuwe onder `<codename>/` en publiceert ze als assets onder één enkele dagelijkse tag (`build-YYYYMMDD`).
-- Slaat `.prop`-bestanden over die al zijn uitgebracht en stuurt een melding naar Telegram met aanklikbare downloadlinks.
-
-Forks die de pijplijn draaien, hebben twee secrets nodig: `TELEGRAM_BOT_TOKEN` (van [@BotFather](https://t.me/BotFather)) en `TELEGRAM_CHAT_ID`.
+Er is ook een generieke `.github/workflows/build.yml` op aanvraag beschikbaar (`workflow_dispatch`) als handmatige terugvaloptie om de nieuwste `.prop` van een apparaat te bouwen.
 
 ## Acknowledgements
 
@@ -63,4 +70,4 @@ Dit project is een fork van **[Pixel-Props/build.prop](https://github.com/Pixel-
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

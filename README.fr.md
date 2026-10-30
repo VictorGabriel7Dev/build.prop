@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Une archive navigable et mise à jour automatiquement de fichiers `.prop` réels de Pixel, directement issus des images OTA de Google*
+*Une archive navigable et mise à jour automatiquement de données réelles de `build.prop` de Pixel, directement issues des images officielles de Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Une archive versionnée du `build.prop` complet de chaque Pixel, extrait directement des images OTA officielles de Google et maintenu à jour automatiquement. Le `.prop` de chaque appareil est stocké dans le dépôt et publié comme asset de release, prêt à être parcouru ou téléchargé sans aucun outil requis.
+Une archive versionnée des **4 derniers builds de chaque canal** (stable, beta et canary) de chaque Pixel récent, extraite directement des images officielles d'usine et OTA de Google. Chaque entrée est le `build.prop` **complet**, fusionné depuis **toutes les partitions** (system, system_ext, product, vendor, odm et les images `_dlkm`), et porte le **`ro.boot.vbmeta.digest`** (hash du verified boot). Tout est stocké dans le dépôt, indexé dans un `index.json` lisible par machine et publié comme assets de release. Aucun outil requis.
 
-## 📥 Obtenir un `.prop`
+## 📥 Obtenir les données
 
-Deux façons, sans aucune configuration :
+Trois façons, sans aucune configuration :
 
-- **Parcourir le dépôt** : ouvrez [`<codename>/`](.) et choisissez `<codename>_<build_id>.prop`.
-- **Télécharger depuis les Releases** : récupérez le fichier dans la [release](https://github.com/VictorGabriel7Dev/build.prop/releases) la plus récente (avec le tag `build-YYYYMMDD`).
+- **Parcourir le dépôt** - ouvrez [`<codename>/`](.) et choisissez un fichier. Nommage par canal :
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - un manifeste lisible par machine qui associe chaque appareil → canal → build le plus récent, avec `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` et `vbmeta_digest`. Idéal pour l'automatisation et l'outillage.
+- **Releases** - téléchargez tout le corpus sous forme d'un unique `.zip` (plus l'`index.json`) depuis la [release](https://github.com/VictorGabriel7Dev/build.prop/releases) la plus récente (avec le tag `build-YYYYMMDD`).
 
-Chaque `.prop` est l'ensemble complet et organisé des propriétés de build pour cet appareil et ce build précis (product, vendor, odm, system, system_ext, system_dlkm et plus).
+Chaque `.prop` est l'ensemble complet et organisé des propriétés pour cet appareil et ce build précis - toutes les partitions, plus le `ro.boot.vbmeta.digest`.
+
+## 🗂️ Ce qu'elle contient
+
+- **Chaque appareil Pixel récent** (Pixel 6 et plus récents).
+- **Trois canaux par appareil** - stable, beta et canary, les builds les plus récents de chacun (selon ce que Google publie réellement ; certains appareils tout nouveaux n'ont encore qu'un build ou deux sur canary).
+- **`build.prop` complet** par build (~300-390 propriétés), fusionné depuis toutes les partitions.
+- **`vbmeta.digest`** (le hash du verified boot) stocké aux côtés des propriétés.
 
 ## 🔧 Compilez-le vous-même
 
-Pour extraire un `.prop` localement au lieu de le télécharger, il vous faut un environnement de type Unix (Linux ou macOS avec Bash) ainsi que `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, et Python ≥3.8 avec `payload_dumper`. `requirements.sh` installe les dépendances sur la plupart des gestionnaires de paquets (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
+Pour extraire un seul `.prop` localement au lieu de le télécharger, il vous faut un environnement de type Unix (Linux ou macOS avec Bash) ainsi que `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, et Python ≥3.8 avec `payload_dumper`. `requirements.sh` installe les dépendances sur la plupart des gestionnaires de paquets (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ Les appareils pris en charge sont les images d'usine et OTA sur [Google Android 
 
 ## 🤖 Automatisation
 
-Un pipeline GitHub Actions (`.github/workflows/build.yml`) maintient l'archive à jour :
+L'archive reste à jour automatiquement : à mesure que Google publie de nouveaux builds, ils sont extraits (complets, toutes les partitions, avec `vbmeta.digest`), les nouveaux `.prop` sont committés sous `<codename>/`, l'`index.json` est actualisé et une release datée (`build-YYYYMMDD`) est créée afin que les watchers soient notifiés à chaque vague.
 
-- S'exécute chaque semaine, et à la demande via `workflow_dispatch` avec une liste d'appareils séparés par des espaces ou `all` ; chaque appareil est compilé en parallèle.
-- Extrait le `.prop`, committe les nouveaux dans `<codename>/` et les publie comme assets sous un unique tag quotidien (`build-YYYYMMDD`).
-- Ignore les fichiers `.prop` déjà publiés et notifie Telegram avec des liens de téléchargement cliquables.
-
-Les forks qui exécutent le pipeline ont besoin de deux secrets : `TELEGRAM_BOT_TOKEN` (depuis [@BotFather](https://t.me/BotFather)) et `TELEGRAM_CHAT_ID`.
+Un `.github/workflows/build.yml` générique et à la demande est également disponible (`workflow_dispatch`) comme solution de repli manuelle pour compiler le `.prop` le plus récent d'un appareil.
 
 ## Remerciements
 
@@ -63,4 +70,4 @@ Ce projet est un fork de **[Pixel-Props/build.prop](https://github.com/Pixel-Pro
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`

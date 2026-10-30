@@ -2,26 +2,37 @@
 
 # Pixel Prop Builder
 
-*Arsip file `.prop` Pixel asli yang dapat dijelajahi dan diperbarui otomatis, langsung dari image OTA Google*
+*Arsip data `build.prop` Pixel asli yang dapat dijelajahi dan diperbarui otomatis, langsung dari image resmi Google*
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
 [![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
 
-Arsip berversi dari `build.prop` lengkap setiap Pixel, diekstrak langsung dari image OTA resmi Google dan dijaga tetap mutakhir secara otomatis. File `.prop` setiap perangkat disimpan di repositori dan dipublikasikan sebagai aset rilis, siap dijelajahi atau diunduh tanpa perlu alat apa pun.
+Arsip berversi dari **4 build terakhir setiap channel** (stable, beta dan canary) untuk setiap Pixel terbaru, diekstrak langsung dari image factory dan OTA resmi Google. Setiap entri adalah `build.prop` **lengkap**, digabungkan dari **setiap partisi** (system, system_ext, product, vendor, odm dan image `_dlkm`), serta memuat **`ro.boot.vbmeta.digest`** (verified boot hash). Semuanya disimpan di repositori, diindeks dalam `index.json` yang dapat dibaca mesin, dan dipublikasikan sebagai aset rilis. Tanpa perlu alat apa pun.
 
-## 📥 Dapatkan `.prop`
+## 📥 Dapatkan data
 
-Dua cara, tanpa pengaturan:
+Tiga cara, tanpa pengaturan:
 
-- **Jelajahi repositori**: buka [`<codename>/`](.) dan pilih `<codename>_<build_id>.prop`.
-- **Unduh dari Releases**: ambil file dari [rilis](https://github.com/VictorGabriel7Dev/build.prop/releases) terbaru (dengan tag `build-YYYYMMDD`).
+- **Jelajahi repositori** - buka [`<codename>/`](.) dan pilih sebuah file. Penamaan menurut channel:
+  - `<codename>_<incremental>.prop` - stable
+  - `<codename>_beta_<incremental>.prop` - beta
+  - `<codename>_canary_<incremental>.prop` - canary
+- **`index.json`** - manifes yang dapat dibaca mesin yang memetakan setiap perangkat → channel → build terbaru, dengan `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` dan `vbmeta_digest`. Ideal untuk otomatisasi dan perkakas.
+- **Releases** - unduh seluruh korpus sebagai satu `.zip` (plus `index.json`) dari [rilis](https://github.com/VictorGabriel7Dev/build.prop/releases) terbaru (dengan tag `build-YYYYMMDD`).
 
-Setiap `.prop` adalah kumpulan properti build yang lengkap dan terorganisir untuk perangkat dan build persis tersebut (product, vendor, odm, system, system_ext, system_dlkm dan lainnya).
+Setiap `.prop` adalah kumpulan properti yang lengkap dan terorganisir untuk perangkat dan build persis tersebut - semua partisi, plus `ro.boot.vbmeta.digest`.
+
+## 🗂️ Apa isinya
+
+- **Setiap perangkat Pixel terbaru** (Pixel 6 dan yang lebih baru).
+- **Tiga channel per perangkat** - stable, beta dan canary, build terbaru dari masing-masing (bergantung pada apa yang benar-benar dipublikasikan Google; beberapa perangkat yang sangat baru masih hanya memiliki satu atau dua build di canary).
+- **`build.prop` lengkap** per build (~300-390 properti), digabungkan dari semua partisi.
+- **`vbmeta.digest`** (verified boot hash) disimpan bersama properti.
 
 ## 🔧 Bangun sendiri
 
-Untuk mengekstrak `.prop` secara lokal alih-alih mengunduhnya, Anda memerlukan lingkungan mirip Unix (Linux atau macOS dengan Bash) ditambah `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, dan Python ≥3.8 dengan `payload_dumper`. `requirements.sh` memasang dependensi di sebagian besar manajer paket (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
+Untuk mengekstrak satu `.prop` secara lokal alih-alih mengunduhnya, Anda memerlukan lingkungan mirip Unix (Linux atau macOS dengan Bash) ditambah `p7zip-full`, `e2fsprogs`, `erofs-utils`, `lz4`, `cpio`, `dos2unix`, `aria2`, `curl`, `xxd`, `jq`, dan Python ≥3.8 dengan `payload_dumper`. `requirements.sh` memasang dependensi di sebagian besar manajer paket (apt, pacman, dnf, yum, zypper, apk, xbps, brew, Termux).
 
 ```bash
 git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop && cd build.prop
@@ -34,13 +45,9 @@ Perangkat yang didukung adalah image factory dan OTA di [Google Android Images](
 
 ## 🤖 Otomatisasi
 
-Pipeline GitHub Actions (`.github/workflows/build.yml`) menjaga arsip tetap mutakhir:
+Arsip tetap mutakhir secara otomatis: saat Google mempublikasikan build baru, build tersebut diekstrak (lengkap, semua partisi, dengan `vbmeta.digest`), `.prop` baru di-commit di bawah `<codename>/`, `index.json` diperbarui, dan sebuah rilis bertanggal (`build-YYYYMMDD`) dibuat sehingga para pemantau diberi tahu tentang setiap gelombang.
 
-- Berjalan mingguan, dan sesuai permintaan melalui `workflow_dispatch` dengan daftar perangkat yang dipisahkan spasi atau `all`; setiap perangkat dibangun secara paralel.
-- Mengekstrak `.prop`, meng-commit yang baru di bawah `<codename>/`, dan mempublikasikannya sebagai aset di bawah satu tag harian (`build-YYYYMMDD`).
-- Melewati file `.prop` yang sudah dirilis dan memberi tahu Telegram dengan tautan unduhan yang dapat diklik.
-
-Fork yang menjalankan pipeline memerlukan dua secret: `TELEGRAM_BOT_TOKEN` (dari [@BotFather](https://t.me/BotFather)) dan `TELEGRAM_CHAT_ID`.
+Sebuah `.github/workflows/build.yml` generik dan sesuai permintaan juga tersedia (`workflow_dispatch`) sebagai cadangan manual untuk membangun `.prop` terbaru sebuah perangkat.
 
 ## Ucapan Terima Kasih
 
@@ -63,4 +70,4 @@ Proyek ini adalah fork dari **[Pixel-Props/build.prop](https://github.com/Pixel-
 
 ---
 
-`android` `pixel` `build-prop` `ota` `factory-image` `system-properties` `system-properties` `automation`
+`android` `pixel` `build-prop` `ota` `factory-image` `vbmeta` `system-properties` `build-properties` `automation`
