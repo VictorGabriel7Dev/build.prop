@@ -9,3 +9,4 @@ unpack_bootimg.py
 *.pyc
 *.img
 *.zip
+output/
