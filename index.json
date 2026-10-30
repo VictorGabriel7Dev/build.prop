@@ -1,5 +1,5 @@
 {
-  "generated": "2026-10-30T00:47:51Z",
+  "generated": "2026-10-30T02:43:14Z",
   "devices": {
     "akita": {
       "model": "Pixel 8a",
@@ -192,6 +192,13 @@
           "incremental": "16262255",
           "security_patch": "2026-10-05",
           "android": "17"
+        },
+        "beta": {
+          "latest": "cubs/cubs_beta_16594701.prop",
+          "build": "DP11.261002.005",
+          "incremental": "16594701",
+          "security_patch": "2026-10-05",
+          "android": "17"
         }
       }
     },
@@ -266,6 +273,13 @@
           "incremental": "16262255",
           "security_patch": "2026-10-05",
           "android": "17"
+        },
+        "beta": {
+          "latest": "grizzly/grizzly_beta_16594701.prop",
+          "build": "DP11.261002.005",
+          "incremental": "16594701",
+          "security_patch": "2026-10-05",
+          "android": "17"
         }
       }
     },
@@ -308,6 +322,13 @@
           "latest": "kodiak/kodiak_16262255.prop",
           "build": "CD1A.261005.003",
           "incremental": "16262255",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "kodiak/kodiak_beta_16594701.prop",
+          "build": "DP11.261002.005",
+          "incremental": "16594701",
           "security_patch": "2026-10-05",
           "android": "17"
         }
@@ -682,6 +703,13 @@
           "latest": "yogi/yogi_16262255.prop",
           "build": "CD1A.261005.003",
           "incremental": "16262255",
+          "security_patch": "2026-10-05",
+          "android": "17"
+        },
+        "beta": {
+          "latest": "yogi/yogi_beta_16594701.prop",
+          "build": "DP11.261002.005",
+          "incremental": "16594701",
           "security_patch": "2026-10-05",
           "android": "17"
         }
