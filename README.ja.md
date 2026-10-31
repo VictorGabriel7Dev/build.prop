@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`**：各デバイス → チャンネル → 最新ビルドを対応づける機械可読のマニフェストで、`model`、`soc`、`first_api_level`、`security_patch`、`android`、`build`、`incremental`、`vbmeta_digest` を含みます。自動化やツール連携に最適です。
-- **Releases**：最新の[リリース](https://github.com/VictorGabriel7Dev/build.prop/releases)（`build-YYYYMMDD` でタグ付け）から、コーパス全体を単一の `.zip`（および `index.json`）としてダウンロードします。
+- **Releases**：各 `.prop` は最新の[リリース](https://github.com/VictorGabriel7Dev/build.prop/releases)（`build-YYYYMMDD` でタグ付け）に個別に添付されます（`index.json` も添付）。
 
 各 `.prop` は、その正確なデバイスとビルドに対応するプロパティの完全で整理された一式です - すべてのパーティションに加え、`ro.boot.vbmeta.digest` も含みます。
 

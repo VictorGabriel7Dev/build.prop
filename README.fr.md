@@ -19,7 +19,7 @@ Trois façons, sans aucune configuration :
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - un manifeste lisible par machine qui associe chaque appareil → canal → build le plus récent, avec `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` et `vbmeta_digest`. Idéal pour l'automatisation et l'outillage.
-- **Releases** - téléchargez tout le corpus sous forme d'un unique `.zip` (plus l'`index.json`) depuis la [release](https://github.com/VictorGabriel7Dev/build.prop/releases) la plus récente (avec le tag `build-YYYYMMDD`).
+- **Releases** - chaque `.prop` est joint individuellement (plus l'`index.json`) à la [release](https://github.com/VictorGabriel7Dev/build.prop/releases) la plus récente (avec le tag `build-YYYYMMDD`).
 
 Chaque `.prop` est l'ensemble complet et organisé des propriétés pour cet appareil et ce build précis - toutes les partitions, plus le `ro.boot.vbmeta.digest`.
 

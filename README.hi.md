@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - एक मशीन-पठनीय मेनिफ़ेस्ट जो प्रत्येक डिवाइस → channel → नवीनतम build को मैप करता है, जिसमें `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` और `vbmeta_digest` होते हैं। स्वचालन और टूलिंग के लिए आदर्श।
-- **Releases** - पूरे कॉर्पस को एक ही `.zip` के रूप में (साथ में `index.json`) नवीनतम [release](https://github.com/VictorGabriel7Dev/build.prop/releases) से डाउनलोड करें (टैग `build-YYYYMMDD`)।
+- **Releases** - प्रत्येक `.prop` अलग-अलग संलग्न किया जाता है (साथ में `index.json`) नवीनतम [release](https://github.com/VictorGabriel7Dev/build.prop/releases) में (टैग `build-YYYYMMDD`)।
 
 प्रत्येक `.prop` उस सटीक डिवाइस और build के लिए प्रॉपर्टीज़ का पूर्ण, व्यवस्थित सेट है - सभी पार्टीशन, साथ में `ro.boot.vbmeta.digest`।
 

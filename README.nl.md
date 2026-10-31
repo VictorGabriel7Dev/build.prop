@@ -19,7 +19,7 @@ Drie manieren, geen installatie nodig:
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - een machineleesbaar manifest dat elk apparaat → kanaal → nieuwste build koppelt, met `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` en `vbmeta_digest`. Ideaal voor automatisering en tooling.
-- **Releases** - download het hele corpus als één `.zip` (plus `index.json`) uit de nieuwste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (getagd met `build-YYYYMMDD`).
+- **Releases** - elke `.prop` wordt afzonderlijk bijgevoegd (plus `index.json`) bij de nieuwste [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (getagd met `build-YYYYMMDD`).
 
 Elke `.prop` is de volledige, geordende set eigenschappen voor precies dat apparaat en die build - alle partities, plus `ro.boot.vbmeta.digest`.
 

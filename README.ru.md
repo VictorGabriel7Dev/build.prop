@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - машиночитаемый манифест, сопоставляющий каждое устройство → канал → последнюю сборку, с `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` и `vbmeta_digest`. Идеально для автоматизации и инструментов.
-- **Релизы** - загрузите весь корпус одним `.zip` (плюс `index.json`) из последнего [релиза](https://github.com/VictorGabriel7Dev/build.prop/releases) (с тегом `build-YYYYMMDD`).
+- **Релизы** - каждый `.prop` прикрепляется отдельно (плюс `index.json`) к последнему [релизу](https://github.com/VictorGabriel7Dev/build.prop/releases) (с тегом `build-YYYYMMDD`).
 
 Каждый `.prop` - это полный, организованный набор свойств для этого конкретного устройства и сборки - все разделы, плюс `ro.boot.vbmeta.digest`.
 

@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`**：一份机器可读的清单，将每台设备 → 渠道 → 最新版本映射起来，包含 `model`、`soc`、`first_api_level`、`security_patch`、`android`、`build`、`incremental` 和 `vbmeta_digest`。非常适合自动化和工具链。
-- **Releases**：从最新的[发布](https://github.com/VictorGabriel7Dev/build.prop/releases)（标记为 `build-YYYYMMDD`）下载整个语料库，打包为单个 `.zip`（外加 `index.json`）。
+- **Releases**：每个 `.prop` 都作为单独的附件（外加 `index.json`）附加到最新的[发布](https://github.com/VictorGabriel7Dev/build.prop/releases)（标记为 `build-YYYYMMDD`）。
 
 每个 `.prop` 都是该确切设备和构建的完整、有序的属性集合 - 包含所有分区，外加 `ro.boot.vbmeta.digest`。
 

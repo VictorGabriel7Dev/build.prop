@@ -19,7 +19,7 @@ Tiga cara, tanpa pengaturan:
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - manifes yang dapat dibaca mesin yang memetakan setiap perangkat → channel → build terbaru, dengan `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` dan `vbmeta_digest`. Ideal untuk otomatisasi dan perkakas.
-- **Releases** - unduh seluruh korpus sebagai satu `.zip` (plus `index.json`) dari [rilis](https://github.com/VictorGabriel7Dev/build.prop/releases) terbaru (dengan tag `build-YYYYMMDD`).
+- **Releases** - setiap `.prop` dilampirkan secara individual (plus `index.json`) ke [rilis](https://github.com/VictorGabriel7Dev/build.prop/releases) terbaru (dengan tag `build-YYYYMMDD`).
 
 Setiap `.prop` adalah kumpulan properti yang lengkap dan terorganisir untuk perangkat dan build persis tersebut - semua partisi, plus `ro.boot.vbmeta.digest`.
 

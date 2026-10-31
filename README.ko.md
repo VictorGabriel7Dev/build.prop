@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`**: 각 기기 → 채널 → 최신 빌드를 매핑하는 머신 판독용 매니페스트로, `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental`, `vbmeta_digest`를 포함합니다. 자동화와 도구 연동에 이상적입니다.
-- **Releases**: 최신 [릴리스](https://github.com/VictorGabriel7Dev/build.prop/releases)(`build-YYYYMMDD`로 태그됨)에서 전체 코퍼스를 단일 `.zip`(및 `index.json`)으로 다운로드하세요.
+- **Releases**: 각 `.prop`가 최신 [릴리스](https://github.com/VictorGabriel7Dev/build.prop/releases)(`build-YYYYMMDD`로 태그됨)에 개별적으로 첨부됩니다(`index.json` 포함).
 
 각 `.prop`은 해당 기기와 빌드에 정확히 대응하는, 완전하고 정리된 속성 집합입니다 - 모든 파티션과 함께 `ro.boot.vbmeta.digest`도 포함합니다.
 

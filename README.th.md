@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - ไฟล์ manifest ที่เครื่องอ่านได้ ซึ่งจับคู่แต่ละอุปกรณ์ → channel → build ล่าสุด พร้อม `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` และ `vbmeta_digest` เหมาะอย่างยิ่งสำหรับงานอัตโนมัติและเครื่องมือต่าง ๆ
-- **Releases** - ดาวน์โหลดคลังข้อมูลทั้งหมดเป็นไฟล์ `.zip` ไฟล์เดียว (พร้อม `index.json`) จาก [release](https://github.com/VictorGabriel7Dev/build.prop/releases) ล่าสุด (ติดแท็ก `build-YYYYMMDD`)
+- **Releases** - แต่ละไฟล์ `.prop` จะถูกแนบแยกต่างหาก (พร้อม `index.json`) กับ [release](https://github.com/VictorGabriel7Dev/build.prop/releases) ล่าสุด (ติดแท็ก `build-YYYYMMDD`)
 
 `.prop` แต่ละไฟล์คือชุดคุณสมบัติฉบับเต็มที่จัดระเบียบแล้วสำหรับอุปกรณ์และ build นั้นโดยเฉพาะ - ทุกพาร์ทิชัน พร้อม `ro.boot.vbmeta.digest`
 

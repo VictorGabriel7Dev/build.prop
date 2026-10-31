@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`**: یک مانیفست قابل‌خواندن توسط ماشین که هر دستگاه → کانال → آخرین build را نگاشت می‌کند و شامل `model`، `soc`، `first_api_level`، `security_patch`، `android`، `build`، `incremental` و `vbmeta_digest` است. برای اتوماسیون و ابزارسازی ایده‌آل است.
-- **Releases**: کل پیکره را به‌صورت یک `.zip` واحد (به‌همراه `index.json`) از آخرین [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (با برچسب `build-YYYYMMDD`) دانلود کنید.
+- **Releases**: هر `.prop` به‌صورت جداگانه (به‌همراه `index.json`) به آخرین [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (با برچسب `build-YYYYMMDD`) پیوست می‌شود.
 
 هر `.prop` مجموعه‌ی کامل و سازمان‌یافته‌ی ویژگی‌ها برای همان دستگاه و build دقیق است - همه‌ی پارتیشن‌ها، به‌علاوه‌ی `ro.boot.vbmeta.digest`.
 

@@ -19,7 +19,7 @@ Tři způsoby, bez nutnosti nastavení:
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - strojově čitelný manifest mapující každé zařízení → kanál → nejnovější sestavení, s `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` a `vbmeta_digest`. Ideální pro automatizaci a nástroje.
-- **Vydání** - stáhněte celý korpus jako jeden `.zip` (plus `index.json`) z nejnovějšího [vydání](https://github.com/VictorGabriel7Dev/build.prop/releases) (se značkou `build-YYYYMMDD`).
+- **Vydání** - každý soubor `.prop` je přiložen samostatně (plus `index.json`) k nejnovějšímu [vydání](https://github.com/VictorGabriel7Dev/build.prop/releases) (se značkou `build-YYYYMMDD`).
 
 Každý `.prop` je kompletní, uspořádaná sada vlastností pro přesně dané zařízení a sestavení - všechny oddíly, plus `ro.boot.vbmeta.digest`.
 

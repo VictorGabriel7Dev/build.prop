@@ -19,7 +19,7 @@ Her yeni Pixel için **her kanalın son 4 derlemesinin** (stable, beta ve canary
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - her cihazı → kanalı → en son derlemeyi eşleyen, makine tarafından okunabilir bir manifesto; `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` ve `vbmeta_digest` ile. Otomasyon ve araçlar için idealdir.
-- **Releases** - tüm külliyatı tek bir `.zip` olarak (artı `index.json`) en son [sürümden](https://github.com/VictorGabriel7Dev/build.prop/releases) indirin (`build-YYYYMMDD` etiketli).
+- **Releases** - her `.prop` en son [sürüme](https://github.com/VictorGabriel7Dev/build.prop/releases) ayrı ayrı eklenir (artı `index.json`) (`build-YYYYMMDD` etiketli).
 
 Her `.prop`, tam olarak o cihaz ve derleme için eksiksiz, düzenlenmiş özellikler kümesidir - tüm bölümler, artı `ro.boot.vbmeta.digest`.
 

@@ -19,7 +19,7 @@ Ba cách, không cần thiết lập gì:
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`** - một manifest mà máy đọc được, ánh xạ mỗi thiết bị → kênh → bản build mới nhất, với `model`, `soc`, `first_api_level`, `security_patch`, `android`, `build`, `incremental` và `vbmeta_digest`. Lý tưởng cho tự động hóa và công cụ.
-- **Releases** - tải toàn bộ kho ngữ liệu dưới dạng một tệp `.zip` duy nhất (kèm `index.json`) từ [release](https://github.com/VictorGabriel7Dev/build.prop/releases) mới nhất (được gắn thẻ `build-YYYYMMDD`).
+- **Releases** - mỗi tệp `.prop` được đính kèm riêng lẻ (kèm `index.json`) vào [release](https://github.com/VictorGabriel7Dev/build.prop/releases) mới nhất (được gắn thẻ `build-YYYYMMDD`).
 
 Mỗi `.prop` là tập hợp đầy đủ và được sắp xếp các thuộc tính cho đúng thiết bị và bản build đó - tất cả phân vùng, cộng với `ro.boot.vbmeta.digest`.
 

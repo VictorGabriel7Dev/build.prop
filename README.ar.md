@@ -19,7 +19,7 @@
   - `<codename>_beta_<incremental>.prop` - beta
   - `<codename>_canary_<incremental>.prop` - canary
 - **`index.json`**: بيان قابل للقراءة آلياً يربط كل جهاز → قناة → أحدث build، مع `model` و`soc` و`first_api_level` و`security_patch` و`android` و`build` و`incremental` و`vbmeta_digest`. مثالي للأتمتة والأدوات.
-- **Releases**: نزِّل المجموعة الكاملة كملف `.zip` واحد (بالإضافة إلى `index.json`) من أحدث [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (الموسوم بـ `build-YYYYMMDD`).
+- **Releases**: يُرفَق كل `.prop` على حِدة (بالإضافة إلى `index.json`) بأحدث [release](https://github.com/VictorGabriel7Dev/build.prop/releases) (الموسوم بـ `build-YYYYMMDD`).
 
 كل ملف `.prop` هو المجموعة الكاملة والمنظَّمة من الخصائص لذلك الجهاز وذلك الإصدار بالتحديد - كل الأقسام، بالإضافة إلى `ro.boot.vbmeta.digest`.
 
