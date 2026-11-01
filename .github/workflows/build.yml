@@ -1,6 +1,6 @@
 # ======================================================================
 #  PIXEL PROP BUILDER  ::  Pixel build.prop archive
-#  Extract and distribute the full Pixel build.prop from Google's OTA images.
+#  Extract the full Pixel build.prop from Google's OTA images.
 #
 #  Copyright (C) 2026  @T3SL4 & VictorGabriel7Dev
 #  SPDX-License-Identifier: GPL-3.0-or-later
@@ -20,13 +20,14 @@
 #  E-mail    : contato@victorgabriel.dev
 # ======================================================================
 
-name: Build and Release Pixel Props
+name: Build Pixel Prop (manual)
 
 on:
-  # Scheduled auto-build is intentionally disabled: the authoritative build.prop
-  # corpus is produced out-of-band (full partitions + vbmeta.digest) and pushed here.
-  # This workflow stays as a generic, manual-only fallback (dispatch) that produces a
-  # basic latest-build .prop; it is NOT the source of the published corpus.
+  # Manual, on-demand tool only. The published corpus (full partitions + vbmeta.digest, all
+  # channels) is produced and committed out-of-band by the authoritative pipeline, which is the
+  # single writer of this repository. This workflow NEVER commits or creates releases: it extracts
+  # a device's latest .prop and offers it as a downloadable artifact, so anyone can build one on
+  # GitHub's own infrastructure without the full pipeline.
   workflow_dispatch:
     inputs:
       devices:
@@ -35,7 +36,7 @@ on:
         default: 'all'
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
   # ------------------------------------------------------------------
@@ -71,7 +72,8 @@ jobs:
           } >> "$GITHUB_OUTPUT"
 
   # ------------------------------------------------------------------
-  # BUILD: Download OTA, extract props, collect the .prop, check for duplicates
+  # BUILD: Download OTA, extract props, offer the freshly built .prop as an artifact.
+  #        No commit, no release - the authoritative pipeline owns the repository.
   # ------------------------------------------------------------------
   build:
     needs: prepare
@@ -102,156 +104,26 @@ jobs:
       - name: Extract and collect props
         run: bash extract_images.sh
 
-      # Check if this .prop was already released to avoid duplicates
-      - name: Check for duplicates
-        id: check
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Collect built .prop
+        id: collect
         run: |
-          # The freshly extracted .prop is the only one git sees as new/changed in this
-          # device's job (the committed <codename>/*.prop are unchanged); byte-identical
-          # rebuilds show nothing, so git doubles as the content-level dedup.
-          prop=$(git status --porcelain --untracked-files=all | grep -E '\.prop$' \
-                 | grep -v ' payload_dumper/' | cut -c4- | head -n1)
-          if [ -z "$prop" ]; then
-            echo "has_new=false" >> "$GITHUB_OUTPUT"
+          mkdir -p upload
+          # the freshly extracted .prop is what git sees as new/changed (the committed
+          # <codename>/*.prop are unchanged); a byte-identical rebuild shows nothing.
+          mapfile -t built < <(git status --porcelain --untracked-files=all \
+              | grep -E '\.prop$' | grep -v ' payload_dumper/' | cut -c4-)
+          if [ ${#built[@]} -eq 0 ]; then
+            echo "Nothing new built for ${{ matrix.device }} (already current)."
+            echo "has=false" >> "$GITHUB_OUTPUT"
             exit 0
           fi
+          for p in "${built[@]}"; do cp -f "$p" "upload/$(basename "$p")"; done
+          echo "has=true" >> "$GITHUB_OUTPUT"
 
-          name=$(basename "$prop")
-          echo "Built: $name"
-
-          # Paginate through ALL releases to build a complete asset list
-          EXISTING=$(mktemp)
-          trap 'rm -f "$EXISTING"' EXIT
-
-          page=1
-          while :; do
-            assets=$(gh api "repos/${{ github.repository }}/releases?per_page=100&page=${page}" \
-              --jq '.[] | .assets[].name' 2>/dev/null)
-            [ -z "$assets" ] && break
-            printf '%s\n' "$assets" >> "$EXISTING"
-            page=$((page + 1))
-          done
-
-          # Skip if this exact .prop was already released
-          if grep -qxF "$name" "$EXISTING" 2>/dev/null; then
-            echo "SKIP (already released): $name"
-            echo "has_new=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          # Metadata straight from the .prop (system.prop format)
-          codename=$(echo "$name" | cut -d_ -f1 | tr '[:upper:]' '[:lower:]')
-          device_name=$(grep -m1 '^ro.product.model=' "$prop" 2>/dev/null | cut -d= -f2- | head -1)
-          build_desc=$(grep -m1 '^ro.build.description=' "$prop" 2>/dev/null | cut -d= -f2- | head -1)
-          [ -z "$device_name" ] && device_name="${codename^}"
-
-          # Upload layout: the <codename>/ dir (for the repo) + a flat copy for release assets
-          mkdir -p "upload/${codename}"
-          cp -f "$prop" "upload/${codename}/${name}"
-          cp -f "$prop" "upload/${name}"
-
-          jq -n \
-            --arg codename "$codename" \
-            --arg prop_name "$name" \
-            --arg device_name "$device_name" \
-            --arg build_desc "$build_desc" \
-            '{codename: $codename, prop_name: $prop_name, device_name: $device_name, build_desc: $build_desc}' \
-            > "upload/metadata-${codename}.json"
-
-          echo "has_new=true" >> "$GITHUB_OUTPUT"
-
-      # Upload .prop + metadata artifact for the release job to collect
-      - name: Upload artifact
-        if: steps.check.outputs.has_new == 'true'
+      - name: Upload .prop artifact
+        if: steps.collect.outputs.has == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: prop-${{ matrix.device }}
-          path: upload/*
-          retention-days: 1
-
-  # ------------------------------------------------------------------
-  # RELEASE: Commit new .prop into the repo and publish the release
-  # ------------------------------------------------------------------
-  release:
-    needs: [prepare, build]
-    runs-on: ubuntu-latest
-    if: always()
-    steps:
-      - uses: actions/checkout@v4
-
-      - name: Download artifacts
-        uses: actions/download-artifact@v4
-        with:
-          pattern: prop-*
-          merge-multiple: true
-          path: new_props/
-        continue-on-error: true
-
-      # Commit the new .prop files into the repo and publish the release
-      - name: Aggregate and publish
-        id: aggregate
-        env:
-          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          GH_REPO: ${{ github.repository }}
-          # Pass device list via env to avoid subshell/quote issues
-          DEVICES_JSON: ${{ needs.prepare.outputs.devices }}
-        run: |
-          COUNT=$(ls new_props/*.prop 2>/dev/null | wc -l)
-          if [ "$COUNT" -eq 0 ]; then
-            echo "has_new=false" >> "$GITHUB_OUTPUT"
-            exit 0
-          fi
-
-          TAG="build-$(date +%Y%m%d)"
-
-          # Read ordered device list into a bash array (avoids subshell issues)
-          mapfile -t devices < <(echo "$DEVICES_JSON" | jq -r '.[]')
-
-          # 1) Commit the new .prop files into <codename>/ at the repo root
-          CODENAMES=$(for j in new_props/metadata-*.json; do jq -r '.codename' "$j"; done 2>/dev/null | sort -u)
-          for cn in $CODENAMES; do
-            [ -d "new_props/$cn" ] && cp -rf "new_props/$cn" ./
-          done
-          if [ -n "$CODENAMES" ]; then
-            git config user.name  "github-actions[bot]"
-            git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-            git add -- $CODENAMES
-            # regenerate index.json so it always matches the .prop in the tree
-            python3 gen_index.py . && git add index.json
-            if ! git diff --cached --quiet; then
-              git commit -m "props: ${TAG} (${COUNT} new)"
-              git push
-            fi
-          fi
-
-          # 2) Build per-device release notes in prepare-step order
-          RELEASE_BODY="Automated build with $COUNT new .prop file(s)."$'\n\n'
-          for device in "${devices[@]}"; do
-            json="new_props/metadata-${device}.json"
-            [ -f "$json" ] || continue
-            codename=$(jq -r '.codename' "$json")
-            prop_name=$(jq -r '.prop_name' "$json")
-            device_name=$(jq -r '.device_name' "$json")
-            build_desc=$(jq -r '.build_desc // empty' "$json")
-            RELEASE_BODY+="## ${device_name} (${codename^})"$'\n'
-            RELEASE_BODY+="- File name: \`${prop_name}\`"$'\n'
-            RELEASE_BODY+="- Build Description: \`${build_desc}\`"$'\n\n'
-          done
-          printf '%s' "$RELEASE_BODY" > /tmp/release_notes.md
-
-          # 3) Create release if it doesn't exist, otherwise upload to existing
-          if gh release view "$TAG" &>/dev/null; then
-            echo "Release $TAG already exists, uploading assets..."
-            gh release upload "$TAG" new_props/*.prop --clobber
-          else
-            gh release create "$TAG" \
-              --title "$TAG" \
-              --notes-file /tmp/release_notes.md \
-              new_props/*.prop
-          fi
-
-          echo "has_new=true" >> "$GITHUB_OUTPUT"
-          echo "tag=$TAG" >> "$GITHUB_OUTPUT"
-          echo "count=$COUNT" >> "$GITHUB_OUTPUT"
+          path: upload/*.prop
+          retention-days: 7
