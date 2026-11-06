@@ -89,12 +89,16 @@ jobs:
 
       - name: Extract ${{ matrix.device }}
         run: |
+          # /mnt is the runner's big ephemeral disk (~70 GB) vs ~14 GB on /; a full factory
+          # extraction (all partition images) needs it, and the full vbmeta chain must be present
+          # for avbtool to compute ro.boot.vbmeta.digest (so no --lowdisk).
+          sudo mkdir -p /mnt/bp && sudo chown "$(id -u):$(id -g)" /mnt/bp
           python3 pixel_fullprop.py \
             --only "${{ matrix.device }}" \
             --tracks "${{ github.event.inputs.tracks || 'stable,beta,canary' }}" \
             --per-track "${{ github.event.inputs.per_track || '4' }}" \
-            --fork . --acervo "$RUNNER_TEMP/acervo" --tmp "$RUNNER_TEMP/work" \
-            --workers 1 --lowdisk
+            --fork . --acervo /mnt/bp/acervo --tmp /mnt/bp/work \
+            --workers 1
 
       - name: Collect this device's .prop
         id: collect
