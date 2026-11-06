@@ -178,3 +178,24 @@ jobs:
             gh release upload "$TAG" "${NEWPROPS[@]:i:80}" --clobber
           done
           echo "Released $TAG with ${#NEWPROPS[@]} .prop."
+
+  # Pings Telegram only when a run fails, so the corpus can be left unattended. No-op unless the
+  # TG_BOT_TOKEN and TG_ALERTAS_CHAT repository secrets are set.
+  notify-failure:
+    needs: [prepare, build, aggregate]
+    if: failure()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Telegram alert
+        env:
+          TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
+          TG_ALERTAS_CHAT: ${{ secrets.TG_ALERTAS_CHAT }}
+        run: |
+          if [ -z "$TG_BOT_TOKEN" ] || [ -z "$TG_ALERTAS_CHAT" ]; then
+            echo "Telegram secrets not set; skipping alert."; exit 0
+          fi
+          URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
+          curl -fsS "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
+            --data-urlencode "chat_id=${TG_ALERTAS_CHAT}" \
+            --data-urlencode "text=build.prop corpus: a GitHub Actions run FAILED - ${URL}" \
+            >/dev/null && echo "alert sent"
