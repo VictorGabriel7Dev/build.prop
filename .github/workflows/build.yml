@@ -1,129 +1,179 @@
 # ======================================================================
 #  PIXEL PROP BUILDER  ::  Pixel build.prop archive
-#  Extract the full Pixel build.prop from Google's OTA images.
+#  Build the full Pixel build.prop corpus entirely inside GitHub Actions.
 #
 #  Copyright (C) 2026  @T3SL4 & VictorGabriel7Dev
 #  SPDX-License-Identifier: GPL-3.0-or-later
 #  Fork of Pixel-Props/build.prop by @T3SL4.
 #
-#  Free software under the GNU GPL v3 or later: distribute a modified
-#  version and you MUST offer its source under the same terms.
-#
 #  Site      : https://victorgabriel.dev
 #  Source    : https://github.com/VictorGabriel7Dev/build.prop
-#  GitHub    : @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
-#  Telegram  : @VictorGabriel_Dev https://t.me/VictorGabriel_Dev
-#  Discord   : @VictorGabriel.dev https://discord.com/users/1481407654458036265
-#  LinkedIn  : in/victorgabriel-dev https://www.linkedin.com/in/victorgabriel-dev
-#  Instagram : @VictorGabriel_Dev https://www.instagram.com/VictorGabriel_Dev
-#  WhatsApp  : @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
-#  E-mail    : contato@victorgabriel.dev
 # ======================================================================
+#
+# One runner per device (matrix): each downloads only that device's images
+# (~2.5 GB each, one at a time) and extracts the full build.prop of the last
+# N builds per channel (stable via the OTA page; beta/canary via flashstation),
+# merging every partition and computing ro.boot.vbmeta.digest. The aggregate job
+# regenerates index.json, commits, and cuts the dated release. No external host.
 
-name: Build Pixel Prop (manual)
+name: Build Pixel build.prop corpus
 
 on:
-  # Manual, on-demand tool only. The published corpus (full partitions + vbmeta.digest, all
-  # channels) is produced and committed out-of-band by the authoritative pipeline, which is the
-  # single writer of this repository. This workflow NEVER commits or creates releases: it extracts
-  # a device's latest .prop and offers it as a downloadable artifact, so anyone can build one on
-  # GitHub's own infrastructure without the full pipeline.
   workflow_dispatch:
     inputs:
       devices:
         description: 'Device codenames (space-separated, or "all")'
-        required: true
         default: 'all'
+      tracks:
+        description: 'Channels to build (comma-separated: stable,beta,canary)'
+        default: 'stable,beta,canary'
+      per_track:
+        description: 'Builds per channel'
+        default: '4'
+      commit:
+        description: 'Commit + release the result (false = artifacts only, for testing)'
+        default: 'true'
+  schedule:
+    - cron: '0 */12 * * *'   # twice a day, catch new builds (commit defaults to true)
 
 permissions:
-  contents: read
+  contents: write
+
+concurrency:
+  group: corpus
+  cancel-in-progress: false
 
 jobs:
-  # ------------------------------------------------------------------
-  # PREPARE: Determine which devices to build based on input or default list
-  # ------------------------------------------------------------------
   prepare:
     runs-on: ubuntu-latest
     outputs:
-      devices: ${{ steps.set_devices.outputs.devices }}
+      devices: ${{ steps.set.outputs.devices }}
     steps:
-      - name: Determine device list
-        id: set_devices
+      - id: set
         run: |
-          # Pixel 6 and newer (Tensor-era devices with modern partition layout)
           if [ "${{ github.event.inputs.devices }}" = "all" ] || [ -z "${{ github.event.inputs.devices }}" ]; then
             JSON='[
-              "oriole", "raven", "bluejay",
-              "panther", "cheetah", "lynx",
-              "felix", "tangorpro",
-              "shiba", "husky", "akita",
-              "tokay", "caiman", "komodo", "comet", "tegu",
-              "frankel", "blazer", "mustang", "stallion", "rango",
-              "cubs", "grizzly", "kodiak", "yogi"
+              "oriole","raven","bluejay",
+              "panther","cheetah","lynx",
+              "felix","tangorpro",
+              "shiba","husky","akita",
+              "tokay","caiman","komodo","comet","tegu",
+              "frankel","blazer","mustang","stallion","rango",
+              "cubs","grizzly","kodiak","yogi"
             ]'
           else
-            # Convert space-separated input into a JSON array
             JSON=$(echo '${{ github.event.inputs.devices }}' | tr ' ' '\n' | jq -R . | jq -s .)
           fi
-          {
-            echo "devices<<EOF"
-            echo "$JSON"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          { echo "devices<<EOF"; echo "$JSON"; echo "EOF"; } >> "$GITHUB_OUTPUT"
 
-  # ------------------------------------------------------------------
-  # BUILD: Download OTA, extract props, offer the freshly built .prop as an artifact.
-  #        No commit, no release - the authoritative pipeline owns the repository.
-  # ------------------------------------------------------------------
   build:
     needs: prepare
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
+      max-parallel: 12
       matrix:
         device: ${{ fromJson(needs.prepare.outputs.devices) }}
     steps:
       - uses: actions/checkout@v4
         with:
-          submodules: recursive
+          submodules: recursive   # payload_dumper
 
-      - name: Install system dependencies
+      - name: System dependencies
         run: |
           sudo apt-get update
-          sudo apt-get install -y p7zip-full e2fsprogs erofs-utils lz4 cpio \
-            dos2unix aria2 curl xxd python3 python3-pip jq
-
-      - name: Install Python dependencies
-        run: |
+          sudo apt-get install -y p7zip-full e2fsprogs erofs-utils lz4 cpio dos2unix \
+            curl xxd jq python3 python3-pip android-sdk-libsparse-utils
           pip3 install ./payload_dumper
-          which payload_dumper || echo "$HOME/.local/bin" >> "$GITHUB_PATH"
+          echo "$HOME/.local/bin" >> "$GITHUB_PATH"
 
-      - name: Download OTA for ${{ matrix.device }}
-        run: bash download_latest_ota_build.sh ${{ matrix.device }}
+      - name: Extract ${{ matrix.device }}
+        run: |
+          python3 pixel_fullprop.py \
+            --only "${{ matrix.device }}" \
+            --tracks "${{ github.event.inputs.tracks || 'stable,beta,canary' }}" \
+            --per-track "${{ github.event.inputs.per_track || '4' }}" \
+            --fork . --acervo "$RUNNER_TEMP/acervo" --tmp "$RUNNER_TEMP/work" \
+            --workers 1 --lowdisk
 
-      - name: Extract and collect props
-        run: bash extract_images.sh
-
-      - name: Collect built .prop
+      - name: Collect this device's .prop
         id: collect
         run: |
           mkdir -p upload
-          # the freshly extracted .prop is what git sees as new/changed (the committed
-          # <codename>/*.prop are unchanged); a byte-identical rebuild shows nothing.
-          mapfile -t built < <(git status --porcelain --untracked-files=all \
-              | grep -E '\.prop$' | grep -v ' payload_dumper/' | cut -c4-)
-          if [ ${#built[@]} -eq 0 ]; then
-            echo "Nothing new built for ${{ matrix.device }} (already current)."
-            echo "has=false" >> "$GITHUB_OUTPUT"
-            exit 0
+          mapfile -t changed < <(git status --porcelain --untracked-files=all \
+              | grep -E '\.prop$' | grep -vE ' (payload_dumper|output)/' | cut -c4-)
+          if [ ${#changed[@]} -eq 0 ]; then
+            echo "Nothing new for ${{ matrix.device }}."; echo "has=false" >> "$GITHUB_OUTPUT"; exit 0
           fi
-          for p in "${built[@]}"; do cp -f "$p" "upload/$(basename "$p")"; done
+          for p in "${changed[@]}"; do install -D "$p" "upload/$p"; done
+          printf '%s\n' "${changed[@]}"
           echo "has=true" >> "$GITHUB_OUTPUT"
 
-      - name: Upload .prop artifact
+      - name: Upload artifact
         if: steps.collect.outputs.has == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: prop-${{ matrix.device }}
-          path: upload/*.prop
-          retention-days: 7
+          path: upload/**/*.prop
+          retention-days: 3
+
+  aggregate:
+    needs: [prepare, build]
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Gather new .prop from all devices
+        uses: actions/download-artifact@v4
+        with:
+          pattern: prop-*
+          merge-multiple: true
+          path: incoming/
+        continue-on-error: true
+
+      - name: Merge into the tree and regenerate index.json
+        id: merge
+        run: |
+          if ! ls incoming/*/*.prop >/dev/null 2>&1; then
+            echo "No new .prop produced this run."; echo "changed=0" >> "$GITHUB_OUTPUT"; exit 0
+          fi
+          cp -rf incoming/* .
+          rm -rf incoming
+          python3 gen_index.py . --source ci
+          N=$(git status --porcelain | grep -cE '\.prop$' || true)
+          echo "changed=$N" >> "$GITHUB_OUTPUT"
+          git status --porcelain | grep -E '\.prop$' | head -50 || true
+
+      - name: Commit, push and release
+        if: steps.merge.outputs.changed != '0' && (github.event.inputs.commit || 'true') == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name  "VictorGabriel7Dev"
+          git config user.email "contato@victorgabriel.dev"
+          git add -A -- $(ls -d */ | grep -vE '^(\.github|payload_dumper|output|incoming)') index.json
+          mapfile -t NEWPROPS < <(git diff --cached --name-only | grep -E '\.prop$')
+          TAG="build-$(date +%Y%m%d)"
+          git commit -m "props: ${#NEWPROPS[@]} new/updated .prop (${TAG})
+
+Built in GitHub Actions (last ${{ github.event.inputs.per_track || '4' }} per channel,
+full partitions + ro.boot.vbmeta.digest)."
+          git push
+          # dated release: individual .prop assets + index.json; create (notifies) or update
+          DEVS=$(python3 -c "import json;print(', '.join(sorted(json.load(open('index.json'))['devices'])))")
+          NOTES="Pixel build.prop corpus - the last builds of each channel (stable / beta / canary) per device, all partitions merged plus ro.boot.vbmeta.digest. .prop attached individually; index.json maps device -> channel -> latest.
+
+Devices: ${DEVS}.
+
+Fork of Pixel-Props/build.prop by @T3SL4."
+          if gh release view "$TAG" >/dev/null 2>&1; then
+            gh release edit "$TAG" --notes "$NOTES"
+          else
+            gh release create "$TAG" --title "$TAG - Pixel build.prop corpus" --notes "$NOTES"
+          fi
+          gh release upload "$TAG" index.json --clobber
+          for ((i=0; i<${#NEWPROPS[@]}; i+=80)); do
+            gh release upload "$TAG" "${NEWPROPS[@]:i:80}" --clobber
+          done
+          echo "Released $TAG with ${#NEWPROPS[@]} .prop."
