@@ -1,0 +1,54 @@
+# Manual probe: can a GitHub-hosted runner reach the build sources?
+# Decides whether the corpus can be produced entirely inside GitHub Actions
+# (flashstation = beta/canary factory URLs; the OTA page = stable). No downloads,
+# no commits - it only resolves URLs and prints counts. Throwaway diagnostic.
+name: Corpus source validation (manual)
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Probe build sources from the runner
+        run: |
+          python3 - <<'PY'
+          import json, re, urllib.request
+          UA = "Mozilla/5.0 (X11; Linux x86_64) corpus/1.0"
+          def http(url, headers=None):
+              req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
+              return urllib.request.urlopen(req, timeout=60)
+
+          print("== flashstation (beta/canary factory) ==")
+          try:
+              page = http("https://flash.android.com").read().decode("utf-8", "replace")
+              m = re.search(r'<body data-client-config=[^;]*;([^&"]+)', page)
+              print("flash.android.com reachable:", True, "| client key scraped:", bool(m))
+              if m:
+                  data = json.loads(http(
+                      f"https://content-flashstation-pa.googleapis.com/v1/builds?product=comet_beta&key={m.group(1)}",
+                      {"Referer": "https://flash.android.com"}).read())
+                  builds = data.get("flashstationBuild") or []
+                  canary = [b for b in builds if (b.get("previewMetadata") or {}).get("canary")
+                            and b.get("factoryImageDownloadUrl")]
+                  print(f"comet_beta: {len(builds)} builds, {len(canary)} canary with factory URL")
+                  if canary:
+                      top = max(canary, key=lambda b: int(b.get("buildId") or 0))
+                      print("  canary top buildId:", top.get("buildId"))
+          except Exception as e:
+              print("flashstation FAIL:", type(e).__name__, e)
+
+          print("== OTA page (stable) ==")
+          try:
+              ota = http("https://developers.google.com/android/ota?partial=1",
+                         {"Cookie": "devsite_wall_acks=nexus-ota-tos"}).read().decode("utf-8", "replace")
+              hits = set(re.findall(
+                  r"https://dl\.google\.com/dl/android/aosp/husky-ota-[a-z0-9._]+-[0-9a-f]+\.zip", ota))
+              print(f"husky stable OTA builds listed: {len(hits)}")
+          except Exception as e:
+              print("OTA FAIL:", type(e).__name__, e)
+          PY
