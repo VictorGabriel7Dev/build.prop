@@ -155,22 +155,19 @@ jobs:
           git add -A -- $(ls -d */ | grep -vE '^(\.github|payload_dumper|output|incoming)') index.json
           mapfile -t NEWPROPS < <(git diff --cached --name-only | grep -E '\.prop$')
           TAG="build-$(date +%Y%m%d)"
-          git commit -m "props: ${#NEWPROPS[@]} new/updated .prop (${TAG})
-
-Built in GitHub Actions (last ${{ github.event.inputs.per_track || '4' }} per channel,
-full partitions + ro.boot.vbmeta.digest)."
+          PT="${{ github.event.inputs.per_track || '4' }}"
+          git commit -m "props: ${#NEWPROPS[@]} new/updated .prop (${TAG})" \
+                     -m "Built in GitHub Actions (last ${PT} per channel, full partitions + ro.boot.vbmeta.digest)."
           git push
           # dated release: individual .prop assets + index.json; create (notifies) or update
           DEVS=$(python3 -c "import json;print(', '.join(sorted(json.load(open('index.json'))['devices'])))")
-          NOTES="Pixel build.prop corpus - the last builds of each channel (stable / beta / canary) per device, all partitions merged plus ro.boot.vbmeta.digest. .prop attached individually; index.json maps device -> channel -> latest.
-
-Devices: ${DEVS}.
-
-Fork of Pixel-Props/build.prop by @T3SL4."
+          { printf '%s\n\n' "Pixel build.prop corpus - the last builds of each channel (stable / beta / canary) per device, all partitions merged plus ro.boot.vbmeta.digest. .prop attached individually; index.json maps device -> channel -> latest." ; \
+            printf '%s\n\n' "Devices: ${DEVS}." ; \
+            printf '%s\n'   "Fork of Pixel-Props/build.prop by @T3SL4." ; } > "$RUNNER_TEMP/notes.md"
           if gh release view "$TAG" >/dev/null 2>&1; then
-            gh release edit "$TAG" --notes "$NOTES"
+            gh release edit "$TAG" --notes-file "$RUNNER_TEMP/notes.md"
           else
-            gh release create "$TAG" --title "$TAG - Pixel build.prop corpus" --notes "$NOTES"
+            gh release create "$TAG" --title "$TAG - Pixel build.prop corpus" --notes-file "$RUNNER_TEMP/notes.md"
           fi
           gh release upload "$TAG" index.json --clobber
           for ((i=0; i<${#NEWPROPS[@]}; i+=80)); do
