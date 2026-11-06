@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-01T18:58:56Z",
+  "generated": "2026-11-06T04:57:55Z",
   "devices": {
     "akita": {
       "model": "Pixel 8a",
@@ -13,7 +13,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "cb17bc7fed666bec652dfb3492c6245cb8b4f2aa9ee1641a1cdfe078b2925a4c",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "akita/akita_beta_16708287.prop",
@@ -22,16 +22,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "dbe8088b2fc9d962a5586b0468123b2fed19810d91efaaa3367705c55bec0d61",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "akita/akita_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "akita/akita_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "7c94a251d169473bb9d461ae8ae37b6ab84e08cadf8ddf19c0ed8ddcefeb88b3",
-          "source": "seed"
+          "vbmeta_digest": "66577b398b9a93b190a9c3a6e80dacac97c06e74eba938aa993b87c9478c9167",
+          "source": "ci"
         }
       }
     },
@@ -47,7 +47,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "005ecde565614015eacfb8ccb5ed77d554e5fe0a6d5a9df3744cea65baa09ad0",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "blazer/blazer_beta_16708287.prop",
@@ -56,16 +56,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "2998e8f5a3c59d764e90e5b5f659c156b9acac429d09f11dd5ba1459c917aa81",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "blazer/blazer_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "blazer/blazer_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "e4a5e60d44713d3cf425d6f742ff43f47f9df44a65facb7c4d08b98c94a4ff86",
-          "source": "seed"
+          "vbmeta_digest": "c98361a2e3fdc0e51967eb1eb5ad3f47bfe71dbccca18775436ca4b67c3e80a1",
+          "source": "ci"
         }
       }
     },
@@ -81,7 +81,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "e963a7d9dbf1fcb5ca975f841a56d865f169571903a1731aec32ebfafa7a53fd",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "bluejay/bluejay_beta_16708287.prop",
@@ -90,16 +90,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "ed6919d7a3db52906b0ac8254fbfc40a87e3289f97149e2c1b465778a0a51204",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "bluejay/bluejay_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "bluejay/bluejay_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "53e01801d63cea605565f748f3a82270bda802c2149dcac530cbe04889efb5c0",
-          "source": "seed"
+          "vbmeta_digest": "3dd7247b3e41b2d7443792e986d8023fd5642b456f46ae723365c90018418502",
+          "source": "ci"
         }
       }
     },
@@ -115,7 +115,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "a8bbdc1c39caba938781d0984e6a3db0ffa6b715c4d3fc46e0a729340110c70d",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "caiman/caiman_beta_16708287.prop",
@@ -124,16 +124,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "d53bc141ab2c24ad8d03d05674f83d2ca14d5d97f340457af68380fb9c14c18c",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "caiman/caiman_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "caiman/caiman_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "f1e9c837828c86b2465960c10f2c2492fcdd00dc2051675a6e2bd12a097f3ef6",
-          "source": "seed"
+          "vbmeta_digest": "530cd7bdf1b620fac0bc462c863732364b0f8187214cbf47164dc9eb60bf1c27",
+          "source": "ci"
         }
       }
     },
@@ -149,7 +149,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "b702cd181a202e360c246ddd09d0be85562a257994aae70c724c5ddf0a35e3bf",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "cheetah/cheetah_beta_16708287.prop",
@@ -158,16 +158,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "bee189ce429b446ae4b1111e3f3d3b3486c3c8a4c6c09b5a9c8945ab22e36147",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "cheetah/cheetah_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "cheetah/cheetah_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "629ea937695f50d90c41228f329eb25ebf4e120db54a820591b672e26ada7dca",
-          "source": "seed"
+          "vbmeta_digest": "8be2c24f256608e250e5d9ff9bd944c59b59de8becd32fff44e7358535d43e17",
+          "source": "ci"
         }
       }
     },
@@ -183,7 +183,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "744c0fc20bfb1296b529a25e907d35fd1a11cbb155f15f2395bfaa4d559c0ee9",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "comet/comet_beta_16708287.prop",
@@ -192,16 +192,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "f8645bb3ddaa4f0bc4f820031469532d177f0c9377de1fe429e3fad9afc8b17a",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "comet/comet_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "comet/comet_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "bef74abc9378c5da95c9651d68473cc0d8b013423008f8c6133b7891594f2f27",
-          "source": "seed"
+          "vbmeta_digest": "b167bcf5d70f294604a4ad6b11855ba8939243815e47cf90eb09ec3164fb4910",
+          "source": "ci"
         }
       }
     },
@@ -217,7 +217,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "841e1ebca282a704278918182be940554d1784f6c72adec397f447642a29d9e9",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "cubs/cubs_beta_16730940.prop",
@@ -226,16 +226,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "acb15cd37721d7ceba2459fbd9b837417a25c9302e23a010bc5b8bbdabe4f358",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "cubs/cubs_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "cubs/cubs_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "f2eb32a1439e742bdfde5d41b84b1365ad63ff4f0a36762db55c91198d353f3f",
-          "source": "seed"
+          "vbmeta_digest": "01aa12202c653ce615936424e9fd9a22ac0fc93a07348b414921b4573cdd1a04",
+          "source": "ci"
         }
       }
     },
@@ -251,7 +251,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "d256d92db7e8a6ee3f85fbe391aaaf541278a6a0702ca3a38655a68a73c19bc7",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "felix/felix_beta_16708287.prop",
@@ -260,16 +260,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "1cb1cc88414047599c81f1738c43725640c96fc8c2d796a612514f13ba0dee55",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "felix/felix_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "felix/felix_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "fcf0de6f9212810b1e867ef9167fb74ee9430625f4aa695bfde7ce0edf63c88e",
-          "source": "seed"
+          "vbmeta_digest": "d15306a1699282694022f9cbc154512f9e63178df9723a974eb14fd671c38402",
+          "source": "ci"
         }
       }
     },
@@ -285,7 +285,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "d3aa69e37b25b723279dd628f936a732150016cf18262bd06e72d4d07212d866",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "frankel/frankel_beta_16708287.prop",
@@ -294,16 +294,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "b77969a438b4a42aec6a897a59613b75b4ae4322d72a17e4cbbabb2736257e79",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "frankel/frankel_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "frankel/frankel_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "40272da1ed02cbe415623b2a013a8c7ecd23e987200fb26fcaa9d2e38ffacb30",
-          "source": "seed"
+          "vbmeta_digest": "b4248f8bcabad7acff509a059baf93d423f0438e1c9f55c138a0380b051b5363",
+          "source": "ci"
         }
       }
     },
@@ -319,7 +319,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "84848b7962158a75323280dbdca3413f5413ac8d754b91d11b54cfd9bc9ccf16",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "grizzly/grizzly_beta_16730940.prop",
@@ -328,16 +328,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "86debf0d63a8e706999b717a2fac64e45a9520e1fc848eff77cdfc181aead0f8",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "grizzly/grizzly_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "grizzly/grizzly_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "3d80b292f202105e8a663db72ba9422a93ba16f1d2d00d700581a52e975bd79c",
-          "source": "seed"
+          "vbmeta_digest": "fda02daca1b9a482ace66898256f4c67290ee2a7cbac0ad62ea659fe484b5d69",
+          "source": "ci"
         }
       }
     },
@@ -353,7 +353,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "c1b2e8b637f69c52f62fea146b7f3f4167d8f0fa8e2f2bbd76548de7d5809c2f",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "husky/husky_beta_16708287.prop",
@@ -362,16 +362,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "59ff748472aabcf627d4feaa6f1ab558d059180c3f62a3f95225fb9dba61515c",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "husky/husky_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "husky/husky_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "ca35c66ff69b76a25eef4b2e2a988fef859445cf7250133a3c0d466dacd09f29",
-          "source": "seed"
+          "vbmeta_digest": "784f84a88baf807d7b9ff4c79821b02033b1e9c280ea0eb819aa8512a1ef72cd",
+          "source": "ci"
         }
       }
     },
@@ -387,7 +387,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "a0302c0928ec51236678e6b16e232dd97f5a441260a2c3bc9fa924c0339a2507",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "kodiak/kodiak_beta_16730940.prop",
@@ -396,16 +396,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "7cbb511d0b41ab623987d841311728fccf9a9cdd5f00e87a5a0520a898b36767",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "kodiak/kodiak_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "kodiak/kodiak_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "cad0d3f9c8402f60aae99c8ad012590a1c464f11e8bac887bc9f4fedf3c27028",
-          "source": "seed"
+          "vbmeta_digest": "a24c8c88cb57dc39b58a416a5974e0c19b1592db72517356669bd1f240a1b91c",
+          "source": "ci"
         }
       }
     },
@@ -421,7 +421,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "2a968cedb7d0fd53a819730e77ff9312ec9261da11cf4d83cb71e52521171ac2",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "komodo/komodo_beta_16708287.prop",
@@ -430,16 +430,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "cb85cf28212e2181960cd223764b915eb0902c66c3fee855ce22f85e1656dd5f",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "komodo/komodo_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "komodo/komodo_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "9aa654afce66fbb48f8019ccb4ae85bff50ccf5bedd808f2a8f466a1032a99de",
-          "source": "seed"
+          "vbmeta_digest": "3697ad9e7acab5f3f44e583f09a082421976926ae3957e655d80fe899b6f56a5",
+          "source": "ci"
         }
       }
     },
@@ -455,7 +455,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "dd39ba65c94a24c482c22e1a17892bddfba47c30c3eca00f582f11baf3d4df42",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "lynx/lynx_beta_16708287.prop",
@@ -464,16 +464,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "8ac55243db872beaed78c3cfb139bf28dca8bbcc8aced52415da131143e57a48",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "lynx/lynx_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "lynx/lynx_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "93545fc1ab061e99e1a9a6d2abcff0146b77fc374b41d4f1554741ef53a51570",
-          "source": "seed"
+          "vbmeta_digest": "bb1db08a5ebf411395f7c79cca258997d461337f3fee05ef3feb3a0252894e1d",
+          "source": "ci"
         }
       }
     },
@@ -489,7 +489,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "37c3cd63bdcac46053b89f98b7484100952b564448d17b28417761f78261706d",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "mustang/mustang_beta_16708287.prop",
@@ -498,16 +498,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "b3a201f9e8873d87d2458487536c3b29c87a62524e70bf00b3ba385ae65eb8b6",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "mustang/mustang_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "mustang/mustang_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "2d2423be1ec9791ef50726722998c04bb07f5b77c3702c53f606c65c4339dc97",
-          "source": "seed"
+          "vbmeta_digest": "e1d6025804f1d2306d0af5cfde102345e8a576603e74b98b54f89ec6d005e050",
+          "source": "ci"
         }
       }
     },
@@ -523,7 +523,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "a9880cfc8b0dada0b3905679bdbe88b76d93f07174df26d880b5dbfbcc91e6c1",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "oriole/oriole_beta_16064790.prop",
@@ -532,7 +532,7 @@
           "security_patch": "2026-07-05",
           "android": "17",
           "vbmeta_digest": "410d1e4f7c37cbbcb1dddc364c391521a7a9773ac127b30a57abb238b13a5482",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
           "latest": "oriole/oriole_canary_16004061.prop",
@@ -541,7 +541,7 @@
           "security_patch": "2026-08-05",
           "android": "17",
           "vbmeta_digest": "1dd5959838539a817f70f324c4064203767e34d64a2e85b66b8edb17e072eb2e",
-          "source": "seed"
+          "source": "ci"
         }
       }
     },
@@ -557,7 +557,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "62980a3e921e5e9534a5bde748a7a7615c2b0748dfe5237dfcaa16ba77e9d5b2",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "panther/panther_beta_16708287.prop",
@@ -566,16 +566,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "b7efc736c169b6c1158daa6a6f4e6a344dec53306ced80434aac12fdcb271b58",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "panther/panther_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "panther/panther_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "3101a3a77c50c311eda3472404af1e64960af0aa8dee111cdb831ebb5ff61380",
-          "source": "seed"
+          "vbmeta_digest": "f679ada9fd9dc29dd0b20d8fca2373b57632e70ec9a4b9ebf7f41a28ee157e9d",
+          "source": "ci"
         }
       }
     },
@@ -591,7 +591,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "1933d4189e28d9aae75cea6d050c95c709a588e2b2a5a874346cf957f119b20e",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "rango/rango_beta_16708287.prop",
@@ -600,16 +600,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "3b7e16f7b32115baa526f7d40711796b85687efaf5cae00c3ec57f46edc62013",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "rango/rango_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "rango/rango_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "e98a4539b93052fe0d9b4080e02bf6e155ce07f8054a6b00cc74a1b7118e72d5",
-          "source": "seed"
+          "vbmeta_digest": "1464f551baf4884e4a3df1e5f4881a882453b6f5dd88909f716a70290b141a33",
+          "source": "ci"
         }
       }
     },
@@ -625,7 +625,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "f93150e0e1eee719047cd3b965cb767995378fafad793dea324b01fa648bb8bf",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "raven/raven_beta_16064790.prop",
@@ -634,7 +634,7 @@
           "security_patch": "2026-07-05",
           "android": "17",
           "vbmeta_digest": "f7b59eb2aeffa1278da8c3baed95131d09a56ef9284e751eac5d719ccf376a3e",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
           "latest": "raven/raven_canary_16004061.prop",
@@ -643,7 +643,7 @@
           "security_patch": "2026-08-05",
           "android": "17",
           "vbmeta_digest": "b78cecc19d58c3f43bb236f21a63a709d85ca2f368e54fa21e45db5041e68d17",
-          "source": "seed"
+          "source": "ci"
         }
       }
     },
@@ -659,7 +659,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "ef9a42b7a175f6ee454ad887e83230a75f0afa32bb448e1996baffcdf4ac792d",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "shiba/shiba_beta_16708287.prop",
@@ -668,16 +668,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "0de7a8334b843fe2b6f4a769f0a9921697f2181636a3a23713f6d23b2e64bb4b",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "shiba/shiba_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "shiba/shiba_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "e01656969c94fd5cd5ed96f5d3304437fed7b4dfb1b260fa5a9ecfd5be448c09",
-          "source": "seed"
+          "vbmeta_digest": "3ed006ee23ae680631c68cfd7fca8441f4c8efeb6e726f4a26209ec27555af79",
+          "source": "ci"
         }
       }
     },
@@ -693,7 +693,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "9a6f568ea8d090e03a2b6b1d4c6419bb3b6d20da00bfe84b12acd1276b1190e3",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "stallion/stallion_beta_16708287.prop",
@@ -702,16 +702,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "99db288ed700995dcf06a83c0912b96906f56251d0b84c5f9b1ea175a54c351e",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "stallion/stallion_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "stallion/stallion_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "68d8b2c3c42cc8d238c81221af56a565db73775f345f3d649c3df2a06d3d8a68",
-          "source": "seed"
+          "vbmeta_digest": "651722fb7978a5fc9ae37dbdbf97a1cbdf1866e4f1461bce06d7f77588e2ea16",
+          "source": "ci"
         }
       }
     },
@@ -727,7 +727,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "ddd8ce81fb43609548592a7d66e41d446ba12741f68f7e155f472871a4b937d7",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "tangorpro/tangorpro_beta_16708287.prop",
@@ -736,16 +736,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "dd4f02ee0b7126ff2cb877b3e555c00c4b0f4de9b8259f0d0ae7e049334a42e2",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "tangorpro/tangorpro_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "tangorpro/tangorpro_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "84c6784d68f7dbfca84df595460d492b65e8ed847c7461cb2666d3578d68ec63",
-          "source": "seed"
+          "vbmeta_digest": "6dd1eb98bdb9d1fa4faf6dacd05bdcd90c1ce31e3f1456729d51e1004367f585",
+          "source": "ci"
         }
       }
     },
@@ -761,7 +761,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "8d201666d0dd4449c24fa862771535187382ce21e66b81a9d499ffc1b201d074",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "tegu/tegu_beta_16708287.prop",
@@ -770,16 +770,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "0ef19d1f2fc16e1b9c2b2e0c48bb4a2479d49a9c146a3f88b0972ef3975c14d1",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "tegu/tegu_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "tegu/tegu_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "da948fb6ae21b6046ef161407501a5259dc58fa92aa4b27360461a7c62937ed2",
-          "source": "seed"
+          "vbmeta_digest": "5f87bb9cd173ab1f3b5a52342f07b81b31aac79c2a3dc3198ac0d6d58953f1b5",
+          "source": "ci"
         }
       }
     },
@@ -795,7 +795,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "63696163d17569800ff3be642c8b906649e5580d7542046dd88695c8afe50483",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "tokay/tokay_beta_16708287.prop",
@@ -804,16 +804,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "a079981f39fdedbc7055664a8b36e636e2bdf6583095489413ba3e6eea11d338",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "tokay/tokay_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "tokay/tokay_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "f393bd59c26e9c65d683a1ebe231a9a6001539663ddde37d6551a6083b9ed3ef",
-          "source": "seed"
+          "vbmeta_digest": "17d66373a8cb37daf4e7952cd93ac42b38cecf8b18167382ef91f265ba4316f6",
+          "source": "ci"
         }
       }
     },
@@ -829,7 +829,7 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "f63a14b31fb6c2e38174cc14931479cd18cf2d1f686c6e47f7ca5c284e672a70",
-          "source": "seed"
+          "source": "ci"
         },
         "beta": {
           "latest": "yogi/yogi_beta_16730940.prop",
@@ -838,16 +838,16 @@
           "security_patch": "2026-10-05",
           "android": "17",
           "vbmeta_digest": "188f6df9d51020226697c5a4c329d6e54faa4278821a09234e5951605d422169",
-          "source": "seed"
+          "source": "ci"
         },
         "canary": {
-          "latest": "yogi/yogi_canary_16484274.prop",
-          "build": "ZP11.260918.007",
-          "incremental": "16484274",
-          "security_patch": "2026-10-05",
+          "latest": "yogi/yogi_canary_16754936.prop",
+          "build": "ZP11.261016.008",
+          "incremental": "16754936",
+          "security_patch": "2026-11-05",
           "android": "17",
-          "vbmeta_digest": "62383247f570c5e5392760bb345ff83819479320a2104694b3dbcf7824317423",
-          "source": "seed"
+          "vbmeta_digest": "7bcd255f5bf3670cd465f0177b0689f329d24d474576f3dc40a357875b1c322b",
+          "source": "ci"
         }
       }
     }
