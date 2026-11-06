@@ -190,12 +190,15 @@ jobs:
         env:
           TG_BOT_TOKEN: ${{ secrets.TG_BOT_TOKEN }}
           TG_ALERTAS_CHAT: ${{ secrets.TG_ALERTAS_CHAT }}
+          TG_ALERTAS_THREAD: ${{ secrets.TG_ALERTAS_THREAD }}
         run: |
           if [ -z "$TG_BOT_TOKEN" ] || [ -z "$TG_ALERTAS_CHAT" ]; then
             echo "Telegram secrets not set; skipping alert."; exit 0
           fi
           URL="${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}"
-          curl -fsS "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" \
-            --data-urlencode "chat_id=${TG_ALERTAS_CHAT}" \
-            --data-urlencode "text=build.prop corpus: a GitHub Actions run FAILED - ${URL}" \
+          ARGS=(--data-urlencode "chat_id=${TG_ALERTAS_CHAT}"
+                --data-urlencode "text=build.prop corpus: a GitHub Actions run FAILED - ${URL}")
+          # forum supergroup: post into the configured topic when set
+          [ -n "$TG_ALERTAS_THREAD" ] && ARGS+=(--data-urlencode "message_thread_id=${TG_ALERTAS_THREAD}")
+          curl -fsS "https://api.telegram.org/bot${TG_BOT_TOKEN}/sendMessage" "${ARGS[@]}" \
             >/dev/null && echo "alert sent"
