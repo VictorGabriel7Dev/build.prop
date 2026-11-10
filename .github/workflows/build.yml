@@ -63,7 +63,8 @@ jobs:
               "cubs","grizzly","kodiak","yogi"
             ]'
           else
-            JSON=$(echo '${{ github.event.inputs.devices }}' | tr ' ' '\n' | jq -R . | jq -s .)
+            # drop empty entries so a stray space in the device list can't spawn a phantom job
+            JSON=$(echo '${{ github.event.inputs.devices }}' | tr ' ' '\n' | jq -R . | jq -s 'map(select(length>0))')
           fi
           { echo "devices<<EOF"; echo "$JSON"; echo "EOF"; } >> "$GITHUB_OUTPUT"
 
