@@ -33,8 +33,9 @@ on:
       commit:
         description: 'Commit + release the result (false = artifacts only, for testing)'
         default: 'true'
-  schedule:
-    - cron: '0 */12 * * *'   # twice a day, catch new builds (commit defaults to true)
+  # No `schedule:` on purpose. This is a fork, and GitHub disables workflows on forks that carry a
+  # schedule trigger (fork-cron prevention), which also blocks manual dispatch until re-enabled. The
+  # trigger comes from an external scheduler via `gh workflow run` only when new builds actually exist.
 
 permissions:
   contents: write
