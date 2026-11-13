@@ -1,5 +1,5 @@
 {
-  "generated": "2026-11-13T14:17:21Z",
+  "generated": "2026-11-13T21:16:08Z",
   "devices": {
     "akita": {
       "model": "Pixel 8a",
@@ -220,12 +220,12 @@
           "source": "ci"
         },
         "beta": {
-          "latest": "cubs/cubs_beta_16730940.prop",
-          "build": "DP11.261016.004",
-          "incremental": "16730940",
+          "latest": "cubs/cubs_beta_16847878.prop",
+          "build": "DP11.261030.003",
+          "incremental": "16847878",
           "security_patch": "2026-10-05",
           "android": "17",
-          "vbmeta_digest": "acb15cd37721d7ceba2459fbd9b837417a25c9302e23a010bc5b8bbdabe4f358",
+          "vbmeta_digest": "86a68c117c5276fa3b879b662e6a46d3b12dca450b043e216c2ed02c43c96647",
           "source": "ci"
         },
         "canary": {
@@ -492,12 +492,12 @@
           "source": "ci"
         },
         "beta": {
-          "latest": "mustang/mustang_beta_16708287.prop",
-          "build": "DP11.261016.003",
-          "incremental": "16708287",
+          "latest": "mustang/mustang_beta_16847878.prop",
+          "build": "DP11.261030.003",
+          "incremental": "16847878",
           "security_patch": "2026-10-05",
           "android": "17",
-          "vbmeta_digest": "b3a201f9e8873d87d2458487536c3b29c87a62524e70bf00b3ba385ae65eb8b6",
+          "vbmeta_digest": "95dc9b6200d733c9f786c65956fa7687958ade3e308d71c30c45009eb3faae6d",
           "source": "ci"
         },
         "canary": {
@@ -832,12 +832,12 @@
           "source": "ci"
         },
         "beta": {
-          "latest": "yogi/yogi_beta_16730940.prop",
-          "build": "DP11.261016.004",
-          "incremental": "16730940",
+          "latest": "yogi/yogi_beta_16847878.prop",
+          "build": "DP11.261030.003",
+          "incremental": "16847878",
           "security_patch": "2026-10-05",
           "android": "17",
-          "vbmeta_digest": "188f6df9d51020226697c5a4c329d6e54faa4278821a09234e5951605d422169",
+          "vbmeta_digest": "3cdf1587ad9b90a51a590190a247e3e12329efe158ba6c06820ef081782c5ec0",
           "source": "ci"
         },
         "canary": {
