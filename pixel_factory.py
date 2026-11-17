@@ -1,5 +1,26 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
+# ======================================================================
+#  PIXEL PROP BUILDER  ::  Pixel build.prop archive
+#  Flashstation client and build.prop reader over HTTP Range for Pixel factory images.
+#
+#  Copyright (C) 2026  @T3SL4 & VictorGabriel7Dev
+#  SPDX-License-Identifier: GPL-3.0-or-later
+#  Fork of Pixel-Props/build.prop by @T3SL4.
+#
+#  Free software under the GNU GPL v3 or later: distribute a modified
+#  version and you MUST offer its source under the same terms.
+#
+#  Site      : https://victorgabriel.dev
+#  Source    : https://github.com/VictorGabriel7Dev/build.prop
+#  GitHub    : @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
+#  Telegram  : @VictorGabriel_Dev https://t.me/VictorGabriel_Dev
+#  Discord   : @VictorGabriel.dev https://discord.com/users/1481407654458036265
+#  LinkedIn  : in/victorgabriel-dev https://www.linkedin.com/in/victorgabriel-dev
+#  Instagram : @VictorGabriel_Dev https://www.instagram.com/VictorGabriel_Dev
+#  WhatsApp  : @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
+#  E-mail    : contato@victorgabriel.dev
+# ======================================================================
 """Flashstation client + a read of a Pixel factory image's build.prop over HTTP Range.
 
 The flashstation helpers (`list_builds`, `latest_build`) resolve the factory image URLs for the

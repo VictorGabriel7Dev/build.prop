@@ -4,12 +4,22 @@
 #  PIXEL PROP BUILDER  ::  Pixel build.prop archive
 #  Build index.json from the Pixel build.prop files in this repository.
 #
-#  Copyright (C) 2026  VictorGabriel7Dev
+#  Copyright (C) 2026  @T3SL4 & VictorGabriel7Dev
 #  SPDX-License-Identifier: GPL-3.0-or-later
 #  Fork of Pixel-Props/build.prop by @T3SL4.
 #
+#  Free software under the GNU GPL v3 or later: distribute a modified
+#  version and you MUST offer its source under the same terms.
+#
 #  Site      : https://victorgabriel.dev
 #  Source    : https://github.com/VictorGabriel7Dev/build.prop
+#  GitHub    : @VictorGabriel7Dev https://github.com/VictorGabriel7Dev
+#  Telegram  : @VictorGabriel_Dev https://t.me/VictorGabriel_Dev
+#  Discord   : @VictorGabriel.dev https://discord.com/users/1481407654458036265
+#  LinkedIn  : in/victorgabriel-dev https://www.linkedin.com/in/victorgabriel-dev
+#  Instagram : @VictorGabriel_Dev https://www.instagram.com/VictorGabriel_Dev
+#  WhatsApp  : @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
+#  E-mail    : contato@victorgabriel.dev
 # ======================================================================
 """Emit index.json: one small manifest of every device, its channels and the latest .prop per
 channel, so a consumer fetches a single file instead of listing and sorting the tree.

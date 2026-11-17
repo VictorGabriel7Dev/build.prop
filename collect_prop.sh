@@ -3,7 +3,7 @@
 #  PIXEL PROP BUILDER  ::  Pixel build.prop archive
 #  Extract and distribute the full Pixel build.prop from Google's OTA images.
 #
-#  Copyright (C) 2026  VictorGabriel7Dev
+#  Copyright (C) 2026  @T3SL4 & VictorGabriel7Dev
 #  SPDX-License-Identifier: GPL-3.0-or-later
 #  Fork of Pixel-Props/build.prop by @T3SL4.
 #
@@ -53,7 +53,7 @@ mkdir -p "${codename}"
 #  PIXEL PROP BUILDER  ::  Pixel build.prop archive
 #  Extract and distribute the full Pixel build.prop from Google's OTA images.
 #
-#  Copyright (C) 2026  VictorGabriel7Dev
+#  Copyright (C) 2026  @T3SL4 & VictorGabriel7Dev
 #  SPDX-License-Identifier: GPL-3.0-or-later
 #  Fork of Pixel-Props/build.prop by @T3SL4.
 #
