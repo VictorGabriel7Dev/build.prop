@@ -53,6 +53,11 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 این پروژه یک فورک از **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** ساخته‌ی **[@T3SL4](https://github.com/T3SL4)** است، که خط‌لوله‌ی استخراج OTA-به-prop را پایه‌گذاری کرد. تمام اعتبار کار اصلی به نویسنده‌ی آن تعلق دارد.
 
+## همچنین ببینید
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - از Telegram به عنوان یک فضای ذخیره‌سازی شیء از طریق یک CLI کوچک Go استفاده کنید.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - یک bot مدیریتی ضد هرزنامه برای گروه‌های Telegram.
+
 ## تماس
 
 - https://victorgabriel.dev

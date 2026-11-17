@@ -53,6 +53,11 @@ Một `.github/workflows/build.yml` tổng quát, chạy theo yêu cầu cũng c
 
 Dự án này là một fork của **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** của **[@T3SL4](https://github.com/T3SL4)**, người đã tiên phong tạo ra pipeline trích xuất từ OTA sang prop. Toàn bộ công lao cho công trình gốc thuộc về tác giả của nó.
 
+## Xem thêm
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - dùng Telegram làm kho lưu trữ đối tượng từ một CLI Go nhỏ gọn.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - bot kiểm duyệt chống spam cho các nhóm Telegram.
+
 ## Liên hệ
 
 - https://victorgabriel.dev

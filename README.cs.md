@@ -53,6 +53,11 @@ K dispozici je také obecný `.github/workflows/build.yml` na vyžádání (`wor
 
 Tento projekt je fork **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** od **[@T3SL4](https://github.com/T3SL4)**, který jako první vytvořil pipeline pro extrakci prop z OTA. Veškeré uznání za původní práci patří jejímu autorovi.
 
+## Viz také
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - používejte Telegram jako objektové úložiště z malého CLI v Go.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - moderační bot proti spamu pro skupiny Telegramu.
+
 ## Kontakt
 
 - https://victorgabriel.dev

@@ -53,6 +53,11 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 Этот проект является форком **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** от **[@T3SL4](https://github.com/T3SL4)**, который впервые реализовал конвейер извлечения prop из OTA. Все заслуги за оригинальную работу принадлежат её автору.
 
+## Смотрите также
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - используйте Telegram как объектное хранилище из крошечного CLI на Go.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - бот-модератор против спама для групп Telegram.
+
 ## Контакты
 
 - https://victorgabriel.dev

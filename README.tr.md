@@ -53,6 +53,11 @@ Ayrıca, bir cihazın en son `.prop` dosyasını derlemek için manuel bir yedek
 
 Bu proje, OTA'dan prop'a çıkarma ardışık düzenine öncülük eden **[@T3SL4](https://github.com/T3SL4)** tarafından geliştirilen **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** projesinin bir çatalıdır. Orijinal çalışmanın tüm övgüsü yazarına aittir.
 
+## Ayrıca bakınız
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - Telegram'ı küçük bir Go CLI'sinden nesne deposu olarak kullanın.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - Telegram grupları için antispam moderasyon botu.
+
 ## İletişim
 
 - https://victorgabriel.dev

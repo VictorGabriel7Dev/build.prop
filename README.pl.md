@@ -53,6 +53,11 @@ Dostępny jest też uniwersalny `.github/workflows/build.yml` na żądanie (`wor
 
 Ten projekt jest forkiem **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** autorstwa **[@T3SL4](https://github.com/T3SL4)**, który jako pierwszy opracował potok wyodrębniania OTA-do-prop. Pełne uznanie za oryginalną pracę należy się jej autorowi.
 
+## Zobacz także
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - używaj Telegrama jako magazynu obiektów z małego CLI w Go.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - bot moderujący przeciw spamowi dla grup Telegrama.
+
 ## Contact
 
 - https://victorgabriel.dev

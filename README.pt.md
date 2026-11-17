@@ -53,6 +53,11 @@ Um `.github/workflows/build.yml` genérico e sob demanda também está disponív
 
 Este projeto é um fork de **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** de **[@T3SL4](https://github.com/T3SL4)**, que foi pioneiro no pipeline de extração de OTA para prop. Todo o crédito pelo trabalho original é do seu autor.
 
+## Veja também
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - use o Telegram como armazenamento de objetos a partir de uma pequena CLI em Go.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - bot de moderação anti-spam para grupos do Telegram.
+
 ## Contato
 
 - https://victorgabriel.dev

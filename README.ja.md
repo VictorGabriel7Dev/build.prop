@@ -53,6 +53,11 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 このプロジェクトは、**[@T3SL4](https://github.com/T3SL4)** による **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** の fork であり、OTA から prop への抽出パイプラインを切り開いたものです。オリジナルの作品に対するすべての功績はその作者に帰します。
 
+## 関連情報
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - 小さな Go CLI から Telegram をオブジェクトストレージとして利用。
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - Telegram グループ向けのスパム対策モデレーション bot。
+
 ## 連絡先
 
 - https://victorgabriel.dev

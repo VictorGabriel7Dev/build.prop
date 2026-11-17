@@ -53,6 +53,11 @@ git clone --recurse-submodules https://github.com/VictorGabriel7Dev/build.prop &
 
 यह परियोजना **[@T3SL4](https://github.com/T3SL4)** द्वारा बनाई गई **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** का एक फ़ोर्क है, जिसने OTA-से-prop निष्कर्षण पाइपलाइन की शुरुआत की। मूल कार्य का पूरा श्रेय उसके लेखक को जाता है।
 
+## यह भी देखें
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - एक छोटे Go CLI से Telegram को ऑब्जेक्ट स्टोर के रूप में उपयोग करें।
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - Telegram समूहों के लिए एक एंटी-स्पैम मॉडरेशन bot।
+
 ## संपर्क
 
 - https://victorgabriel.dev

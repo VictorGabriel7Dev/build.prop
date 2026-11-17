@@ -53,6 +53,11 @@ L'archivio resta aggiornato automaticamente: man mano che Google pubblica nuovi 
 
 Questo progetto è un fork di **[Pixel-Props/build.prop](https://github.com/Pixel-Props/build.prop)** di **[@T3SL4](https://github.com/T3SL4)**, che ha dato il via alla pipeline di estrazione da OTA a prop. Tutto il merito del lavoro originale va al suo autore.
 
+## Vedi anche
+
+- [**mtproto-store**](https://github.com/VictorGabriel7Dev/mtproto-store) - usa Telegram come archivio di oggetti da una piccola CLI in Go.
+- [**telegram-antispam-bot**](https://github.com/VictorGabriel7Dev/telegram-antispam-bot) - bot di moderazione anti-spam per gruppi Telegram.
+
 ## Contatto
 
 - https://victorgabriel.dev
