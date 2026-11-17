@@ -21,14 +21,14 @@
 #  WhatsApp  : @VictorGabriel_Dev https://wa.me/@VictorGabriel_Dev
 #  E-mail    : contato@victorgabriel.dev
 # ======================================================================
-"""B TOTAL: build.prop COMPLETO (todas as particoes) p/ os 3 canais, ultimos N de cada.
+"""FULL B: COMPLETE build.prop (all partitions) for the 3 channels, last N of each.
 
-- stable  : OTA zip oficial (developers.google.com/android/ota) -> payload.bin -> payload_dumper.
-- beta/canary : factory do flashstation -> image-*.zip -> *.img (ou super.img via lpunpack).
-Para cada build mescla o build.prop de TODAS as particoes (~320 props), ARQUIVA os per-particao,
-computa o `ro.boot.vbmeta.digest` (= verifiedBootHash) e escreve `<fork>/<cn>/<cn>[_track]_<inc>.prop`.
+- stable  : official OTA zip (developers.google.com/android/ota) -> payload.bin -> payload_dumper.
+- beta/canary : flashstation factory -> image-*.zip -> *.img (or super.img via lpunpack).
+For each build it merges the build.prop of ALL partitions (~320 props), ARCHIVES the per-partition ones,
+computes `ro.boot.vbmeta.digest` (= verifiedBootHash) and writes `<fork>/<cn>/<cn>[_track]_<inc>.prop`.
 
-Uso: pixel_fullprop.py [--only cheetah,comet] [--tracks stable,beta,canary] [--per-track 4]
+Usage: pixel_fullprop.py [--only cheetah,comet] [--tracks stable,beta,canary] [--per-track 4]
                        [--slice i/n] [--fork DIR] [--acervo DIR] [--tmp DIR] [--force]
                        [--lowdisk] [--workers N] [--dry-run]
 """
@@ -40,7 +40,7 @@ _s = importlib.util.spec_from_file_location("pixel_factory", LIB)
 pf = importlib.util.module_from_spec(_s); _s.loader.exec_module(pf)
 
 PROFILES = HERE / "pixel_profiles.json"
-# bases das particoes (super.img expande p/ estas); aceitamos <base>.img E <base>_a.img (slot A/B)
+# partition bases (super.img expands into these); we accept <base>.img AND <base>_a.img (slot A/B)
 PART_BASES = ["system", "system_ext", "product", "vendor", "odm", "system_dlkm", "vendor_dlkm"]
 OTA_URL = "https://developers.google.com/android/ota?partial=1"
 OTA_COOKIE = "devsite_wall_acks=nexus-ota-tos"
@@ -79,10 +79,10 @@ def sh(cmd, cwd=None, timeout=1800):
 
 
 def download(url, dest, cookie=None, timeout=5400):
-    """Baixa url->dest. curl single-stream, RESUMIVEL (-C -), com retry.
-    aria2 -x16 foi abandonado: na cauda o dl.google estrangula e os segmentos paralelos
-    corrompem o zip ('data after end of archive'). 1 conexao e' lenta mas integra; o paralelismo
-    vem de baixar builds DIFERENTES ao mesmo tempo (varios --slice)."""
+    """Downloads url->dest. curl single-stream, RESUMABLE (-C -), with retry.
+    aria2 -x16 was abandoned: near the tail dl.google throttles and the parallel segments
+    corrupt the zip ('data after end of archive'). 1 connection is slow but intact; parallelism
+    comes from downloading DIFFERENT builds at the same time (several --slice)."""
     dest = pathlib.Path(dest)
     cmd = ["curl", "-fSL", "-C", "-", "--retry", "6", "--retry-delay", "3",
            "--retry-all-errors", "-o", str(dest)]
@@ -93,7 +93,7 @@ def download(url, dest, cookie=None, timeout=5400):
 
 
 def lpunpack_cmd(raw, outdir):
-    """lpunpack binario (android-tools) ou o port python unix3dgforce (lpunpack.py)."""
+    """lpunpack binary (android-tools) or the unix3dgforce python port (lpunpack.py)."""
     b = shutil.which("lpunpack")
     if b:
         return [b, str(raw), str(outdir)]
@@ -108,8 +108,8 @@ def bp_paths(img):
 
 
 def partition_buildprops(img, scratch):
-    """Devolve [(relpath, texto)] de cada build.prop da particao. 7z primeiro (rapido); se o 7z nao
-    ler a EROFS (Pixel 11 novo: 'Method=Store/Errors') cai pro fsck.erofs --extract (universal)."""
+    """Returns [(relpath, text)] of each build.prop in the partition. 7z first (fast); if 7z cannot
+    read the EROFS (new Pixel 11: 'Method=Store/Errors') it falls back to fsck.erofs --extract (universal)."""
     out = []
     img = pathlib.Path(img)
     for p in bp_paths(str(img)):
@@ -121,7 +121,7 @@ def partition_buildprops(img, scratch):
         shutil.rmtree(d, ignore_errors=True)
     if out:
         return out
-    # fallback EROFS: extrai a FS e pega os build.prop
+    # EROFS fallback: extract the FS and grab the build.prop files
     if shutil.which("fsck.erofs"):
         d = pathlib.Path(tempfile.mkdtemp(dir=scratch))
         try:
@@ -138,7 +138,7 @@ _OTA_CACHE = {}
 
 
 def ota_builds(code, n):
-    """Ultimos N builds STABLE do codename, da pagina OTA oficial (payload.bin). [{build_id,url}]."""
+    """Last N STABLE builds of the codename, from the official OTA page (payload.bin). [{build_id,url}]."""
     if "page" not in _OTA_CACHE:
         req = urllib.request.Request(OTA_URL, headers={"User-Agent": UA, "Cookie": OTA_COOKIE})
         with urllib.request.urlopen(req, timeout=120) as r:
@@ -152,15 +152,15 @@ def ota_builds(code, n):
 
 
 def read_bp_from_imgs(imgdir, acdir, prod_build):
-    """Le o build.prop de cada particao em imgdir (aceita super.img via lpunpack), ARQUIVA, MESCLA."""
-    # super.img (Pixel 11 A16+: particoes dinamicas) -> simg2img + lpunpack
+    """Reads the build.prop of each partition in imgdir (accepts super.img via lpunpack), ARCHIVES, MERGES."""
+    # super.img (Pixel 11 A16+: dynamic partitions) -> simg2img + lpunpack
     if not any(glob.glob(str(imgdir / f"{b}*.img")) for b in PART_BASES):
         sup = imgdir / "super.img"
         if sup.exists():
             raw = imgdir / "super.raw"
             sh(["simg2img", str(sup), str(raw)])
             if not raw.exists() or raw.stat().st_size == 0:
-                raw = sup                              # ja desensparsa
+                raw = sup                              # already unsparsed
             sh(lpunpack_cmd(raw, imgdir), timeout=1800)
             if raw != sup:
                 raw.unlink(missing_ok=True)
@@ -207,11 +207,11 @@ def write_prop(out, merged):
 
 
 def extract_factory(code, track, b, fork, acervo, tmp, force, dry, lowdisk):
-    """beta/canary: factory do flashstation (image-*.zip + *.img/super.img)."""
+    """beta/canary: flashstation factory (image-*.zip + *.img/super.img)."""
     inc = str(b["build_id"])
     out = pathlib.Path(fork) / code / f"{code}_{track}_{inc}.prop"
     if out.exists() and not force:
-        # pula so' se JA for full (~320 props); subset antigo (78-87p) re-extrai p/ full
+        # skip only if it is ALREADY full (~320 props); an old subset (78-87p) re-extracts to full
         try:
             if sum(1 for l in out.read_text(errors="replace").splitlines()
                    if l.startswith("ro.") and "=" in l) >= 250:
@@ -227,11 +227,11 @@ def extract_factory(code, track, b, fork, acervo, tmp, force, dry, lowdisk):
         zf = work / fac
         download(b["url"], zf)
         if not zf.exists() or zf.stat().st_size < 50_000_000:
-            print(f"  ! {code} {track} {inc}: download falhou"); return "err"
+            print(f"  ! {code} {track} {inc}: download failed"); return "err"
         sh(["7z", "x", "-y", str(zf)], cwd=str(work)); zf.unlink()
         inner = next(iter(glob.glob(str(work / "**/image-*.zip"), recursive=True)), None)
         if not inner:
-            print(f"  ! {code} {track} {inc}: image-*.zip ausente"); return "err"
+            print(f"  ! {code} {track} {inc}: image-*.zip missing"); return "err"
         inner = pathlib.Path(inner); imgdir = inner.parent
         acdir = pathlib.Path(acervo) / prod_build
         if not lowdisk:
@@ -242,10 +242,10 @@ def extract_factory(code, track, b, fork, acervo, tmp, force, dry, lowdisk):
                 sh(["7z", "x", "-y", str(inner), img, f"-o{imgdir}"])
         merged, got = read_bp_from_imgs(imgdir, acdir, prod_build)
         if not merged:
-            print(f"  ! {code} {track} {inc}: nenhum build.prop extraido"); return "err"
+            print(f"  ! {code} {track} {inc}: no build.prop extracted"); return "err"
         add_vbmeta(imgdir, merged, acdir, prod_build)
         write_prop(out, merged)
-        print(f"  + {code}/{out.name}  ({len(merged)} props, {got} particoes)")
+        print(f"  + {code}/{out.name}  ({len(merged)} props, {got} partitions)")
         return "ok"
     except subprocess.TimeoutExpired:
         print(f"  ! {code} {track} {inc}: TIMEOUT"); return "err"
@@ -254,8 +254,8 @@ def extract_factory(code, track, b, fork, acervo, tmp, force, dry, lowdisk):
 
 
 def extract_url(code, track, build, url, fork, acervo, tmp, force, dry):
-    """Extrai de uma URL de FACTORY explicita (fonte: tracker). track='' => stable (sem token).
-    Nomeia por ro.build.version.incremental REAL (pos-extracao), como o extract_ota."""
+    """Extracts from an explicit FACTORY URL (source: tracker). track='' => stable (no token).
+    Names by the REAL ro.build.version.incremental (post-extraction), like extract_ota."""
     devdir = pathlib.Path(fork) / code
     tok = f"_{track}" if track and track != "stable" else ""
     bid_up = build.upper()
@@ -265,7 +265,7 @@ def extract_url(code, track, build, url, fork, acervo, tmp, force, dry):
                 txt = pathlib.Path(f).read_text(errors="replace")
                 if f"ro.build.id={bid_up}\n" in txt and \
                    sum(1 for l in txt.splitlines() if l.startswith("ro.") and "=" in l) >= 250:
-                    return "skip"   # ja temos esse build FULL
+                    return "skip"   # we already have this build FULL
             except Exception:
                 pass
     fac = url.rsplit("/", 1)[1]
@@ -277,22 +277,22 @@ def extract_url(code, track, build, url, fork, acervo, tmp, force, dry):
         zf = work / fac
         download(url, zf)
         if not zf.exists() or zf.stat().st_size < 50_000_000:
-            print(f"  ! {code} {track} {build}: download falhou"); return "err"
+            print(f"  ! {code} {track} {build}: download failed"); return "err"
         sh(["7z", "x", "-y", str(zf)], cwd=str(work)); zf.unlink()
         inner = next(iter(glob.glob(str(work / "**/image-*.zip"), recursive=True)), None)
         if not inner:
-            print(f"  ! {code} {track} {build}: image-*.zip ausente"); return "err"
+            print(f"  ! {code} {track} {build}: image-*.zip missing"); return "err"
         inner = pathlib.Path(inner); imgdir = inner.parent
         acdir = pathlib.Path(acervo) / prod_build
         sh(["7z", "x", "-y", str(inner)], cwd=str(imgdir))
         merged, got = read_bp_from_imgs(imgdir, acdir, prod_build)
         if not merged:
-            print(f"  ! {code} {track} {build}: nenhum build.prop"); return "err"
+            print(f"  ! {code} {track} {build}: no build.prop"); return "err"
         add_vbmeta(imgdir, merged, acdir, prod_build)
         real_inc = merged.get("ro.build.version.incremental", build)
         out = devdir / f"{code}{tok}_{real_inc}.prop"
         write_prop(out, merged)
-        print(f"  + {code}/{out.name}  ({len(merged)} props, {got} particoes)")
+        print(f"  + {code}/{out.name}  ({len(merged)} props, {got} partitions)")
         return "ok"
     except subprocess.TimeoutExpired:
         print(f"  ! {code} {track} {build}: TIMEOUT"); return "err"
@@ -305,7 +305,7 @@ def extract_ota(code, b, fork, acervo, tmp, force, dry, workers):
     bid = b["build_id"]
     bid_up = bid.upper()
     devdir = pathlib.Path(fork) / code
-    # ja temos esse stable? (ro.build.id casa) -> pula sem baixar
+    # do we already have this stable? (ro.build.id matches) -> skip without downloading
     if not force:
         for f in glob.glob(str(devdir / f"{code}_[0-9]*.prop")):
             try:
@@ -321,15 +321,15 @@ def extract_ota(code, b, fork, acervo, tmp, force, dry, workers):
         zf = work / b["url"].rsplit("/", 1)[1]
         download(b["url"], zf, cookie=OTA_COOKIE)
         if not zf.exists() or zf.stat().st_size < 50_000_000:
-            print(f"  ! {code} stable {bid}: download falhou"); return "err"
+            print(f"  ! {code} stable {bid}: download failed"); return "err"
         sh(["7z", "e", "-y", str(zf), "payload.bin", f"-o{work}"]); zf.unlink()
         payload = work / "payload.bin"
         if not payload.exists():
-            print(f"  ! {code} stable {bid}: payload.bin ausente"); return "err"
+            print(f"  ! {code} stable {bid}: payload.bin missing"); return "err"
         imgdir = work / "out"; imgdir.mkdir()
-        # FS + cadeia vbmeta: avbtool calculate_vbmeta_digest precisa de vbmeta + vbmeta_system/vendor
-        # + boot/init_boot/dtbo/vendor_boot/... (senao quebra em 'boot.img' ausente). Com eles o stable
-        # OTA ganha ro.boot.vbmeta.digest nativo (sem backfill).
+        # FS + vbmeta chain: avbtool calculate_vbmeta_digest needs vbmeta + vbmeta_system/vendor
+        # + boot/init_boot/dtbo/vendor_boot/... (otherwise it breaks on a missing 'boot.img'). With them the
+        # stable OTA gets a native ro.boot.vbmeta.digest (no backfill).
         parts = ",".join(PART_BASES + ["vbmeta", "vbmeta_system", "vbmeta_vendor", "boot",
                                        "init_boot", "dtbo", "vendor_boot", "vendor_kernel_boot", "pvmfw"])
         sh(["payload_dumper", "--partitions", parts, "--workers", str(workers),
@@ -338,14 +338,14 @@ def extract_ota(code, b, fork, acervo, tmp, force, dry, workers):
         acdir = pathlib.Path(acervo) / prod_build
         merged, got = read_bp_from_imgs(imgdir, acdir, prod_build)
         if not merged:
-            print(f"  ! {code} stable {bid}: nenhum build.prop extraido"); return "err"
+            print(f"  ! {code} stable {bid}: no build.prop extracted"); return "err"
         add_vbmeta(imgdir, merged, acdir, prod_build)
         real_inc = merged.get("ro.build.version.incremental", bid)
         out = devdir / f"{code}_{real_inc}.prop"
-        # grava sempre: o pre-check por ro.build.id ja pulou os FULL existentes; aqui chegam builds
-        # novos OU subsets antigos (sem build.id, mesmo incremental) que DEVEM virar full.
+        # always write: the ro.build.id pre-check already skipped the existing FULL ones; what reaches here
+        # are new builds OR old subsets (no build.id, same incremental) that MUST become full.
         write_prop(out, merged)
-        print(f"  + {code}/{out.name}  ({len(merged)} props, {got} particoes)")
+        print(f"  + {code}/{out.name}  ({len(merged)} props, {got} partitions)")
         return "ok"
     except subprocess.TimeoutExpired:
         print(f"  ! {code} stable {bid}: TIMEOUT"); return "err"
@@ -387,7 +387,7 @@ def main():
         i, n = (int(x) for x in _arg("--slice").split("/")); codenames = codenames[i::n]
     tally = {}
     for code in codenames:
-        # stable: pagina OTA
+        # stable: OTA page
         if "stable" in tracks:
             try:
                 for b in ota_builds(code, per_track):

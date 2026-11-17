@@ -1,6 +1,6 @@
 # lpunpack.py - pure-python LP (super.img) unpacker, upstream unix3dgforce/lpunpack (LGPL-3.0).
-# VETADO 2026-10-30: só stdlib (argparse/struct/pathlib), sem subprocess/rede/exec; escreve
-# apenas <particao>.img no OUTPUT_DIR. Rodar com 'python3 -I'. Usado p/ Pixel 11 (super.img).
+# stdlib only (argparse/struct/pathlib), no subprocess/network/exec; writes only
+# <partition>.img into OUTPUT_DIR. Run with 'python3 -I'. Used for Pixel 11 (super.img).
 import argparse
 import copy
 import enum

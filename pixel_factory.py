@@ -52,7 +52,7 @@ FLASH_API = "https://content-flashstation-pa.googleapis.com/v1/builds"
 
 
 class FactoryError(RuntimeError):
-    """Falha ao ler a factory. É lib: levanta, não chama sys.exit."""
+    """Failure reading the factory. This is a library: it raises, it never calls sys.exit."""
 
 
 def _noop(_msg):
@@ -61,13 +61,13 @@ def _noop(_msg):
 
 # --------------------------------------------------------------------------- HTTP
 def _http(url, headers=None, retries=4):
-    """GET com retry. Devolve a resposta ABERTA (quem chama lê e fecha)."""
+    """GET with retry. Returns the OPEN response (the caller reads and closes it)."""
     ultimo = None
     for tentativa in range(retries):
         try:
             req = urllib.request.Request(url, headers={"User-Agent": UA, **(headers or {})})
             return urllib.request.urlopen(req, timeout=60)
-        except Exception as exc:  # noqa: BLE001 - rede falha, tenta de novo
+        except Exception as exc:  # noqa: BLE001 - network failed, try again
             ultimo = exc
             time.sleep(2 * (tentativa + 1))
     raise FactoryError(f"GET {url}: {ultimo}")
@@ -85,22 +85,22 @@ def _content_length(url):
     req = urllib.request.Request(url, method="HEAD", headers={"User-Agent": UA})
     with urllib.request.urlopen(req, timeout=60) as resp:
         if resp.headers.get("Accept-Ranges") != "bytes":
-            raise FactoryError(f"o servidor não aceita Range: {url}")
+            raise FactoryError(f"server does not accept Range: {url}")
         return int(resp.headers["Content-Length"])
 
 
-# --------------------------------------------------------------------------- API do flashstation
+# --------------------------------------------------------------------------- flashstation API
 def latest_build(product="comet_beta", track="canary"):
-    """Build mais novo publicado para `product`. dict com build_id, name, url e track."""
+    """Newest build published for `product`. dict with build_id, name, url and track."""
     page = _http(FLASH_HOME).read().decode("utf-8", "replace")
     m = re.search(r"<body data-client-config=[^;]*;([^&\"]+)", page)
     if not m:
-        raise FactoryError("não consegui ler a chave da API do flash.android.com")
+        raise FactoryError("could not read the flash.android.com API key")
     dados = json.loads(_get_bytes(f"{FLASH_API}?product={product}&key={m.group(1)}",
-                                  headers={"Referer": FLASH_HOME}))   # a API exige o Referer
+                                  headers={"Referer": FLASH_HOME}))   # the API requires the Referer
     builds = dados.get("flashstationBuild") or []
     if not builds:
-        raise FactoryError(f"a API não devolveu build para product={product}")
+        raise FactoryError(f"the API returned no build for product={product}")
 
     def serve(b):
         meta = b.get("previewMetadata") or {}
@@ -112,7 +112,7 @@ def latest_build(product="comet_beta", track="canary"):
 
     escolhidos = [b for b in builds if serve(b) and b.get("factoryImageDownloadUrl")]
     if not escolhidos:
-        raise FactoryError(f"nenhum build casa com track={track} em product={product}")
+        raise FactoryError(f"no build matches track={track} for product={product}")
     melhor = max(escolhidos, key=lambda b: int(b.get("buildId") or 0))
     return {"build_id": melhor["buildId"], "name": melhor.get("releaseCandidateName", ""),
             "url": melhor["factoryImageDownloadUrl"],
@@ -120,12 +120,12 @@ def latest_build(product="comet_beta", track="canary"):
 
 
 def list_builds(product="comet_beta"):
-    """TODOS os builds servidos para `product` (beta E canary), do mais novo pro mais velho.
-    Lista de dicts: build_id, name, url, track, canary. Usado p/ montar o corpus dos N mais recentes."""
+    """ALL builds served for `product` (beta AND canary), newest to oldest.
+    List of dicts: build_id, name, url, track, canary. Used to assemble the corpus of the N most recent."""
     page = _http(FLASH_HOME).read().decode("utf-8", "replace")
     m = re.search(r"<body data-client-config=[^;]*;([^&\"]+)", page)
     if not m:
-        raise FactoryError("nao consegui ler a chave da API do flash.android.com")
+        raise FactoryError("could not read the flash.android.com API key")
     dados = json.loads(_get_bytes(f"{FLASH_API}?product={product}&key={m.group(1)}",
                                   headers={"Referer": FLASH_HOME}))
     out = []
@@ -143,7 +143,7 @@ def list_builds(product="comet_beta"):
 
 # --------------------------------------------------------------------------- zip por HTTP
 def _zip64_extra(extra, csz, usz, lho):
-    """Troca os marcadores 0xFFFFFFFF pelos valores do campo extra zip64."""
+    """Replaces the 0xFFFFFFFF markers with the values from the zip64 extra field."""
     pos = 0
     while pos + 4 <= len(extra):
         hid, hsz = struct.unpack("<HH", extra[pos:pos + 4])
@@ -169,7 +169,7 @@ def _zip64_extra(extra, csz, usz, lho):
 
 
 class RemoteZip:
-    """Diretório central de um zip servido por HTTP, endereçado a partir de `base` (offset absoluto)."""
+    """Central directory of a zip served over HTTP, addressed from `base` (absolute offset)."""
 
     def __init__(self, url, base=0, size=None):
         self.url, self.base = url, base
@@ -181,9 +181,9 @@ class RemoteZip:
         cauda = _get_bytes(self.url, self.base + self.size - cauda_n, self.base + self.size - 1)
         pos = cauda.rfind(b"PK\x05\x06")
         if pos < 0:
-            raise FactoryError(f"fim do diretório central não encontrado em {self.url}")
+            raise FactoryError(f"end of central directory not found in {self.url}")
         cd_size, cd_off = struct.unpack("<II", cauda[pos + 12:pos + 20])
-        loc = cauda.rfind(b"PK\x06\x07")          # zip64, só quando o zip precisa
+        loc = cauda.rfind(b"PK\x06\x07")          # zip64, only when the zip needs it
         if loc >= 0:
             eocd64_off = struct.unpack("<Q", cauda[loc + 8:loc + 16])[0]
             head = _get_bytes(self.url, self.base + eocd64_off, self.base + eocd64_off + 55)
@@ -201,23 +201,23 @@ class RemoteZip:
             entries[nome] = {"method": meth, "csize": csz, "usize": usz, "lho": lho}
             pos += 46 + nlen + elen + clen
         if not entries:
-            raise FactoryError(f"diretório central vazio em {self.url}")
+            raise FactoryError(f"empty central directory in {self.url}")
         return entries
 
     def data_offset(self, nome):
-        """Offset absoluto do conteúdo do membro (o cabeçalho local traz os próprios tamanhos)."""
+        """Absolute offset of the member's content (the local header carries its own sizes)."""
         e = self.entries[nome]
         head = _get_bytes(self.url, self.base + e["lho"], self.base + e["lho"] + 29)
         if head[:4] != b"PK\x03\x04":
-            raise FactoryError(f"cabeçalho local quebrado em {nome}")
+            raise FactoryError(f"broken local header in {nome}")
         nlen, elen = struct.unpack("<HH", head[26:30])
         return self.base + e["lho"] + 30 + nlen + elen
 
     def scan_props(self, nome, agulha, window=65536, chunk=1 << 20, log=_noop):
-        """Faz streaming do membro e devolve o texto do build.prop em volta do 1º acerto."""
+        """Streams the member and returns the build.prop text around the 1st match."""
         e = self.entries[nome]
         if e["method"] not in (0, 8):
-            raise FactoryError(f"{nome}: método de compressão {e['method']} não suportado")
+            raise FactoryError(f"{nome}: compression method {e['method']} not supported")
         inicio = self.data_offset(nome)
         dec = zlib.decompressobj(-zlib.MAX_WBITS) if e["method"] == 8 else None
         lidos, buf = 0, b""
@@ -230,24 +230,24 @@ class RemoteZip:
                 buf += dec.decompress(bloco) if dec else bloco
                 hit = buf.find(agulha)
                 if hit < 0:
-                    buf = buf[-(window + len(agulha)):]      # segura um acerto que caia na emenda
+                    buf = buf[-(window + len(agulha)):]      # keep a match that falls on the seam
                 elif len(buf) - hit >= window:
-                    log(f"    {nome}: props achadas após {lidos / 1e6:.0f} MB")
+                    log(f"    {nome}: props found after {lidos / 1e6:.0f} MB")
                     return buf[max(0, hit - window):hit + window]
                 else:
-                    buf = buf[max(0, hit - window):]         # guarda o contexto e lê o resto
+                    buf = buf[max(0, hit - window):]         # keep the context and read the rest
         hit = buf.find(agulha)
         if hit >= 0:
-            log(f"    {nome}: props achadas após {lidos / 1e6:.0f} MB")
+            log(f"    {nome}: props found after {lidos / 1e6:.0f} MB")
             return buf[max(0, hit - window):hit + window]
-        raise FactoryError(f"{nome}: '{agulha.decode()}' não achado após {lidos / 1e6:.0f} MB")
+        raise FactoryError(f"{nome}: '{agulha.decode()}' not found after {lidos / 1e6:.0f} MB")
 
 
 _LINHA_PROP = re.compile(r"^[A-Za-z0-9_.\-]+=[^\x00-\x08\x0b-\x1f\x7f]*$")
 
 
 def parse_props(blob, agulha):
-    """Props do ÚNICO build.prop que contém `agulha` (a janela pode encostar em outros arquivos)."""
+    """Props from the SINGLE build.prop that contains `agulha` (the window may touch other files)."""
     linhas = blob.decode("utf-8", "replace").splitlines()
     ancora = next((i for i, ln in enumerate(linhas) if agulha.decode() in ln), None)
     if ancora is None:
@@ -272,8 +272,8 @@ def parse_props(blob, agulha):
 
 
 def parse_all_props(blob):
-    """TODAS as `ro.*=...` da janela (nao so o bloco contiguo). Para o build.prop monolitico do
-    system.img de Pixel sem `system_dlkm` (P6/6a), onde identidade e versao vem num unico scan."""
+    """ALL the `ro.*=...` in the window (not just the contiguous block). For the monolithic build.prop
+    of the system.img on Pixels without `system_dlkm` (P6/6a), where identity and version come in a single scan."""
     props = {}
     for linha in blob.decode("utf-8", "replace").splitlines():
         if linha.startswith("ro.") and "=" in linha and _LINHA_PROP.match(linha):
@@ -288,28 +288,28 @@ AGULHA_SYSTEM = b"ro.build.version.security_patch="
 
 
 def collect_props(factory_url, log=_noop):
-    """Props das duas imagens mais baratas da factory. dict `ro.*` -> valor."""
-    log(f"  factory (Range, sem baixar): {factory_url}")
+    """Props from the two cheapest images in the factory. dict `ro.*` -> value."""
+    log(f"  factory (Range, no download): {factory_url}")
     externo = RemoteZip(factory_url)
     interno_nome = next((n for n in externo.entries if re.search(r"/image-.*\.zip$", n)), None)
     if not interno_nome:
-        raise FactoryError("image-*.zip não achado dentro da factory")
+        raise FactoryError("image-*.zip not found inside the factory")
     if externo.entries[interno_nome]["method"] != 0:
-        raise FactoryError(f"{interno_nome} está comprimido; não dá para endereçar por Range")
+        raise FactoryError(f"{interno_nome} is compressed; cannot be addressed by Range")
     interno = RemoteZip(factory_url, base=externo.data_offset(interno_nome),
                         size=externo.entries[interno_nome]["csize"])
 
     props = {}
     if "system_dlkm.img" in interno.entries:
-        # Pixel 8+: identidade + FINGERPRINT + UUID no system_dlkm (~1 MB); o resto no system.img
+        # Pixel 8+: identity + FINGERPRINT + UUID in system_dlkm (~1 MB); the rest in system.img
         props.update(parse_props(interno.scan_props("system_dlkm.img", AGULHA_DLKM,
                                                     window=8192, log=log), AGULHA_DLKM))
         props.update(parse_props(interno.scan_props("system.img", AGULHA_SYSTEM, log=log),
                                  AGULHA_SYSTEM))
     else:
-        # Pixel 6/6a (sem system_dlkm): o system.img e 640MB deflate (inviavel). A MESMA factory
-        # oficial traz tudo em 2 membros pequenos: vendor_dlkm (~17MB: fingerprint REAL + identidade
-        # + versoes/uuid/id) e vendor (security_patch + board + first_api_level).
+        # Pixel 6/6a (no system_dlkm): the system.img is 640MB deflate (unfeasible). The SAME official
+        # factory carries everything in 2 small members: vendor_dlkm (~17MB: REAL fingerprint + identity
+        # + versions/uuid/id) and vendor (security_patch + board + first_api_level).
         props.update(parse_all_props(interno.scan_props("vendor_dlkm.img",
                      b"ro.vendor_dlkm.build.fingerprint=", window=131072, log=log)))
         props.update(parse_all_props(interno.scan_props("vendor.img",
@@ -318,7 +318,7 @@ def collect_props(factory_url, log=_noop):
 
 
 def como_build_prop(props):
-    """Serializa as props num texto `chave=valor` - para arquivar no formato de sempre.
+    """Serializes the props into a `key=value` text - to archive in the usual format.
 
     Fills ro.product.build.fingerprint from ro.system_dlkm.build.fingerprint when missing: they are
     the same value, and it is the key consumers look for first.
@@ -327,6 +327,6 @@ def como_build_prop(props):
     fp = props.get("ro.system_dlkm.build.fingerprint")
     if fp and not props.get("ro.product.build.fingerprint"):
         props["ro.product.build.fingerprint"] = fp
-    cab = ("# gerado por Libs/pixel_factory.py (leitura por HTTP Range - a factory NÃO foi baixada)\n"
-           "# fonte: system_dlkm.img + system.img da factory do flashstation\n")
+    cab = ("# generated by pixel_factory.py (read over HTTP Range - the factory was NOT downloaded)\n"
+           "# source: system_dlkm.img + system.img from the flashstation factory\n")
     return cab + "".join(f"{k}={v}\n" for k, v in sorted(props.items()))
