@@ -1,4 +1,4 @@
-[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | **Türkçe** | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md)
+[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | **Türkçe** | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md) | [Українська](README.uk.md)
 
 # Pixel Prop Builder
 
@@ -6,7 +6,7 @@
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
-[![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
+[![Languages](https://img.shields.io/badge/languages-22-orange.svg)](README.md)
 
 Her yeni Pixel için **her kanalın son 4 derlemesinin** (stable, beta ve canary) sürümlenmiş bir arşivi; doğrudan Google'ın resmi fabrika ve OTA imajlarından çıkarılır. Her girdi, **her bölümden** (system, system_ext, product, vendor, odm ve `_dlkm` imajları) birleştirilmiş **tam** `build.prop` dosyasıdır ve **`ro.boot.vbmeta.digest`** (verified boot hash) değerini taşır. Her şey depoda saklanır, makine tarafından okunabilir bir `index.json` içinde indekslenir ve sürüm varlıkları olarak yayımlanır. Hiçbir araç gerekmez.
 

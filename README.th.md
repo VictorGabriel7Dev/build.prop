@@ -1,4 +1,4 @@
-[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | **ไทย**
+[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | **ไทย** | [Українська](README.uk.md)
 
 # Pixel Prop Builder
 
@@ -6,7 +6,7 @@
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
-[![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
+[![Languages](https://img.shields.io/badge/languages-22-orange.svg)](README.md)
 
 คลังเก็บแบบมีเวอร์ชันของ **4 build ล่าสุดของแต่ละ channel** (stable, beta และ canary) สำหรับ Pixel รุ่นใหม่ ๆ ทุกเครื่อง ซึ่งดึงมาโดยตรงจากอิมเมจ factory และ OTA อย่างเป็นทางการของ Google แต่ละรายการคือ `build.prop` **ฉบับเต็ม** ที่รวมจาก **ทุกพาร์ทิชัน** (system, system_ext, product, vendor, odm และอิมเมจ `_dlkm`) และมี **`ro.boot.vbmeta.digest`** (hash ของ verified boot) ทุกอย่างถูกเก็บไว้ในที่เก็บโค้ด จัดทำดัชนีไว้ใน `index.json` ที่เครื่องอ่านได้ และเผยแพร่เป็นแอสเซตของ release โดยไม่ต้องใช้เครื่องมือใด ๆ
 

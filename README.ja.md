@@ -1,4 +1,4 @@
-[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | **日本語** | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md)
+[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | **日本語** | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md) | [Українська](README.uk.md)
 
 # Pixel Prop Builder
 
@@ -6,7 +6,7 @@
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
-[![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
+[![Languages](https://img.shields.io/badge/languages-22-orange.svg)](README.md)
 
 最近の各 Pixel について **各チャンネルの直近 4 ビルド**（stable、beta、canary）をバージョン管理してアーカイブしたリポジトリで、Google 公式のファクトリーイメージと OTA イメージから直接抽出しています。各エントリは**完全な** `build.prop` であり、**すべてのパーティション**（system、system_ext、product、vendor、odm、および `_dlkm` イメージ）を横断してマージされ、**`ro.boot.vbmeta.digest`**（verified boot ハッシュ）を含みます。すべてがリポジトリに保存され、機械可読の `index.json` にインデックスされ、リリースアセットとして公開されます。ツールは不要です。
 

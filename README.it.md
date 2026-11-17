@@ -1,4 +1,4 @@
-[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | **Italiano** | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md)
+[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | **Italiano** | [Deutsch](README.de.md) | [Français](README.fr.md) | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md) | [Українська](README.uk.md)
 
 # Pixel Prop Builder
 
@@ -6,7 +6,7 @@
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
-[![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
+[![Languages](https://img.shields.io/badge/languages-22-orange.svg)](README.md)
 
 Un archivio versionato degli **ultimi 4 build di ogni canale** (stable, beta e canary) di ogni Pixel recente, estratto direttamente dalle immagini ufficiali di fabbrica e OTA di Google. Ogni voce è il `build.prop` **completo**, unito da **tutte le partizioni** (system, system_ext, product, vendor, odm e le immagini `_dlkm`), e porta con sé il **`ro.boot.vbmeta.digest`** (hash del verified boot). Tutto è conservato nel repository, indicizzato in un `index.json` leggibile dalla macchina e pubblicato come asset di release. Nessuno strumento necessario.
 

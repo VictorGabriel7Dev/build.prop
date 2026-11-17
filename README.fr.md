@@ -1,4 +1,4 @@
-[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | **Français** | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md)
+[English](README.md) | [Português](README.pt.md) | [Español](README.es.md) | [Italiano](README.it.md) | [Deutsch](README.de.md) | **Français** | [Русский](README.ru.md) | [Bahasa Indonesia](README.id.md) | [Türkçe](README.tr.md) | [Polski](README.pl.md) | [Nederlands](README.nl.md) | [Svenska](README.sv.md) | [Čeština](README.cs.md) | [Tiếng Việt](README.vi.md) | [中文](README.zh.md) | [日本語](README.ja.md) | [한국어](README.ko.md) | [فارسی](README.fa.md) | [हिन्दी](README.hi.md) | [العربية](README.ar.md) | [ไทย](README.th.md) | [Українська](README.uk.md)
 
 # Pixel Prop Builder
 
@@ -6,7 +6,7 @@
 
 [![License: GPL-3.0-or-later](https://img.shields.io/badge/license-GPL--3.0--or--later-blue.svg)](LICENSE)
 [![Release](https://img.shields.io/github/v/release/VictorGabriel7Dev/build.prop)](https://github.com/VictorGabriel7Dev/build.prop/releases)
-[![Languages](https://img.shields.io/badge/languages-21-orange.svg)](README.md)
+[![Languages](https://img.shields.io/badge/languages-22-orange.svg)](README.md)
 
 Une archive versionnée des **4 derniers builds de chaque canal** (stable, beta et canary) de chaque Pixel récent, extraite directement des images officielles d'usine et OTA de Google. Chaque entrée est le `build.prop` **complet**, fusionné depuis **toutes les partitions** (system, system_ext, product, vendor, odm et les images `_dlkm`), et porte le **`ro.boot.vbmeta.digest`** (hash du verified boot). Tout est stocké dans le dépôt, indexé dans un `index.json` lisible par machine et publié comme assets de release. Aucun outil requis.
 
